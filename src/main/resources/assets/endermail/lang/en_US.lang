@@ -1,0 +1,19 @@
+# Ender Mail Language File
+# English - UNITED STATES
+
+# BLOCKS
+tile.endermail.package.name=Package
+
+# ITEMS
+item.endermail.package_controller.name=Package Controller
+
+# STRINGS
+string.endermail.holdShift=Hold §oShift§r§7 for contents
+string.endermail.close=Close
+string.endermail.deliver=Deliver
+string.endermail.delivering=Delivering
+string.endermail.error=An error has occurred
+string.endermail.status=Status
+string.endermail.success=Success
+string.endermail.fail=Fail
+string.endermail.coordinates=Coordinates

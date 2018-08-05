@@ -1,0 +1,16 @@
+[
+{
+  "modid": "endermail",
+  "name": "Ender Mail",
+  "description": "",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["ChaosTheDude"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
