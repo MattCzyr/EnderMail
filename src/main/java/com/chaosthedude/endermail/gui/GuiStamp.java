@@ -2,7 +2,6 @@ package com.chaosthedude.endermail.gui;
 
 import java.io.IOException;
 
-import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.input.Keyboard;
 
 import com.chaosthedude.endermail.EnderMail;
@@ -102,7 +101,7 @@ public class GuiStamp extends GuiScreen {
 		yTextField.updateCursorCounter();
 		zTextField.updateCursorCounter();
 		
-		if (StringUtils.isNumeric(xTextField.getText()) && (yTextField.getText().isEmpty() || StringUtils.isNumeric(yTextField.getText())) && StringUtils.isNumeric(zTextField.getText())) {
+		if (isNumeric(xTextField.getText()) && (yTextField.getText().isEmpty() || isNumeric(yTextField.getText())) && isNumeric(zTextField.getText())) {
 			okButton.enabled = true;
 		} else {
 			okButton.enabled = false;
@@ -177,5 +176,18 @@ public class GuiStamp extends GuiScreen {
 		
 		xTextField.setFocused(true);
 	}
+
+	public static boolean isNumeric(String s) {
+        if (s == null || s.length() == 0) {
+            return false;
+        }
+        int size = s.length();
+        for (int i = 0; i < size; i++) {
+            if (!Character.isDigit(s.charAt(i)) && !(i == 0 && size > 1 && s.charAt(i) == '-')) {
+                return false;
+            }
+        }
+        return true;
+    }
 
 }
