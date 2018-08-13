@@ -1,5 +1,8 @@
 {
     "variants": {
-        "normal": { "model": "endermail:package" }
+		"facing=north": { "model": "endermail:package" },
+        "facing=south": { "model": "endermail:package", "y": 180 },
+        "facing=west":  { "model": "endermail:package", "y": 270 },
+        "facing=east":  { "model": "endermail:package", "y": 90 }
     }
 }
