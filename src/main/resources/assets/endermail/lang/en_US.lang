@@ -3,9 +3,13 @@
 
 # BLOCKS
 tile.endermail.package.name=Package
+tile.endermail.sealed_package.name=Sealed Package
+tile.endermail.stamped_package.name=Stamped Package
 
 # ITEMS
 item.endermail.package_controller.name=Package Controller
+item.endermail.packing_tape.name=Packing Tape
+item.endermail.stamp.name=Stamp
 
 # STRINGS
 string.endermail.holdShift=Hold §oShift§r§7 for contents
