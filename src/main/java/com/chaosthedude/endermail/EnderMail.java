@@ -7,6 +7,7 @@ import com.chaosthedude.endermail.config.ConfigHandler;
 import com.chaosthedude.endermail.entity.EntityEnderMailman;
 import com.chaosthedude.endermail.gui.GuiHandler;
 import com.chaosthedude.endermail.network.PacketSpawnMailman;
+import com.chaosthedude.endermail.network.PacketStampPackage;
 import com.chaosthedude.endermail.proxy.CommonProxy;
 import com.chaosthedude.endermail.registry.EnderMailBlocks;
 import com.chaosthedude.endermail.registry.EnderMailItems;
@@ -52,6 +53,7 @@ public class EnderMail {
 
 		network = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
 		network.registerMessage(PacketSpawnMailman.Handler.class, PacketSpawnMailman.class, 0, Side.SERVER);
+		network.registerMessage(PacketStampPackage.Handler.class, PacketStampPackage.class, 1, Side.SERVER);
 
 		proxy.registerEvents();
 		proxy.registerModels();
