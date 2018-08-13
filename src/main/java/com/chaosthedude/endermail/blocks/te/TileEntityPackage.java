@@ -17,12 +17,15 @@ public class TileEntityPackage extends TileEntity implements IInventory {
 
 	private NonNullList<ItemStack> contents = NonNullList.<ItemStack> withSize(BlockPackage.SIZE, ItemStack.EMPTY);
 	public int numPlayersUsing;
-	public int deliveryX;
-	public int deliveryY;
-	public int deliveryZ;
+	private int deliveryX;
+	private int deliveryY;
+	private int deliveryZ;
 	protected String customName;
 
 	public TileEntityPackage() {
+		deliveryX = -1;
+		deliveryY = -1;
+		deliveryZ = -1;
 	}
 	
 	public TileEntityPackage(NonNullList<ItemStack> contents) {
@@ -189,6 +192,14 @@ public class TileEntityPackage extends TileEntity implements IInventory {
 		}
 
 		return compound;
+	}
+	
+	public BlockPos getDeliveryPos() {
+		if (deliveryX > -1 && deliveryY > -1 && deliveryZ > -1) {
+			return new BlockPos(deliveryX, deliveryY, deliveryZ);
+		}
+		
+		return null;
 	}
 
 	public void setCustomName(String name) {

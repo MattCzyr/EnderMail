@@ -5,8 +5,6 @@ import java.util.List;
 
 import com.chaosthedude.endermail.EnderMail;
 import com.chaosthedude.endermail.blocks.BlockPackage;
-import com.chaosthedude.endermail.blocks.BlockSealedPackage;
-import com.chaosthedude.endermail.blocks.BlockStampedPackage;
 import com.chaosthedude.endermail.blocks.te.TileEntityPackage;
 
 import net.minecraft.block.Block;

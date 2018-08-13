@@ -288,7 +288,7 @@ public class EntityEnderMailman extends EntityMob {
 	}
 
 	private boolean canPlacePackage(World world, BlockPos pos) {
-		return EnderMailBlocks.blockPackage.canPlaceBlockAt(world, pos) && world.isSideSolid(new BlockPos(pos.getX(), pos.getY() - 1, pos.getZ()), EnumFacing.UP);
+		return EnderMailBlocks.default_package.canPlaceBlockAt(world, pos) && world.isSideSolid(new BlockPos(pos.getX(), pos.getY() - 1, pos.getZ()), EnumFacing.UP);
 	}
 
 	public void setPackageController(ItemStack packageController) {
@@ -383,9 +383,9 @@ public class EntityEnderMailman extends EntityMob {
 		@Override
 		public void updateTask() {
 			if (enderMailman.ticksExisted - enderMailman.getTimePickedUp() >= 100) {
-				if (EnderMailBlocks.blockPackage.canPlaceBlockAt(enderMailman.world, enderMailman.getDeliveryPos())) {
+				if (EnderMailBlocks.default_package.canPlaceBlockAt(enderMailman.world, enderMailman.getDeliveryPos())) {
 					enderMailman.teleportToDeliveryPos();
-					enderMailman.world.setBlockState(enderMailman.getDeliveryPos(), EnderMailBlocks.blockPackage.getDefaultState(), 3);
+					enderMailman.world.setBlockState(enderMailman.getDeliveryPos(), EnderMailBlocks.default_package.getDefaultState(), 3);
 					enderMailman.world.setTileEntity(enderMailman.getDeliveryPos(), new TileEntityPackage(enderMailman.getContents()));
 					enderMailman.setContents(NonNullList.<ItemStack> withSize(BlockPackage.SIZE, ItemStack.EMPTY));
 					enderMailman.getPackageController().setState(enderMailman.packageController, EnumControllerState.SUCCESS);
@@ -393,7 +393,7 @@ public class EntityEnderMailman extends EntityMob {
 					enderMailman.teleportToStartingPos();
 				} else {
 					enderMailman.teleportToStartingPos();
-					enderMailman.world.setBlockState(enderMailman.getStartingPos(), EnderMailBlocks.blockPackage.getDefaultState(), 3);
+					enderMailman.world.setBlockState(enderMailman.getStartingPos(), EnderMailBlocks.default_package.getDefaultState(), 3);
 					enderMailman.world.setTileEntity(enderMailman.getStartingPos(), new TileEntityPackage(enderMailman.getContents()));
 					enderMailman.setContents(NonNullList.<ItemStack> withSize(BlockPackage.SIZE, ItemStack.EMPTY));
 					enderMailman.getPackageController().setState(enderMailman.packageController, EnumControllerState.FAILURE);

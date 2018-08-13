@@ -40,7 +40,7 @@ public class LayerHeldPackage implements LayerRenderer<EntityEnderMailman> {
 			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) j, (float) k);
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 			renderer.bindTexture(new ResourceLocation(EnderMail.MODID + ":" + "package"));
-			dispatcher.renderBlockBrightness(EnderMailBlocks.blockPackage.getDefaultState(), 1.0F);
+			dispatcher.renderBlockBrightness(EnderMailBlocks.default_package.getDefaultState(), 1.0F);
 			GlStateManager.popMatrix();
 			GlStateManager.disableRescaleNormal();
 		}
