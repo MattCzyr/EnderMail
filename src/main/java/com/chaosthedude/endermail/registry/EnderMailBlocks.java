@@ -21,14 +21,12 @@ public class EnderMailBlocks {
 	
 	public static final List<Block> REGISTRY = new ArrayList<Block>();
 
-	public static BlockPackage blockPackage;
-	public static BlockSealedPackage blockSealedPackage;
-	public static BlockStampedPackage blockStampedPackage;
+	public static BlockPackage default_package;
+	public static BlockPackage stamped_package;
 
 	public static void register() {
-		blockPackage = registerBlock(new BlockPackage(), BlockPackage.NAME);
-		blockSealedPackage = registerBlock(new BlockSealedPackage(), BlockSealedPackage.NAME);
-		blockStampedPackage = registerBlock(new BlockStampedPackage(), BlockStampedPackage.NAME);
+		default_package = registerBlock(new BlockPackage(false), BlockPackage.DEFAULT_NAME);
+		stamped_package = registerBlock(new BlockPackage(true), BlockPackage.STAMPED_NAME);
 
 		GameRegistry.registerTileEntity(TileEntityPackage.class, new ResourceLocation(TileEntityPackage.NAME));
 	}

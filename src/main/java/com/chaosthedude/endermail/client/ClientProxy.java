@@ -20,7 +20,7 @@ public class ClientProxy extends CommonProxy {
 		MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
 	}
 
-	@Override
+	/*@Override
 	public void registerModels() {
 		for (Item item : EnderMailItems.REGISTRY) {
 			registerModel(item);
@@ -36,8 +36,8 @@ public class ClientProxy extends CommonProxy {
 		RenderingRegistry.registerEntityRenderingHandler(EntityEnderMailman.class, new EnderMailmanRenderFactory());
 	}
 
-	public void registerModel(Item item) {
+	public void registerModel(Item item) { 
 		ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
-	}
+	}*/
 
 }
