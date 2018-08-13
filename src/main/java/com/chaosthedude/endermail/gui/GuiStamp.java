@@ -6,23 +6,24 @@ import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.input.Keyboard;
 
 import com.chaosthedude.endermail.EnderMail;
-import com.chaosthedude.endermail.network.PacketSpawnMailman;
-import com.chaosthedude.endermail.registry.EnderMailBlocks;
+import com.chaosthedude.endermail.network.PacketStampPackage;
 
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class GuiPackageController extends GuiScreen {
+public class GuiStamp extends GuiScreen {
+	
+	private static final ResourceLocation TEXTURE = new ResourceLocation("endermail:textures/gui/stamp.png");
 
-	private GuiButton deliverButton;
-	private GuiButton closeButton;
+	private GuiButton okButton;
+	private GuiButton cancelButton;
 
 	private GuiTextField xTextField;
 	private GuiTextField yTextField;
@@ -34,7 +35,7 @@ public class GuiPackageController extends GuiScreen {
 
 	private boolean errored;
 
-	public GuiPackageController(World world, EntityPlayer player, BlockPos packagePos) {
+	public GuiStamp(World world, EntityPlayer player, BlockPos packagePos) {
 		this.world = world;
 		this.player = player;
 		this.packagePos = packagePos;
@@ -49,7 +50,7 @@ public class GuiPackageController extends GuiScreen {
 	@Override
 	protected void actionPerformed(GuiButton button) throws IOException {
 		if (button.enabled) {
-			if (button == deliverButton) {
+			if (button == okButton) {
 				try {
 					int x = Integer.valueOf(xTextField.getText());
 					int y = -1;
@@ -59,21 +60,15 @@ public class GuiPackageController extends GuiScreen {
 					int z = Integer.valueOf(zTextField.getText());
 					BlockPos deliveryPos = new BlockPos(x, y, z);
 					
-					IBlockState iblockstate = world.getBlockState(packagePos);
-					TileEntity tileentity = world.getTileEntity(packagePos);
-					tileentity.setPos(deliveryPos);
-					world.setBlockState(packagePos, EnderMailBlocks.blockStampedPackage.getDefaultState(), 3);
-					if (tileentity != null) {
-						tileentity.validate();
-						world.setTileEntity(packagePos, tileentity);
-					}
+					//BlockPackage blockPackage = (BlockPackage) world.getBlockState(packagePos).getBlock();
+					//blockPackage.setState(true, world, packagePos);
 					
-					EnderMail.network.sendToServer(new PacketSpawnMailman(packagePos, deliveryPos));
+					EnderMail.network.sendToServer(new PacketStampPackage(packagePos));
 					mc.displayGuiScreen(null);
 				} catch (NumberFormatException e) {
 					errored = true;
 				}
-			} else if (button == closeButton) {
+			} else if (button == cancelButton) {
 				mc.displayGuiScreen(null);
 			}
 		}
@@ -81,8 +76,14 @@ public class GuiPackageController extends GuiScreen {
 
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-		drawDefaultBackground();
-		drawCenteredString(fontRenderer, I18n.format("item.endermail.package_controller.name"), width / 2, 20, 0xffffff);
+		int xSize = 178;
+		int ySize = 222;
+		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		mc.getTextureManager().bindTexture(TEXTURE);
+		int i = (width - xSize) / 2;
+		int j = (height - ySize) / 2;
+		drawTexturedModalRect(i, j, 0, 0, xSize, ySize);
+		drawCenteredString(fontRenderer, I18n.format("item.endermail.stamp.name"), width / 2, 20, 0xffffff);
 		if (errored) {
 			drawCenteredString(fontRenderer, I18n.format("string.endermail.error"), width / 2, height - 65, 0xffffff);
 		}
@@ -102,9 +103,9 @@ public class GuiPackageController extends GuiScreen {
 		zTextField.updateCursorCounter();
 		
 		if (StringUtils.isNumeric(xTextField.getText()) && (yTextField.getText().isEmpty() || StringUtils.isNumeric(yTextField.getText())) && StringUtils.isNumeric(zTextField.getText())) {
-			deliverButton.enabled = true;
+			okButton.enabled = true;
 		} else {
-			deliverButton.enabled = false;
+			okButton.enabled = false;
 		}
 	}
 
@@ -164,9 +165,9 @@ public class GuiPackageController extends GuiScreen {
 
 	private void setupButtons() {
 		buttonList.clear();
-		closeButton = addButton(new GuiButton(0, width / 2 - 154, height - 52, 150, 20, I18n.format("string.endermail.close")));
-		deliverButton = addButton(new GuiButton(1, width / 2 + 4, height - 52, 150, 20, I18n.format("string.endermail.deliver")));
-		deliverButton.enabled = false;
+		cancelButton = addButton(new GuiButton(0, 20, height - 40, 20, 20, I18n.format("X")));
+		okButton = addButton(new GuiButton(1, width - 40, height - 40, 20, 20, I18n.format("O")));
+		okButton.enabled = false;
 	}
 
 	private void setupTextFields() {

@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.network.IGuiHandler;
 public class GuiHandler implements IGuiHandler {
 	
 	public static final int PACKAGE_ID = 0;
-	public static final int CONTROLLER_ID = 1;
+	public static final int STAMP_ID = 1;
 
 	@Override
 	public Object getServerGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
@@ -21,7 +21,7 @@ public class GuiHandler implements IGuiHandler {
 			if (te != null && te instanceof TileEntityPackage) {
 				return new ContainerPackage(player.inventory, (TileEntityPackage) te, player);
 			}
-		} else if (id == CONTROLLER_ID) {
+		} else if (id == STAMP_ID) {
 			// null
 		}
 		
@@ -35,9 +35,9 @@ public class GuiHandler implements IGuiHandler {
 			if (te != null && te instanceof TileEntityPackage) {
 				return new GuiPackage(player.inventory, (TileEntityPackage) te);
 			}
-		} else if (id == CONTROLLER_ID) {
+		} else if (id == STAMP_ID) {
 			if (te != null && te instanceof TileEntityPackage) {
-				return new GuiPackageController(world, player, new BlockPos(x, y, z));
+				return new GuiStamp(world, player, new BlockPos(x, y, z));
 			}
 		}
 		
