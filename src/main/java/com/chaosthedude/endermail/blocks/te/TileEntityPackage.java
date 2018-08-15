@@ -1,10 +1,13 @@
 package com.chaosthedude.endermail.blocks.te;
 
 import com.chaosthedude.endermail.blocks.BlockPackage;
+import com.chaosthedude.endermail.registry.EnderMailBlocks;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -101,24 +104,10 @@ public class TileEntityPackage extends TileEntity implements IInventory {
 
 	@Override
 	public void openInventory(EntityPlayer player) {
-		if (!player.isSpectator()) {
-			if (numPlayersUsing < 0) {
-				numPlayersUsing = 0;
-			}
-
-			numPlayersUsing++;
-			world.addBlockEvent(pos, getBlockType(), 1, numPlayersUsing);
-			world.notifyNeighborsOfStateChange(pos, getBlockType(), false);
-		}
 	}
 
 	@Override
 	public void closeInventory(EntityPlayer player) {
-		if (!player.isSpectator() && getBlockType() instanceof BlockPackage) {
-			numPlayersUsing--;
-			world.addBlockEvent(pos, getBlockType(), 1, numPlayersUsing);
-			world.notifyNeighborsOfStateChange(pos, getBlockType(), false);
-		}
 	}
 
 	@Override
@@ -133,31 +122,39 @@ public class TileEntityPackage extends TileEntity implements IInventory {
 
 	@Override
 	public ItemStack decrStackSize(int index, int count) {
-		ItemStack stack = contents.get(index);
-		stack.setCount(stack.getCount() - count);
-		return contents.set(index, stack);
+		return ItemStackHelper.getAndSplit(contents, index, count);
 	}
 
 	@Override
 	public ItemStack removeStackFromSlot(int index) {
-		ItemStack stack = contents.get(index); // TODO
-		contents.set(index, ItemStack.EMPTY);
-		return stack;
+		return ItemStackHelper.getAndRemove(contents, index);
 	}
 
 	@Override
 	public void setInventorySlotContents(int index, ItemStack stack) {
-		contents.set(index, stack);
+		//contents.set(index, stack);
+		
+		ItemStack itemstack = contents.get(index);
+        boolean flag = !stack.isEmpty() && stack.isItemEqual(itemstack) && ItemStack.areItemStackTagsEqual(stack, itemstack);
+        contents.set(index, stack);
+
+        if (stack.getCount() > this.getInventoryStackLimit()) {
+            stack.setCount(this.getInventoryStackLimit());
+        }
 	}
 
 	@Override
 	public boolean isUsableByPlayer(EntityPlayer player) {
-		return true;
+		if (world.getTileEntity(pos) != this) {
+            return false;
+        } else {
+            return player.getDistanceSq((double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D) <= 64.0D;
+        }
 	}
 
 	@Override
 	public boolean isItemValidForSlot(int index, ItemStack stack) {
-		return true;
+		return stack.getItem() != Item.getItemFromBlock(EnderMailBlocks.default_package) && stack.getItem() != Item.getItemFromBlock(EnderMailBlocks.stamped_package);
 	}
 
 	@Override
@@ -176,9 +173,7 @@ public class TileEntityPackage extends TileEntity implements IInventory {
 
 	@Override
 	public void clear() {
-		for (int i = 0; i < contents.size(); i++) {
-			contents.set(i, ItemStack.EMPTY);
-		}
+		contents.clear();
 	}
 
 	public NonNullList<ItemStack> getContents() {

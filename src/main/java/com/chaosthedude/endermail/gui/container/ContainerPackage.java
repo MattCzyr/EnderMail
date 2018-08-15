@@ -1,11 +1,13 @@
 package com.chaosthedude.endermail.gui.container;
 
 import com.chaosthedude.endermail.blocks.te.TileEntityPackage;
+import com.chaosthedude.endermail.registry.EnderMailBlocks;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 public class ContainerPackage extends Container {
@@ -18,7 +20,12 @@ public class ContainerPackage extends Container {
 		int i = 51;
 
 		for (int j = 0; j < packageInventory.getSizeInventory(); ++j) {
-			addSlotToContainer(new Slot(packageInventory, j, 44 + j * 18, 20));
+			addSlotToContainer(new Slot(packageInventory, j, 44 + j * 18, 20) {
+				@Override
+				public boolean isItemValid(ItemStack stack) {
+					return stack.getItem() != Item.getItemFromBlock(EnderMailBlocks.default_package) && stack.getItem() != Item.getItemFromBlock(EnderMailBlocks.stamped_package);
+				}
+			});
 		}
 
 		for (int l = 0; l < 3; ++l) {
