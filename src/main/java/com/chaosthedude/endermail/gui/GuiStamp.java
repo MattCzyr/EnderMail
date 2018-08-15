@@ -62,7 +62,7 @@ public class GuiStamp extends GuiScreen {
 					//BlockPackage blockPackage = (BlockPackage) world.getBlockState(packagePos).getBlock();
 					//blockPackage.setState(true, world, packagePos);
 					
-					EnderMail.network.sendToServer(new PacketStampPackage(packagePos));
+					EnderMail.network.sendToServer(new PacketStampPackage(packagePos, deliveryPos));
 					mc.displayGuiScreen(null);
 				} catch (NumberFormatException e) {
 					errored = true;

@@ -10,6 +10,7 @@ import com.chaosthedude.endermail.EnderMail;
 import com.chaosthedude.endermail.blocks.te.TileEntityPackage;
 import com.chaosthedude.endermail.gui.GuiHandler;
 import com.chaosthedude.endermail.items.ItemPackageController;
+import com.chaosthedude.endermail.network.PacketSpawnMailman;
 import com.chaosthedude.endermail.registry.EnderMailBlocks;
 import com.chaosthedude.endermail.registry.EnderMailItems;
 import com.chaosthedude.endermail.util.EnumControllerState;
@@ -55,7 +56,7 @@ public class BlockPackage extends BlockContainer {
 
 	public static final PropertyDirection FACING = BlockHorizontal.FACING;
 
-	private static boolean keepInventory;
+	//private static boolean keepInventory;
 
 	private boolean isStamped;
 
@@ -65,8 +66,8 @@ public class BlockPackage extends BlockContainer {
 			setUnlocalizedName(EnderMail.MODID + "." + STAMPED_NAME);
 		} else {
 			setUnlocalizedName(EnderMail.MODID + "." + DEFAULT_NAME);
+			setCreativeTab(CreativeTabs.DECORATIONS);
 		}
-		setCreativeTab(CreativeTabs.DECORATIONS);
 		setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
 		
 		this.isStamped = isStamped;
@@ -86,8 +87,10 @@ public class BlockPackage extends BlockContainer {
 			ItemPackageController packageController = (ItemPackageController) stack.getItem();
 			BlockPos deliveryPos = getDeliveryPos(world, pos);
 			if (deliveryPos != null) {
+				System.out.println("Delivering");
 				packageController.setDeliveryPos(stack, pos);
 				packageController.setState(stack, EnumControllerState.DELIVERING);
+				EnderMail.network.sendToServer(new PacketSpawnMailman(pos, deliveryPos));
 			}
 		}
 
@@ -169,12 +172,12 @@ public class BlockPackage extends BlockContainer {
 
 	@Override
 	public void breakBlock(World world, BlockPos pos, IBlockState state) {
-		if (!keepInventory) {
-			TileEntity tileentity = world.getTileEntity(pos);
-			if (tileentity instanceof TileEntityPackage) {
-				InventoryHelper.dropInventoryItems(world, pos, (TileEntityPackage) tileentity);
-			}
-		}
+		//if (!keepInventory) {
+		//	TileEntity tileentity = world.getTileEntity(pos);
+		//	if (tileentity instanceof TileEntityPackage) {
+		//		InventoryHelper.dropInventoryItems(world, pos, (TileEntityPackage) tileentity);
+		//	}
+		//}
 
 		super.breakBlock(world, pos, state);
 	}
@@ -256,7 +259,7 @@ public class BlockPackage extends BlockContainer {
 
 		IBlockState iblockstate = world.getBlockState(pos);
 		TileEntity tileentity = world.getTileEntity(pos);
-		keepInventory = true;
+		//keepInventory = true;
 
 		if (flag) {
 			world.setBlockState(pos,
@@ -272,7 +275,7 @@ public class BlockPackage extends BlockContainer {
 					iblockstate.getValue(FACING)), 3);
 		}
 
-		keepInventory = false;
+		//keepInventory = false;
 
 		if (tileentity != null) {
 			tileentity.validate();
