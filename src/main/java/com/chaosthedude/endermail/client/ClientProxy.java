@@ -29,14 +29,14 @@ public class ClientProxy extends CommonProxy {
 		for (Block block : EnderMailBlocks.REGISTRY) {
 			registerModel(Item.getItemFromBlock(block));
 		}
-	}
+	}*/
 	
 	@Override
 	public void registerRenderers() {
 		RenderingRegistry.registerEntityRenderingHandler(EntityEnderMailman.class, new EnderMailmanRenderFactory());
 	}
 
-	public void registerModel(Item item) { 
+	/*public void registerModel(Item item) { 
 		ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
 	}*/
 
