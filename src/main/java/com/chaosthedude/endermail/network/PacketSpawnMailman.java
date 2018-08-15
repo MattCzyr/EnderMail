@@ -64,14 +64,14 @@ public class PacketSpawnMailman implements IMessage {
 		public IMessage onMessage(PacketSpawnMailman packet, MessageContext ctx) {
 			BlockPos min = new BlockPos(packet.startingX - 64, packet.startingY - 64, packet.startingZ - 64);
 			BlockPos max = new BlockPos(packet.startingX + 64, packet.startingY + 64, packet.startingZ + 64);
-			List<EntityEnderMailman> nearbyMailmen = ctx.getServerHandler().player.world.getEntitiesWithinAABB(EntityEnderMailman.class, new AxisAlignedBB(min, max));
+			/*List<EntityEnderMailman> nearbyMailmen = ctx.getServerHandler().player.world.getEntitiesWithinAABB(EntityEnderMailman.class, new AxisAlignedBB(min, max));
 			EntityEnderMailman nearby = null;
 			for (EntityEnderMailman mailman : nearbyMailmen) {
 				if (!mailman.isDelivering()) {
 					nearby = mailman;
 					break;
 				}
-			}
+			}*/
 			
 			BlockPos startingPos = new BlockPos(packet.startingX, packet.startingY, packet.startingZ);
 			BlockPos deliveryPos = new BlockPos(packet.deliveryX, packet.deliveryY, packet.deliveryZ);

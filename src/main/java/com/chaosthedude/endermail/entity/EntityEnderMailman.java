@@ -42,6 +42,7 @@ public class EntityEnderMailman extends EntityMob {
 	private int timePickedUp;
 	private int timeDelivered;
 	private boolean isDelivering;
+	private boolean isCarryingPackage;
 	private BlockPos startingPos;
 	private BlockPos deliveryPos;
 	private ItemStack packageController;
@@ -94,6 +95,7 @@ public class EntityEnderMailman extends EntityMob {
 		tasks.addTask(8, new EntityAILookIdle(this));
 		tasks.addTask(10, new EntityEnderMailman.AIDeliver(this));
 		tasks.addTask(11, new EntityEnderMailman.AITakePackage(this));
+		tasks.addTask(12, new EntityEnderMailman.AIKill(this));
 		targetTasks.addTask(1, new EntityAIHurtByTarget(this, false, new Class[0]));
 	}
 
@@ -300,17 +302,15 @@ public class EntityEnderMailman extends EntityMob {
 	}
 
 	public boolean isCarryingPackage() {
-		for (ItemStack stack : contents) {
-			if (!stack.isEmpty()) {
-				return true;
-			}
-		}
-
-		return false;
+		return isCarryingPackage;
 	}
 
 	public boolean isDelivering() {
 		return isDelivering;
+	}
+	
+	public void setCarryingPackage(boolean carrying) {
+		isCarryingPackage = carrying;
 	}
 
 	public void setDelivering(boolean delivering) {
@@ -383,9 +383,9 @@ public class EntityEnderMailman extends EntityMob {
 		@Override
 		public void updateTask() {
 			if (enderMailman.ticksExisted - enderMailman.getTimePickedUp() >= 100) {
-				if (EnderMailBlocks.default_package.canPlaceBlockAt(enderMailman.world, enderMailman.getDeliveryPos())) {
+				if (EnderMailBlocks.stamped_package.canPlaceBlockAt(enderMailman.world, enderMailman.getDeliveryPos())) {
 					enderMailman.teleportToDeliveryPos();
-					enderMailman.world.setBlockState(enderMailman.getDeliveryPos(), EnderMailBlocks.default_package.getDefaultState(), 3);
+					enderMailman.world.setBlockState(enderMailman.getDeliveryPos(), EnderMailBlocks.stamped_package.getDefaultState(), 3);
 					enderMailman.world.setTileEntity(enderMailman.getDeliveryPos(), new TileEntityPackage(enderMailman.getContents()));
 					enderMailman.setContents(NonNullList.<ItemStack> withSize(BlockPackage.SIZE, ItemStack.EMPTY));
 					enderMailman.getPackageController().setState(enderMailman.packageController, EnumControllerState.SUCCESS);
@@ -393,7 +393,7 @@ public class EntityEnderMailman extends EntityMob {
 					enderMailman.teleportToStartingPos();
 				} else {
 					enderMailman.teleportToStartingPos();
-					enderMailman.world.setBlockState(enderMailman.getStartingPos(), EnderMailBlocks.default_package.getDefaultState(), 3);
+					enderMailman.world.setBlockState(enderMailman.getStartingPos(), EnderMailBlocks.stamped_package.getDefaultState(), 3);
 					enderMailman.world.setTileEntity(enderMailman.getStartingPos(), new TileEntityPackage(enderMailman.getContents()));
 					enderMailman.setContents(NonNullList.<ItemStack> withSize(BlockPackage.SIZE, ItemStack.EMPTY));
 					enderMailman.getPackageController().setState(enderMailman.packageController, EnumControllerState.FAILURE);
@@ -425,11 +425,32 @@ public class EntityEnderMailman extends EntityMob {
 			if (tileEntity != null && tileEntity instanceof TileEntityPackage) {
 				TileEntityPackage tileEntityPackage = (TileEntityPackage) tileEntity;
 				enderMailman.setContents(tileEntityPackage.getContents());
+				enderMailman.setCarryingPackage(true);
 				enderMailman.world.setBlockToAir(enderMailman.startingPos);
 				enderMailman.getPackageController().setState(enderMailman.packageController, EnumControllerState.DELIVERING);
 				enderMailman.updateTimePickedUp();
 			} else {
 				enderMailman.setDelivering(false);
+			}
+		}
+	}
+
+	static class AIKill extends EntityAIBase {
+		private final EntityEnderMailman enderMailman;
+
+		public AIKill(EntityEnderMailman enderMailman) {
+			this.enderMailman = enderMailman;
+		}
+
+		@Override
+		public boolean shouldExecute() {
+			return !enderMailman.isDelivering();
+		}
+
+		@Override
+		public void updateTask() {
+			if (enderMailman.ticksExisted - enderMailman.getTimeDelivered() >= 100) {
+				enderMailman.setDead();
 			}
 		}
 	}
