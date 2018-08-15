@@ -2,9 +2,10 @@ package com.chaosthedude.endermail.util;
 
 public enum EnumControllerState {
 	
-	DELIVERING(0),
-	SUCCESS(1),
-	FAILURE(2);
+	DEFAULT(0),
+	DELIVERING(1),
+	SUCCESS(2),
+	FAILURE(3);
 
 	private int id;
 
