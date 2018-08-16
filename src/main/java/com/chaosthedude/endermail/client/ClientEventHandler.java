@@ -58,7 +58,7 @@ public class ClientEventHandler {
 		}
 		
 		for (Block block : EnderMailBlocks.REGISTRY) {
-			ModelLoader.setCustomModelResourceLocation(new ItemBlock(block), 0, new ModelResourceLocation(block.getRegistryName(), "inventory"));
+			ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), 0, new ModelResourceLocation(block.getRegistryName(), "inventory"));
 		}
 	}
 

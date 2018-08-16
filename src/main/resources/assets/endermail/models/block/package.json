@@ -6,6 +6,7 @@
 		"north": "endermail:blocks/package_side_1",
 		"south": "endermail:blocks/package_side_1",
 		"east": "endermail:blocks/package_side_2",
-		"west": "endermail:blocks/package_side_2"
+		"west": "endermail:blocks/package_side_2",
+		"front": "endermail:blocks/package_side_1"
     }
 }
