@@ -197,6 +197,7 @@ public class EntityEnderMailman extends EntityMob {
 		compound.setInteger("DeliveryZ", deliveryPos.getZ());
 
 		compound.setBoolean("IsDelivering", isDelivering);
+		compound.setBoolean("IsCarryingPackage", isCarryingPackage);
 	}
 
 	@Override
@@ -208,6 +209,7 @@ public class EntityEnderMailman extends EntityMob {
 		deliveryPos = new BlockPos(compound.getInteger("DeliveryX"), compound.getInteger("DeliveryY"), compound.getInteger("DeliveryZ"));
 
 		isDelivering = compound.getBoolean("IsDelivering");
+		isCarryingPackage = compound.getBoolean("IsCarryingPackage");
 	}
 
 	@Override
