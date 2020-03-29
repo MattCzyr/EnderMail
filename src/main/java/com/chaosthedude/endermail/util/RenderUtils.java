@@ -22,6 +22,10 @@ public class RenderUtils {
 		yOffset += lineOffset * 9;
 		fontRenderer.drawString(string, 2 + xOffset, 2 + yOffset, color, true);
 	}
+	
+	public static void drawCenteredStringWithoutShadow(String string, int x, int y, int color) {
+        fontRenderer.drawString(string, (float)(x - fontRenderer.getStringWidth(string) / 2), (float) y, color, false);
+    }
 
 	public static void drawRect(int left, int top, int right, int bottom, int color) {
 		if (left < right) {

@@ -6,6 +6,7 @@ import org.lwjgl.input.Keyboard;
 
 import com.chaosthedude.endermail.EnderMail;
 import com.chaosthedude.endermail.network.PacketStampPackage;
+import com.chaosthedude.endermail.util.RenderUtils;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -82,10 +83,14 @@ public class GuiStamp extends GuiScreen {
 		int i = (width - xSize) / 2;
 		int j = (height - ySize) / 2;
 		drawTexturedModalRect(i, j, 0, 0, xSize, ySize);
-		drawCenteredString(fontRenderer, I18n.format("item.endermail.stamp.name"), width / 2, 20, 0xffffff);
+		//drawCenteredString(fontRenderer, I18n.format("item.endermail.stamp.name"), width / 2, 20, 0xffffff);
 		if (errored) {
-			drawCenteredString(fontRenderer, I18n.format("string.endermail.error"), width / 2, height - 65, 0xffffff);
+			drawCenteredString(fontRenderer, I18n.format("string.endermail.error"), width / 2, height - 65, 0xAAAAAA);
 		}
+		RenderUtils.drawCenteredStringWithoutShadow(I18n.format("string.endermail.deliveryLocation"), width / 2, 78, 0xAAAAAA);
+		RenderUtils.drawCenteredStringWithoutShadow("X", (width / 2) - 45, 115, 0xAAAAAA);
+		RenderUtils.drawCenteredStringWithoutShadow("Y", (width / 2) + 0, 115, 0xAAAAAA);
+		RenderUtils.drawCenteredStringWithoutShadow("Z", (width / 2) + 45, 115, 0xAAAAAA);
 		
 		xTextField.drawTextBox();
 		yTextField.drawTextBox();
@@ -164,15 +169,15 @@ public class GuiStamp extends GuiScreen {
 
 	private void setupButtons() {
 		buttonList.clear();
-		cancelButton = addButton(new GuiButton(0, 20, height - 40, 20, 20, I18n.format("strings.endermail.cancel")));
-		okButton = addButton(new GuiButton(1, width - 40, height - 40, 20, 20, I18n.format("strings.endermail.confirm")));
+		cancelButton = addButton(new GuiButton(0, 20, height - 40, 20, 20, I18n.format("string.endermail.cancel")));
+		okButton = addButton(new GuiButton(1, width - 40, height - 40, 20, 20, I18n.format("string.endermail.confirm")));
 		okButton.enabled = false;
 	}
 
 	private void setupTextFields() {
-		xTextField = new GuiTextField(0, fontRenderer, (width / 2) - 65, 80, 40, 20);
-		yTextField = new GuiTextField(1, fontRenderer, (width / 2) - 20, 80, 40, 20);
-		zTextField = new GuiTextField(2, fontRenderer, (width / 2) + 25, 80, 40, 20);
+		xTextField = new GuiTextField(0, fontRenderer, (width / 2) - 65, 90, 40, 20);
+		yTextField = new GuiTextField(1, fontRenderer, (width / 2) - 20, 90, 40, 20);
+		zTextField = new GuiTextField(2, fontRenderer, (width / 2) + 25, 90, 40, 20);
 		
 		xTextField.setFocused(true);
 	}
