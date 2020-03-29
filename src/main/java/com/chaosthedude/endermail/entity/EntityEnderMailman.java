@@ -36,6 +36,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
 
 public class EntityEnderMailman extends EntityMob {
+	
+	public static String NAME = "ender_mailman";
 
 	private NonNullList<ItemStack> contents = NonNullList.<ItemStack> withSize(BlockPackage.SIZE, ItemStack.EMPTY);
 	private int lastCreepySound;

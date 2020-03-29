@@ -164,8 +164,8 @@ public class GuiStamp extends GuiScreen {
 
 	private void setupButtons() {
 		buttonList.clear();
-		cancelButton = addButton(new GuiButton(0, 20, height - 40, 20, 20, I18n.format("X")));
-		okButton = addButton(new GuiButton(1, width - 40, height - 40, 20, 20, I18n.format("O")));
+		cancelButton = addButton(new GuiButton(0, 20, height - 40, 20, 20, I18n.format("strings.endermail.cancel")));
+		okButton = addButton(new GuiButton(1, width - 40, height - 40, 20, 20, I18n.format("strings.endermail.confirm")));
 		okButton.enabled = false;
 	}
 

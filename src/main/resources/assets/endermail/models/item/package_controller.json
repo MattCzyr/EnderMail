@@ -1,6 +1,12 @@
 {
-  "parent": "item/handheld",
-  "textures": {
-    "layer0": "endermail:items/package_controller"
-  }
+    "parent": "item/handheld",
+    "textures": {
+        "layer0": "endermail:items/package_controller"
+    },
+    "overrides": [
+        { "predicate": { "state": 0 }, "model": "endermail:item/package_controller" },
+        { "predicate": { "state": 1 }, "model": "endermail:item/package_controller" },
+        { "predicate": { "state": 2 }, "model": "endermail:item/package_controller_success" },
+        { "predicate": { "state": 3 }, "model": "endermail:item/package_controller_failure" }
+    ]
 }

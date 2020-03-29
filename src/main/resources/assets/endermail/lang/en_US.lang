@@ -13,7 +13,9 @@ item.endermail.stamp.name=Stamp
 
 # STRINGS
 string.endermail.holdShift=Hold §oShift§r§7 for contents
+string.endermail.cancel=Cancel
 string.endermail.close=Close
+string.endermail.confirm=Confirm
 string.endermail.deliver=Deliver
 string.endermail.delivering=Delivering
 string.endermail.error=An error has occurred

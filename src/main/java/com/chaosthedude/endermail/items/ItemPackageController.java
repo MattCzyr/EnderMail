@@ -1,17 +1,27 @@
 package com.chaosthedude.endermail.items;
 
+import javax.annotation.Nullable;
+
 import com.chaosthedude.endermail.EnderMail;
 import com.chaosthedude.endermail.util.EnumControllerState;
 import com.chaosthedude.endermail.util.ItemUtils;
 
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemPackageController extends Item {
 
@@ -21,6 +31,12 @@ public class ItemPackageController extends Item {
 		super();
 		setCreativeTab(CreativeTabs.TOOLS);
 		setUnlocalizedName(EnderMail.MODID + "." + NAME);
+		addPropertyOverride(new ResourceLocation("state"), new IItemPropertyGetter() {
+            @Override
+			public float apply(ItemStack stack, @Nullable World world, @Nullable EntityLivingBase entity) {
+                return getState(stack).getID();
+            }
+        });
 	}
 	
 	@Override

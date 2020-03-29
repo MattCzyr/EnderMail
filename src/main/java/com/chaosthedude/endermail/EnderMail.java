@@ -49,7 +49,7 @@ public class EnderMail {
 		EnderMailBlocks.register();
 		EnderMailItems.register();
 
-		EntityRegistry.registerModEntity(new ResourceLocation(MODID, "ender_mailman"), EntityEnderMailman.class, "ender_mailman", 0, this, 64, 2, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(MODID, EntityEnderMailman.NAME), EntityEnderMailman.class, EntityEnderMailman.NAME, 0, this, 64, 2, true);
 
 		network = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
 		network.registerMessage(PacketSpawnMailman.Handler.class, PacketSpawnMailman.class, 0, Side.SERVER);
