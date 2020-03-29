@@ -25,7 +25,7 @@ public class EnderMailItems {
 
 	public static void register() {
 		packageController = registerItem(new ItemPackageController(), "package_controller");
-		packingTape = registerItem(new Item().setUnlocalizedName(EnderMail.MODID + "." + "packing_tape").setCreativeTab(CreativeTabs.MISC), "packing_tape");
+		packingTape = registerItem(new Item().setUnlocalizedName(EnderMail.MODID + ":" + "packing_tape").setCreativeTab(CreativeTabs.MISC), "packing_tape");
 		stamp = registerItem(new Item().setUnlocalizedName(EnderMail.MODID + "." + "stamp").setCreativeTab(CreativeTabs.MISC), "stamp");
 	}
 	

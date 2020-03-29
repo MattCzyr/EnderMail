@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:chest"
+    },
+    {
+      "item": "endermail:packing_tape"
+    }
+  ],
+  "result": {
+    "item": "endermail:package"
+  }
+}
