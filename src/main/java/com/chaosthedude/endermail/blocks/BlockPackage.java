@@ -92,8 +92,8 @@ public class BlockPackage extends BlockContainer {
 		if (stack.hasDisplayName()) {
 			TileEntity tileentity = world.getTileEntity(pos);
 
-			if (tileentity instanceof TileEntityFurnace) {
-				((TileEntityFurnace) tileentity).setCustomInventoryName(stack.getDisplayName());
+			if (tileentity instanceof TileEntityPackage) {
+				((TileEntityPackage) tileentity).setCustomName(stack.getDisplayName());
 			}
 		}
 	}
