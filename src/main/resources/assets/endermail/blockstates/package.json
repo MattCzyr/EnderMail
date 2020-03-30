@@ -1,8 +1,12 @@
 {
     "variants": {
-		"facing=north": { "model": "endermail:package" },
-        "facing=south": { "model": "endermail:package", "y": 180 },
-        "facing=west":  { "model": "endermail:package", "y": 270 },
-        "facing=east":  { "model": "endermail:package", "y": 90 }
+        "facing=north,stamped=false": { "model": "endermail:package" },
+        "facing=south,stamped=false": { "model": "endermail:package", "y": 180 },
+        "facing=west,stamped=false":  { "model": "endermail:package", "y": 270 },
+        "facing=east,stamped=false":  { "model": "endermail:package", "y": 90 },
+        "facing=north,stamped=true": { "model": "endermail:stamped_package" },
+        "facing=south,stamped=true": { "model": "endermail:stamped_package", "y": 180 },
+        "facing=west,stamped=true":  { "model": "endermail:stamped_package", "y": 270 },
+        "facing=east,stamped=true":  { "model": "endermail:stamped_package", "y": 90 }
     }
 }

@@ -18,7 +18,7 @@ public class TileEntityPackage extends TileEntity implements IInventory {
 
 	public static final String NAME = "TileEntityPackage";
 
-	private NonNullList<ItemStack> contents = NonNullList.<ItemStack> withSize(BlockPackage.SIZE, ItemStack.EMPTY);
+	private NonNullList<ItemStack> contents = NonNullList.<ItemStack> withSize(BlockPackage.INVENTORY_SIZE, ItemStack.EMPTY);
 	public int numPlayersUsing;
 	private int deliveryX;
 	private int deliveryY;
@@ -37,7 +37,7 @@ public class TileEntityPackage extends TileEntity implements IInventory {
 
 	@Override
 	public int getSizeInventory() {
-		return BlockPackage.SIZE;
+		return BlockPackage.INVENTORY_SIZE;
 	}
 
 	@Override
@@ -154,7 +154,7 @@ public class TileEntityPackage extends TileEntity implements IInventory {
 
 	@Override
 	public boolean isItemValidForSlot(int index, ItemStack stack) {
-		return stack.getItem() != Item.getItemFromBlock(EnderMailBlocks.default_package) && stack.getItem() != Item.getItemFromBlock(EnderMailBlocks.stamped_package);
+		return stack.getItem() != Item.getItemFromBlock(EnderMailBlocks.package_block);
 	}
 
 	@Override

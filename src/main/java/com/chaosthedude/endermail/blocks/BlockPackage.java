@@ -20,6 +20,7 @@ import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -28,7 +29,6 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -49,45 +49,34 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockPackage extends BlockContainer {
 
-	public static final String DEFAULT_NAME = "package";
-	public static final String STAMPED_NAME = "stamped_package";
+	public static final String NAME = "package";
 	
-	public static final int SIZE = 5;
+	public static final int INVENTORY_SIZE = 5;
 
 	public static final PropertyDirection FACING = BlockHorizontal.FACING;
+	public static final PropertyBool STAMPED = PropertyBool.create("stamped");
 
-	//private static boolean keepInventory;
-
-	private boolean isStamped;
-
-	public BlockPackage(boolean isStamped) {
+	public BlockPackage() {
 		super(Material.WOOD);
-		if (isStamped) {
-			setUnlocalizedName(EnderMail.MODID + "." + STAMPED_NAME);
-		} else {
-			setUnlocalizedName(EnderMail.MODID + "." + DEFAULT_NAME);
-			setCreativeTab(CreativeTabs.DECORATIONS);
-		}
-		setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
-		
-		this.isStamped = isStamped;
+		setUnlocalizedName(EnderMail.MODID + "." + NAME);
+		setCreativeTab(CreativeTabs.DECORATIONS);
+		setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(STAMPED, false));
 	}
 
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand,
 			EnumFacing facing, float hitX, float hitY, float hitZ) {
-		if (!isStamped && ItemUtils.isHolding(player, EnderMailItems.stamp)) {
+		if (!isStamped(state) && ItemUtils.isHolding(player, EnderMailItems.stamp)) {
 			player.openGui(EnderMail.instance, GuiHandler.STAMP_ID, world, pos.getX(), pos.getY(), pos.getZ());
-		} else if (!isStamped) {
+		} else if (!isStamped(state)) {
 			player.openGui(EnderMail.instance, GuiHandler.PACKAGE_ID, world, pos.getX(), pos.getY(), pos.getZ());
-		} else if (isStamped && player.isSneaking()) {
+		} else if (isStamped(state) && player.isSneaking()) {
 			setState(false, world, pos);
-		} else if (isStamped && ItemUtils.isHolding(player, EnderMailItems.packageController)) {
+		} else if (isStamped(state) && ItemUtils.isHolding(player, EnderMailItems.packageController)) {
 			ItemStack stack = ItemUtils.getHeldItem(player, EnderMailItems.packageController);
 			ItemPackageController packageController = (ItemPackageController) stack.getItem();
 			BlockPos deliveryPos = getDeliveryPos(world, pos);
 			if (deliveryPos != null) {
-				System.out.println("Delivering");
 				packageController.setDeliveryPos(stack, pos);
 				packageController.setState(stack, EnumControllerState.DELIVERING);
 				EnderMail.network.sendToServer(new PacketSpawnMailman(pos, deliveryPos));
@@ -155,7 +144,7 @@ public class BlockPackage extends BlockContainer {
 			if (temp != null && temp.hasKey("BlockEntityTag", 10)) {
 				NBTTagCompound tag = temp.getCompoundTag("BlockEntityTag");
 				if (tag.hasKey("Items", 9)) {
-					NonNullList<ItemStack> content = NonNullList.<ItemStack> withSize(SIZE, ItemStack.EMPTY);
+					NonNullList<ItemStack> content = NonNullList.<ItemStack> withSize(INVENTORY_SIZE, ItemStack.EMPTY);
 					ItemStackHelper.loadAllItems(tag, content);
 					for (ItemStack contentStack : content) {
 						if (!contentStack.isEmpty()) {
@@ -226,12 +215,20 @@ public class BlockPackage extends BlockContainer {
 
 	@Override
 	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this, new IProperty[] { FACING });
+		return new BlockStateContainer(this, new IProperty[] { FACING, STAMPED });
 	}
 
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta) {
 		return new TileEntityPackage();
+	}
+	
+	public IBlockState getStampedState() {
+		return getDefaultState().withProperty(STAMPED, true);
+	}
+	
+	public boolean isStamped(IBlockState state) {
+		return state.getValue(STAMPED).booleanValue();
 	}
 	
 	public static void stampPackage(World world, BlockPos packagePos, BlockPos deliveryPos) {
@@ -254,26 +251,14 @@ public class BlockPackage extends BlockContainer {
 		return null;
 	}
 
-	public static void setState(boolean flag, World world, BlockPos pos) {
+	public static void setState(boolean stamped, World world, BlockPos pos) {
 		//packingState = state;
 
 		IBlockState iblockstate = world.getBlockState(pos);
 		TileEntity tileentity = world.getTileEntity(pos);
 		//keepInventory = true;
 
-		if (flag) {
-			world.setBlockState(pos,
-					EnderMailBlocks.stamped_package.getDefaultState().withProperty(FACING, iblockstate.getValue(FACING)),
-					3);
-			world.setBlockState(pos,
-					EnderMailBlocks.stamped_package.getDefaultState().withProperty(FACING, iblockstate.getValue(FACING)),
-					3);
-		} else {
-			world.setBlockState(pos, EnderMailBlocks.default_package.getDefaultState().withProperty(FACING,
-					iblockstate.getValue(FACING)), 3);
-			world.setBlockState(pos, EnderMailBlocks.default_package.getDefaultState().withProperty(FACING,
-					iblockstate.getValue(FACING)), 3);
-		}
+		world.setBlockState(pos, EnderMailBlocks.package_block.getDefaultState().withProperty(FACING, iblockstate.getValue(FACING)).withProperty(STAMPED, stamped), 3);
 
 		//keepInventory = false;
 
