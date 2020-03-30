@@ -16,12 +16,16 @@ import net.minecraft.entity.ai.EntityAILookIdle;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWanderAvoidWater;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
+import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
@@ -39,12 +43,12 @@ public class EntityEnderMailman extends EntityMob {
 	
 	public static String NAME = "ender_mailman";
 
-	private NonNullList<ItemStack> contents = NonNullList.<ItemStack> withSize(BlockPackage.SIZE, ItemStack.EMPTY);
+	private static final DataParameter<Boolean> CARRYING_PACKAGE = EntityDataManager.<Boolean>createKey(EntityEnderMailman.class, DataSerializers.BOOLEAN);
+	private NonNullList<ItemStack> contents = NonNullList.<ItemStack> withSize(BlockPackage.INVENTORY_SIZE, ItemStack.EMPTY);
 	private int lastCreepySound;
 	private int timePickedUp;
 	private int timeDelivered;
 	private boolean isDelivering;
-	private boolean isCarryingPackage;
 	private BlockPos startingPos;
 	private BlockPos deliveryPos;
 	private ItemStack packageController;
@@ -67,7 +71,6 @@ public class EntityEnderMailman extends EntityMob {
 		int y = startY;
 		while (!(canPlacePackage(world, new BlockPos(deliveryPos.getX(), y, deliveryPos.getZ())))) {
 			y = startY + offset;
-			System.out.println(y);
 			if (negate) {
 				offset = -offset;
 			} else {
@@ -87,6 +90,12 @@ public class EntityEnderMailman extends EntityMob {
 		}
 
 		setDeliveryPos(new BlockPos(deliveryPos.getX(), y, deliveryPos.getZ()));
+	}
+	
+	@Override
+	protected void entityInit() {
+		super.entityInit();
+		dataManager.register(CARRYING_PACKAGE, Boolean.valueOf(false));
 	}
 
 	@Override
@@ -199,7 +208,7 @@ public class EntityEnderMailman extends EntityMob {
 		compound.setInteger("DeliveryZ", deliveryPos.getZ());
 
 		compound.setBoolean("IsDelivering", isDelivering);
-		compound.setBoolean("IsCarryingPackage", isCarryingPackage);
+		compound.setBoolean("IsCarryingPackage", isCarryingPackage());
 	}
 
 	@Override
@@ -211,7 +220,7 @@ public class EntityEnderMailman extends EntityMob {
 		deliveryPos = new BlockPos(compound.getInteger("DeliveryX"), compound.getInteger("DeliveryY"), compound.getInteger("DeliveryZ"));
 
 		isDelivering = compound.getBoolean("IsDelivering");
-		isCarryingPackage = compound.getBoolean("IsCarryingPackage");
+		dataManager.set(CARRYING_PACKAGE, compound.getBoolean("IsCarryingPackage"));
 	}
 
 	@Override
@@ -294,7 +303,7 @@ public class EntityEnderMailman extends EntityMob {
 	}
 
 	private boolean canPlacePackage(World world, BlockPos pos) {
-		return EnderMailBlocks.default_package.canPlaceBlockAt(world, pos) && world.isSideSolid(new BlockPos(pos.getX(), pos.getY() - 1, pos.getZ()), EnumFacing.UP);
+		return EnderMailBlocks.package_block.canPlaceBlockAt(world, pos) && world.isSideSolid(new BlockPos(pos.getX(), pos.getY() - 1, pos.getZ()), EnumFacing.UP);
 	}
 
 	public void setPackageController(ItemStack packageController) {
@@ -304,9 +313,9 @@ public class EntityEnderMailman extends EntityMob {
 	public ItemPackageController getPackageController() {
 		return (ItemPackageController) packageController.getItem();
 	}
-
+	
 	public boolean isCarryingPackage() {
-		return isCarryingPackage;
+		return dataManager.get(CARRYING_PACKAGE);
 	}
 
 	public boolean isDelivering() {
@@ -314,7 +323,7 @@ public class EntityEnderMailman extends EntityMob {
 	}
 	
 	public void setCarryingPackage(boolean carrying) {
-		isCarryingPackage = carrying;
+		dataManager.set(CARRYING_PACKAGE, carrying);
 	}
 
 	public void setDelivering(boolean delivering) {
@@ -387,19 +396,19 @@ public class EntityEnderMailman extends EntityMob {
 		@Override
 		public void updateTask() {
 			if (enderMailman.ticksExisted - enderMailman.getTimePickedUp() >= 100) {
-				if (EnderMailBlocks.stamped_package.canPlaceBlockAt(enderMailman.world, enderMailman.getDeliveryPos())) {
+				if (EnderMailBlocks.package_block.canPlaceBlockAt(enderMailman.world, enderMailman.getDeliveryPos())) {
 					enderMailman.teleportToDeliveryPos();
-					enderMailman.world.setBlockState(enderMailman.getDeliveryPos(), EnderMailBlocks.stamped_package.getDefaultState(), 3);
+					enderMailman.world.setBlockState(enderMailman.getDeliveryPos(), EnderMailBlocks.package_block.getStampedState(), 3);
 					enderMailman.world.setTileEntity(enderMailman.getDeliveryPos(), new TileEntityPackage(enderMailman.getContents()));
-					enderMailman.setContents(NonNullList.<ItemStack> withSize(BlockPackage.SIZE, ItemStack.EMPTY));
+					enderMailman.setContents(NonNullList.<ItemStack> withSize(BlockPackage.INVENTORY_SIZE, ItemStack.EMPTY));
 					enderMailman.getPackageController().setState(enderMailman.packageController, EnumControllerState.SUCCESS);
 					enderMailman.getPackageController().setDeliveryPos(enderMailman.packageController, enderMailman.getDeliveryPos());
 					enderMailman.teleportToStartingPos();
 				} else {
 					enderMailman.teleportToStartingPos();
-					enderMailman.world.setBlockState(enderMailman.getStartingPos(), EnderMailBlocks.stamped_package.getDefaultState(), 3);
+					enderMailman.world.setBlockState(enderMailman.getStartingPos(), EnderMailBlocks.package_block.getStampedState(), 3);
 					enderMailman.world.setTileEntity(enderMailman.getStartingPos(), new TileEntityPackage(enderMailman.getContents()));
-					enderMailman.setContents(NonNullList.<ItemStack> withSize(BlockPackage.SIZE, ItemStack.EMPTY));
+					enderMailman.setContents(NonNullList.<ItemStack> withSize(BlockPackage.INVENTORY_SIZE, ItemStack.EMPTY));
 					enderMailman.getPackageController().setState(enderMailman.packageController, EnumControllerState.FAILURE);
 				}
 
