@@ -22,7 +22,7 @@ public class GuiStamp extends GuiScreen {
 	
 	private static final ResourceLocation TEXTURE = new ResourceLocation("endermail:textures/gui/stamp.png");
 
-	private GuiButton okButton;
+	private GuiButton confirmButton;
 	private GuiButton cancelButton;
 
 	private GuiTextField xTextField;
@@ -50,7 +50,7 @@ public class GuiStamp extends GuiScreen {
 	@Override
 	protected void actionPerformed(GuiButton button) throws IOException {
 		if (button.enabled) {
-			if (button == okButton) {
+			if (button == confirmButton) {
 				try {
 					int x = Integer.valueOf(xTextField.getText());
 					int y = -1;
@@ -59,10 +59,7 @@ public class GuiStamp extends GuiScreen {
 					}
 					int z = Integer.valueOf(zTextField.getText());
 					BlockPos deliveryPos = new BlockPos(x, y, z);
-					
-					//BlockPackage blockPackage = (BlockPackage) world.getBlockState(packagePos).getBlock();
-					//blockPackage.setState(true, world, packagePos);
-					
+
 					EnderMail.network.sendToServer(new PacketStampPackage(packagePos, deliveryPos));
 					mc.displayGuiScreen(null);
 				} catch (NumberFormatException e) {
@@ -107,9 +104,9 @@ public class GuiStamp extends GuiScreen {
 		zTextField.updateCursorCounter();
 		
 		if (isNumeric(xTextField.getText()) && (yTextField.getText().isEmpty() || isNumeric(yTextField.getText())) && isNumeric(zTextField.getText())) {
-			okButton.enabled = true;
+			confirmButton.enabled = true;
 		} else {
-			okButton.enabled = false;
+			confirmButton.enabled = false;
 		}
 	}
 
@@ -169,9 +166,9 @@ public class GuiStamp extends GuiScreen {
 
 	private void setupButtons() {
 		buttonList.clear();
-		cancelButton = addButton(new GuiButton(0, 20, height - 40, 20, 20, I18n.format("string.endermail.cancel")));
-		okButton = addButton(new GuiButton(1, width - 40, height - 40, 20, 20, I18n.format("string.endermail.confirm")));
-		okButton.enabled = false;
+		cancelButton = addButton(new GuiButton(0, 20, height - 40, 80, 20, I18n.format("string.endermail.cancel")));
+		confirmButton = addButton(new GuiButton(1, width - 100, height - 40, 80, 20, I18n.format("string.endermail.confirm")));
+		confirmButton.enabled = false;
 	}
 
 	private void setupTextFields() {

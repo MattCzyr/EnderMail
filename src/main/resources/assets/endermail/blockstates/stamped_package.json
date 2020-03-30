@@ -1,8 +1,0 @@
-{
-    "variants": {
-		"facing=north": { "model": "endermail:stamped_package" },
-        "facing=south": { "model": "endermail:stamped_package", "y": 180 },
-        "facing=west":  { "model": "endermail:stamped_package", "y": 270 },
-        "facing=east":  { "model": "endermail:stamped_package", "y": 90 }
-    }
-}

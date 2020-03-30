@@ -41,7 +41,7 @@ import net.minecraftforge.event.entity.living.EnderTeleportEvent;
 
 public class EntityEnderMailman extends EntityMob {
 	
-	public static String NAME = "ender_mailman";
+	public static final String NAME = "ender_mailman";
 
 	private static final DataParameter<Boolean> CARRYING_PACKAGE = EntityDataManager.<Boolean>createKey(EntityEnderMailman.class, DataSerializers.BOOLEAN);
 	private NonNullList<ItemStack> contents = NonNullList.<ItemStack> withSize(BlockPackage.INVENTORY_SIZE, ItemStack.EMPTY);

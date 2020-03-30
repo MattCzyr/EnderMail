@@ -160,18 +160,6 @@ public class BlockPackage extends BlockContainer {
 	}
 
 	@Override
-	public void breakBlock(World world, BlockPos pos, IBlockState state) {
-		//if (!keepInventory) {
-		//	TileEntity tileentity = world.getTileEntity(pos);
-		//	if (tileentity instanceof TileEntityPackage) {
-		//		InventoryHelper.dropInventoryItems(world, pos, (TileEntityPackage) tileentity);
-		//	}
-		//}
-
-		super.breakBlock(world, pos, state);
-	}
-
-	@Override
 	public void onBlockAdded(World world, BlockPos pos, IBlockState state) {
 		setDefaultFacing(world, pos, state);
 	}
@@ -232,7 +220,6 @@ public class BlockPackage extends BlockContainer {
 	}
 	
 	public static void stampPackage(World world, BlockPos packagePos, BlockPos deliveryPos) {
-		//deliveryPos = pos;
 		setState(true, world, packagePos);
 		TileEntity te = world.getTileEntity(packagePos);
 		if (te != null && te instanceof TileEntityPackage) {
@@ -252,16 +239,9 @@ public class BlockPackage extends BlockContainer {
 	}
 
 	public static void setState(boolean stamped, World world, BlockPos pos) {
-		//packingState = state;
-
 		IBlockState iblockstate = world.getBlockState(pos);
 		TileEntity tileentity = world.getTileEntity(pos);
-		//keepInventory = true;
-
 		world.setBlockState(pos, EnderMailBlocks.package_block.getDefaultState().withProperty(FACING, iblockstate.getValue(FACING)).withProperty(STAMPED, stamped), 3);
-
-		//keepInventory = false;
-
 		if (tileentity != null) {
 			tileentity.validate();
 			world.setTileEntity(pos, tileentity);
