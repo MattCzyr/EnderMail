@@ -58,6 +58,7 @@ public class BlockPackage extends BlockContainer {
 
 	public BlockPackage() {
 		super(Material.WOOD);
+		setHardness(1.0F);
 		setUnlocalizedName(EnderMail.MODID + "." + NAME);
 		setCreativeTab(CreativeTabs.DECORATIONS);
 		setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(STAMPED, false));
