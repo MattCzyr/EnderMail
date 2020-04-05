@@ -35,17 +35,17 @@ public class ClientEventHandler {
 			if (stack != null && stack.getItem() instanceof ItemPackageController) {
 				final ItemPackageController packageController = (ItemPackageController) stack.getItem();
 				if (packageController.getState(stack) == EnumControllerState.DELIVERING) {
-					RenderUtils.drawLineOffsetStringOnHUD(I18n.format("string.endermail.status"), 5, 0, 0xFFFFFF, 0);
-					RenderUtils.drawLineOffsetStringOnHUD(I18n.format("string.endermail.delivering"), 5, 0, 0xAAAAAA, 1);
+					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.endermail.status"), 5, 0, 0xFFFFFF, 0);
+					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.endermail.delivering"), 5, 0, 0xAAAAAA, 1);
 				} else if (packageController.getState(stack) == EnumControllerState.SUCCESS) {
-					RenderUtils.drawLineOffsetStringOnHUD(I18n.format("string.endermail.status"), 5, 0, 0xFFFFFF, 0);
-					RenderUtils.drawLineOffsetStringOnHUD(I18n.format("string.endermail.success"), 5, 0, 0xAAAAAA, 1);
+					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.endermail.status"), 5, 0, 0xFFFFFF, 0);
+					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.endermail.delivered"), 5, 0, 0xAAAAAA, 1);
 
-					RenderUtils.drawLineOffsetStringOnHUD(I18n.format("string.endermail.coordinates"), 5, 0, 0xFFFFFF, 3);
-					RenderUtils.drawLineOffsetStringOnHUD(packageController.getDeliveryPos(stack).getX() + " " + packageController.getDeliveryPos(stack).getY() + " " + packageController.getDeliveryPos(stack).getZ(), 5, 0, 0xAAAAAA, 4);
+					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.endermail.coordinates"), 5, 0, 0xFFFFFF, 3);
+					RenderUtils.drawConfiguredStringOnHUD(packageController.getDeliveryPos(stack).getX() + " " + packageController.getDeliveryPos(stack).getY() + " " + packageController.getDeliveryPos(stack).getZ(), 5, 0, 0xAAAAAA, 4);
 				} else if (packageController.getState(stack) == EnumControllerState.FAILURE) {
-					RenderUtils.drawLineOffsetStringOnHUD(I18n.format("string.endermail.status"), 5, 0, 0xFFFFFF, 0);
-					RenderUtils.drawLineOffsetStringOnHUD(I18n.format("string.endermail.fail"), 5, 0, 0xAAAAAA, 1);
+					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.endermail.status"), 5, 0, 0xFFFFFF, 0);
+					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.endermail.returned"), 5, 0, 0xAAAAAA, 1);
 				}
 			}
 		}

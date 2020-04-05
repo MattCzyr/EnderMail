@@ -4,6 +4,7 @@ import com.chaosthedude.endermail.config.ConfigHandler;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -14,13 +15,24 @@ public class RenderUtils {
 	private static final Minecraft mc = Minecraft.getMinecraft();
 	private static final FontRenderer fontRenderer = mc.fontRenderer;
 
-	public static void drawLineOffsetStringOnHUD(String string, int xOffset, int yOffset, int color, int lineOffset) {
-		drawStringOnHUD(string, xOffset, yOffset, color, ConfigHandler.lineOffset + lineOffset);
+	public static void drawStringLeft(String string, FontRenderer fontRenderer, int x, int y, int color) {
+		fontRenderer.drawString(string, x, y, color, true);
+	}
+    
+	public static void drawStringRight(String string, FontRenderer fontRenderer, int x, int y, int color) {
+		fontRenderer.drawString(string, x - fontRenderer.getStringWidth(string), y, color, true);
 	}
 
-	public static void drawStringOnHUD(String string, int xOffset, int yOffset, int color, int lineOffset) {
+	public static void drawConfiguredStringOnHUD(String string, int xOffset, int yOffset, int color, int relativeLineOffset) {
+		final ScaledResolution resolution = new ScaledResolution(mc);
+		final int lineOffset = ConfigHandler.lineOffset + relativeLineOffset;
+
 		yOffset += lineOffset * 9;
-		fontRenderer.drawString(string, 2 + xOffset, 2 + yOffset, color, true);
+		if (ConfigHandler.overlaySide == EnumOverlaySide.LEFT) {
+			drawStringLeft(string, fontRenderer, xOffset + 2, yOffset + 2, color);
+		} else {
+			drawStringRight(string, fontRenderer, resolution.getScaledWidth() - xOffset - 2, yOffset + 2, color);
+		}
 	}
 	
 	public static void drawCenteredStringWithoutShadow(String string, int x, int y, int color) {

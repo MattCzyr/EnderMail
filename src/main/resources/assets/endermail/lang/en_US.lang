@@ -12,15 +12,15 @@ item.endermail.packing_tape.name=Packing Tape
 item.endermail.stamp.name=Stamp
 
 # STRINGS
-string.endermail.holdShift=Hold §oShift§r§7 for contents
 string.endermail.cancel=Cancel
 string.endermail.close=Close
 string.endermail.confirm=Confirm
 string.endermail.coordinates=Coordinates
 string.endermail.deliver=Deliver
-string.endermail.deliveryLocation=Delivery Location
+string.endermail.delivered=Delivered
 string.endermail.delivering=Delivering
+string.endermail.deliveryLocation=Delivery Location
 string.endermail.error=An error has occurred
-string.endermail.fail=Fail
+string.endermail.holdShift=Hold §oShift§r§7 for contents
+string.endermail.returned=Returned to sender
 string.endermail.status=Status
-string.endermail.success=Success

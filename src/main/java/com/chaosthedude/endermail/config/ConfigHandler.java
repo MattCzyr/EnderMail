@@ -3,6 +3,7 @@ package com.chaosthedude.endermail.config;
 import java.io.File;
 
 import com.chaosthedude.endermail.EnderMail;
+import com.chaosthedude.endermail.util.EnumOverlaySide;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -16,6 +17,7 @@ public class ConfigHandler {
 
 	public static boolean displayWithChatOpen = true;
 	public static int lineOffset = 1;
+	public static EnumOverlaySide overlaySide = EnumOverlaySide.LEFT;
 
 	public static void loadConfig(File configFile) {
 		config = new Configuration(configFile);
@@ -34,6 +36,9 @@ public class ConfigHandler {
 
 		comment = "The line offset for information rendered on the HUD.";
 		lineOffset = loadInt(Configuration.CATEGORY_CLIENT, "endermail.lineOffset", comment, lineOffset);
+		
+		comment = "The side for information rendered on the HUD. Ex: LEFT, RIGHT";
+		overlaySide = loadOverlaySide(Configuration.CATEGORY_CLIENT, "naturescompass.overlaySide", comment, overlaySide);
 
 		if (config.hasChanged()) {
 			config.save();
@@ -56,6 +61,12 @@ public class ConfigHandler {
 		final Property prop = config.get(category, name, def);
 		prop.setComment(comment);
 		return prop.getBoolean(def);
+	}
+	
+	public static EnumOverlaySide loadOverlaySide(String category, String name, String comment, EnumOverlaySide def) {
+		Property prop = config.get(category, name, def.toString());
+		prop.setComment(comment);
+		return EnumOverlaySide.fromString(prop.getString());
 	}
 
 	public static String[] loadStringArray(String category, String comment, String name, String[] def) {
