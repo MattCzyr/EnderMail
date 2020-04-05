@@ -45,7 +45,7 @@ public class EnderMail {
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		ConfigHandler.loadConfig(event.getSuggestedConfigurationFile());
-		
+
 		EnderMailBlocks.register();
 		EnderMailItems.register();
 
@@ -56,7 +56,6 @@ public class EnderMail {
 		network.registerMessage(PacketStampPackage.Handler.class, PacketStampPackage.class, 1, Side.SERVER);
 
 		proxy.registerEvents();
-		proxy.registerModels();
 		proxy.registerRenderers();
 	}
 

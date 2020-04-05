@@ -18,7 +18,7 @@ public class TileEntityPackage extends TileEntity implements IInventory {
 
 	public static final String NAME = "TileEntityPackage";
 
-	private NonNullList<ItemStack> contents = NonNullList.<ItemStack> withSize(BlockPackage.INVENTORY_SIZE, ItemStack.EMPTY);
+	private NonNullList<ItemStack> contents = NonNullList.<ItemStack>withSize(BlockPackage.INVENTORY_SIZE, ItemStack.EMPTY);
 	public int numPlayersUsing;
 	private int deliveryX;
 	private int deliveryY;
@@ -30,7 +30,7 @@ public class TileEntityPackage extends TileEntity implements IInventory {
 		deliveryY = -1;
 		deliveryZ = -1;
 	}
-	
+
 	public TileEntityPackage(NonNullList<ItemStack> contents) {
 		this.contents = contents;
 	}
@@ -59,30 +59,30 @@ public class TileEntityPackage extends TileEntity implements IInventory {
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
 		super.readFromNBT(compound);
-		contents = NonNullList.<ItemStack> withSize(getSizeInventory(), ItemStack.EMPTY);
+		contents = NonNullList.<ItemStack>withSize(getSizeInventory(), ItemStack.EMPTY);
 		ItemStackHelper.loadAllItems(compound, contents);
-		
+
 		deliveryX = compound.getInteger("DeliveryX");
 		deliveryY = compound.getInteger("DeliveryY");
 		deliveryZ = compound.getInteger("DeliveryZ");
-		
+
 		if (compound.hasKey("CustomName", 8)) {
-            customName = compound.getString("CustomName");
-        }
+			customName = compound.getString("CustomName");
+		}
 	}
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		super.writeToNBT(compound);
 		ItemStackHelper.saveAllItems(compound, contents);
-		
+
 		compound.setInteger("DeliveryX", deliveryX);
 		compound.setInteger("DeliveryY", deliveryY);
 		compound.setInteger("DeliveryZ", deliveryZ);
-		
+
 		if (this.hasCustomName()) {
-            compound.setString("CustomName", customName);
-        }
+			compound.setString("CustomName", customName);
+		}
 
 		return compound;
 	}
@@ -132,24 +132,26 @@ public class TileEntityPackage extends TileEntity implements IInventory {
 
 	@Override
 	public void setInventorySlotContents(int index, ItemStack stack) {
-		//contents.set(index, stack);
-		
-		ItemStack itemstack = contents.get(index);
-        boolean flag = !stack.isEmpty() && stack.isItemEqual(itemstack) && ItemStack.areItemStackTagsEqual(stack, itemstack);
-        contents.set(index, stack);
+		// contents.set(index, stack);
 
-        if (stack.getCount() > this.getInventoryStackLimit()) {
-            stack.setCount(this.getInventoryStackLimit());
-        }
+		ItemStack itemstack = contents.get(index);
+		boolean flag = !stack.isEmpty() && stack.isItemEqual(itemstack)
+				&& ItemStack.areItemStackTagsEqual(stack, itemstack);
+		contents.set(index, stack);
+
+		if (stack.getCount() > this.getInventoryStackLimit()) {
+			stack.setCount(this.getInventoryStackLimit());
+		}
 	}
 
 	@Override
 	public boolean isUsableByPlayer(EntityPlayer player) {
 		if (world.getTileEntity(pos) != this) {
-            return false;
-        } else {
-            return player.getDistanceSq((double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D) <= 64.0D;
-        }
+			return false;
+		} else {
+			return player.getDistanceSq((double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D,
+					(double) pos.getZ() + 0.5D) <= 64.0D;
+		}
 	}
 
 	@Override
@@ -188,19 +190,19 @@ public class TileEntityPackage extends TileEntity implements IInventory {
 
 		return compound;
 	}
-	
+
 	public BlockPos getDeliveryPos() {
 		if (deliveryX > -1 && deliveryY > -1 && deliveryZ > -1) {
 			return new BlockPos(deliveryX, deliveryY, deliveryZ);
 		}
-		
+
 		return null;
 	}
 
 	public void setCustomName(String name) {
 		customName = name;
 	}
-	
+
 	public void setDeliveryPos(BlockPos pos) {
 		deliveryX = pos.getX();
 		deliveryY = pos.getY();

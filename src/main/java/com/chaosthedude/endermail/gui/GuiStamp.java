@@ -80,7 +80,6 @@ public class GuiStamp extends GuiScreen {
 		int i = (width - xSize) / 2;
 		int j = (height - ySize) / 2;
 		drawTexturedModalRect(i, j, 0, 0, xSize, ySize);
-		//drawCenteredString(fontRenderer, I18n.format("item.endermail.stamp.name"), width / 2, 20, 0xffffff);
 		if (errored) {
 			drawCenteredString(fontRenderer, I18n.format("string.endermail.error"), width / 2, height - 65, 0xAAAAAA);
 		}
