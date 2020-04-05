@@ -64,6 +64,10 @@ public class PacketStampPackage implements IMessage {
 		@Override
 		public IMessage onMessage(PacketStampPackage packet, MessageContext ctx) {
 			BlockPackage.stampPackage(ctx.getServerHandler().player.world, new BlockPos(packet.packageX, packet.packageY, packet.packageZ), new BlockPos(packet.deliveryX, packet.deliveryY, packet.deliveryZ));
+			ItemStack stampStack = ItemUtils.getHeldItem(ctx.getServerHandler().player, EnderMailItems.stamp);
+			if (stampStack != null) {
+				stampStack.setCount(stampStack.getCount() - 1);
+			}
 
 			return null;
 		}
