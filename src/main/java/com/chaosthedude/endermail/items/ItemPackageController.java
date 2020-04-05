@@ -61,6 +61,18 @@ public class ItemPackageController extends Item {
 		}
 	}
 	
+	public void setDeliveryDistance(ItemStack stack, int distance) {
+		if (ItemUtils.verifyNBT(stack)) {
+			stack.getTagCompound().setInteger("DeliveryDistance", distance);
+		}
+	}
+	
+	public void setMaxDistance(ItemStack stack, int distance) {
+		if (ItemUtils.verifyNBT(stack)) {
+			stack.getTagCompound().setInteger("MaxDistance", distance);
+		}
+	}
+	
 	public EnumControllerState getState(ItemStack stack) {
 		if (ItemUtils.verifyNBT(stack)) {
 			return EnumControllerState.fromID(stack.getTagCompound().getInteger("State"));
@@ -75,6 +87,22 @@ public class ItemPackageController extends Item {
 		}
 
 		return null;
+	}
+	
+	public int getDeliveryDistance(ItemStack stack) {
+		if (ItemUtils.verifyNBT(stack)) {
+			return stack.getTagCompound().getInteger("DeliveryDistance");
+		}
+
+		return -1;
+	}
+	
+	public int getMaxDistance(ItemStack stack) {
+		if (ItemUtils.verifyNBT(stack)) {
+			return stack.getTagCompound().getInteger("MaxDistance");
+		}
+
+		return -1;
 	}
 
 }

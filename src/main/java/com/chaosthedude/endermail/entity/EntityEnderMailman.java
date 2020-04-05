@@ -401,7 +401,7 @@ public class EntityEnderMailman extends EntityMob {
 					enderMailman.world.setBlockState(enderMailman.getDeliveryPos(), EnderMailBlocks.package_block.getStampedState(), 3);
 					enderMailman.world.setTileEntity(enderMailman.getDeliveryPos(), new TileEntityPackage(enderMailman.getContents()));
 					enderMailman.setContents(NonNullList.<ItemStack> withSize(BlockPackage.INVENTORY_SIZE, ItemStack.EMPTY));
-					enderMailman.getPackageController().setState(enderMailman.packageController, EnumControllerState.SUCCESS);
+					enderMailman.getPackageController().setState(enderMailman.packageController, EnumControllerState.DELIVERED);
 					enderMailman.getPackageController().setDeliveryPos(enderMailman.packageController, enderMailman.getDeliveryPos());
 					enderMailman.teleportToStartingPos();
 				} else {
@@ -409,7 +409,7 @@ public class EntityEnderMailman extends EntityMob {
 					enderMailman.world.setBlockState(enderMailman.getStartingPos(), EnderMailBlocks.package_block.getStampedState(), 3);
 					enderMailman.world.setTileEntity(enderMailman.getStartingPos(), new TileEntityPackage(enderMailman.getContents()));
 					enderMailman.setContents(NonNullList.<ItemStack> withSize(BlockPackage.INVENTORY_SIZE, ItemStack.EMPTY));
-					enderMailman.getPackageController().setState(enderMailman.packageController, EnumControllerState.FAILURE);
+					enderMailman.getPackageController().setState(enderMailman.packageController, EnumControllerState.RETURNED);
 				}
 
 				enderMailman.updateTimeDelivered();

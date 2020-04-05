@@ -14,7 +14,11 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class ConfigHandler {
 	
 	public static Configuration config;
+	
+	// General
+	public static int maxDeliveryDistance = -1;
 
+	// Client
 	public static boolean displayWithChatOpen = true;
 	public static int lineOffset = 1;
 	public static EnumOverlaySide overlaySide = EnumOverlaySide.LEFT;
@@ -31,6 +35,9 @@ public class ConfigHandler {
 	public static void init() {
 		String comment;
 		
+		comment = "The maximum distance that packages can be delivered over. Set to -1 for no distance limit.";
+		maxDeliveryDistance = loadInt(Configuration.CATEGORY_GENERAL, "endermail.maxDeliveryDistance", comment, maxDeliveryDistance);
+		
 		comment = "Displays Package Controller information even while chat is open.";
 		displayWithChatOpen = loadBool(Configuration.CATEGORY_CLIENT, "endermail.displayWithChatOpen", comment, displayWithChatOpen);
 
@@ -38,7 +45,7 @@ public class ConfigHandler {
 		lineOffset = loadInt(Configuration.CATEGORY_CLIENT, "endermail.lineOffset", comment, lineOffset);
 		
 		comment = "The side for information rendered on the HUD. Ex: LEFT, RIGHT";
-		overlaySide = loadOverlaySide(Configuration.CATEGORY_CLIENT, "naturescompass.overlaySide", comment, overlaySide);
+		overlaySide = loadOverlaySide(Configuration.CATEGORY_CLIENT, "endermail.overlaySide", comment, overlaySide);
 
 		if (config.hasChanged()) {
 			config.save();

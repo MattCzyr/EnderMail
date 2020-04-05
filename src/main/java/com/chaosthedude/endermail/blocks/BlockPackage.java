@@ -8,6 +8,7 @@ import org.lwjgl.input.Keyboard;
 
 import com.chaosthedude.endermail.EnderMail;
 import com.chaosthedude.endermail.blocks.te.TileEntityPackage;
+import com.chaosthedude.endermail.config.ConfigHandler;
 import com.chaosthedude.endermail.gui.GuiHandler;
 import com.chaosthedude.endermail.items.ItemPackageController;
 import com.chaosthedude.endermail.network.PacketSpawnMailman;
@@ -77,9 +78,16 @@ public class BlockPackage extends BlockContainer {
 			ItemPackageController packageController = (ItemPackageController) stack.getItem();
 			BlockPos deliveryPos = getDeliveryPos(world, pos);
 			if (deliveryPos != null) {
-				packageController.setDeliveryPos(stack, pos);
-				packageController.setState(stack, EnumControllerState.DELIVERING);
-				EnderMail.network.sendToServer(new PacketSpawnMailman(pos, deliveryPos));
+				packageController.setDeliveryPos(stack, deliveryPos);
+				int distanceToDelivery = (int) pos.getDistance(deliveryPos.getX(), deliveryPos.getY(), deliveryPos.getZ());
+				if (ConfigHandler.maxDeliveryDistance > -1 && distanceToDelivery > ConfigHandler.maxDeliveryDistance) {
+					packageController.setState(stack, EnumControllerState.TOOFAR);
+					packageController.setDeliveryDistance(stack, distanceToDelivery);
+					packageController.setMaxDistance(stack, ConfigHandler.maxDeliveryDistance);
+				} else {
+					packageController.setState(stack, EnumControllerState.DELIVERING);
+					EnderMail.network.sendToServer(new PacketSpawnMailman(pos, deliveryPos));
+				}
 			}
 		}
 

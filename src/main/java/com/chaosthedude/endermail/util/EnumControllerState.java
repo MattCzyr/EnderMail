@@ -4,8 +4,9 @@ public enum EnumControllerState {
 	
 	DEFAULT(0),
 	DELIVERING(1),
-	SUCCESS(2),
-	FAILURE(3);
+	DELIVERED(2),
+	RETURNED(3),
+	TOOFAR(4);
 
 	private int id;
 
