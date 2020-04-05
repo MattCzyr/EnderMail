@@ -6,7 +6,6 @@ import org.apache.logging.log4j.Logger;
 import com.chaosthedude.endermail.config.ConfigHandler;
 import com.chaosthedude.endermail.entity.EntityEnderMailman;
 import com.chaosthedude.endermail.gui.GuiHandler;
-import com.chaosthedude.endermail.network.PacketSpawnMailman;
 import com.chaosthedude.endermail.network.PacketStampPackage;
 import com.chaosthedude.endermail.proxy.CommonProxy;
 import com.chaosthedude.endermail.registry.EnderMailBlocks;
@@ -52,8 +51,7 @@ public class EnderMail {
 		EntityRegistry.registerModEntity(new ResourceLocation(MODID, EntityEnderMailman.NAME), EntityEnderMailman.class, EntityEnderMailman.NAME, 0, this, 64, 2, true);
 
 		network = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
-		network.registerMessage(PacketSpawnMailman.Handler.class, PacketSpawnMailman.class, 0, Side.SERVER);
-		network.registerMessage(PacketStampPackage.Handler.class, PacketStampPackage.class, 1, Side.SERVER);
+		network.registerMessage(PacketStampPackage.Handler.class, PacketStampPackage.class, 0, Side.SERVER);
 
 		proxy.registerEvents();
 		proxy.registerRenderers();

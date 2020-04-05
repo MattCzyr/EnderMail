@@ -9,9 +9,9 @@ import org.lwjgl.input.Keyboard;
 import com.chaosthedude.endermail.EnderMail;
 import com.chaosthedude.endermail.blocks.te.TileEntityPackage;
 import com.chaosthedude.endermail.config.ConfigHandler;
+import com.chaosthedude.endermail.entity.EntityEnderMailman;
 import com.chaosthedude.endermail.gui.GuiHandler;
 import com.chaosthedude.endermail.items.ItemPackageController;
-import com.chaosthedude.endermail.network.PacketSpawnMailman;
 import com.chaosthedude.endermail.registry.EnderMailBlocks;
 import com.chaosthedude.endermail.registry.EnderMailItems;
 import com.chaosthedude.endermail.util.EnumControllerState;
@@ -36,7 +36,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.stats.StatList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -71,22 +70,25 @@ public class BlockPackage extends BlockContainer {
 			player.openGui(EnderMail.instance, GuiHandler.STAMP_ID, world, pos.getX(), pos.getY(), pos.getZ());
 		} else if (!isStamped(state)) {
 			player.openGui(EnderMail.instance, GuiHandler.PACKAGE_ID, world, pos.getX(), pos.getY(), pos.getZ());
-		} else if (isStamped(state) && player.isSneaking()) {
-			setState(false, world, pos);
-		} else if (isStamped(state) && ItemUtils.isHolding(player, EnderMailItems.packageController)) {
-			ItemStack stack = ItemUtils.getHeldItem(player, EnderMailItems.packageController);
-			ItemPackageController packageController = (ItemPackageController) stack.getItem();
-			BlockPos deliveryPos = getDeliveryPos(world, pos);
-			if (deliveryPos != null) {
-				packageController.setDeliveryPos(stack, deliveryPos);
-				int distanceToDelivery = (int) pos.getDistance(deliveryPos.getX(), deliveryPos.getY(), deliveryPos.getZ());
-				if (ConfigHandler.maxDeliveryDistance > -1 && distanceToDelivery > ConfigHandler.maxDeliveryDistance) {
-					packageController.setState(stack, EnumControllerState.TOOFAR);
-					packageController.setDeliveryDistance(stack, distanceToDelivery);
-					packageController.setMaxDistance(stack, ConfigHandler.maxDeliveryDistance);
-				} else {
-					packageController.setState(stack, EnumControllerState.DELIVERING);
-					EnderMail.network.sendToServer(new PacketSpawnMailman(pos, deliveryPos));
+		} else if (!world.isRemote) {
+			if (isStamped(state) && player.isSneaking()) {
+				setState(false, world, pos);
+			} else if (isStamped(state) && ItemUtils.isHolding(player, EnderMailItems.packageController)) {
+				ItemStack stack = ItemUtils.getHeldItem(player, EnderMailItems.packageController);
+				ItemPackageController packageController = (ItemPackageController) stack.getItem();
+				BlockPos deliveryPos = getDeliveryPos(world, pos);
+				if (deliveryPos != null) {
+					packageController.setDeliveryPos(stack, deliveryPos);
+					int distanceToDelivery = (int) pos.getDistance(deliveryPos.getX(), deliveryPos.getY(), deliveryPos.getZ());
+					if (ConfigHandler.maxDeliveryDistance > -1 && distanceToDelivery > ConfigHandler.maxDeliveryDistance) {
+						packageController.setState(stack, EnumControllerState.TOOFAR);
+						packageController.setDeliveryDistance(stack, distanceToDelivery);
+						packageController.setMaxDistance(stack, ConfigHandler.maxDeliveryDistance);
+					} else {
+						packageController.setState(stack, EnumControllerState.DELIVERING);
+						EntityEnderMailman enderMailman = new EntityEnderMailman(world, pos, deliveryPos, stack);
+						world.spawnEntity(enderMailman);
+					}
 				}
 			}
 		}
