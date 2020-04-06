@@ -23,6 +23,7 @@ public class TileEntityPackage extends TileEntity implements IInventory {
 	private int deliveryX;
 	private int deliveryY;
 	private int deliveryZ;
+	private boolean hasDeliveryLocation;
 	protected String customName;
 
 	public TileEntityPackage() {
@@ -65,6 +66,8 @@ public class TileEntityPackage extends TileEntity implements IInventory {
 		deliveryX = compound.getInteger("DeliveryX");
 		deliveryY = compound.getInteger("DeliveryY");
 		deliveryZ = compound.getInteger("DeliveryZ");
+		
+		hasDeliveryLocation = compound.getBoolean("HasDeliveryLocation");
 
 		if (compound.hasKey("CustomName", 8)) {
 			customName = compound.getString("CustomName");
@@ -79,6 +82,8 @@ public class TileEntityPackage extends TileEntity implements IInventory {
 		compound.setInteger("DeliveryX", deliveryX);
 		compound.setInteger("DeliveryY", deliveryY);
 		compound.setInteger("DeliveryZ", deliveryZ);
+		
+		compound.setBoolean("HasDeliveryLocation", hasDeliveryLocation);
 
 		if (this.hasCustomName()) {
 			compound.setString("CustomName", customName);
@@ -192,7 +197,7 @@ public class TileEntityPackage extends TileEntity implements IInventory {
 	}
 
 	public BlockPos getDeliveryPos() {
-		if (deliveryX > -1 && deliveryY > -1 && deliveryZ > -1) {
+		if (hasDeliveryLocation) {
 			return new BlockPos(deliveryX, deliveryY, deliveryZ);
 		}
 
