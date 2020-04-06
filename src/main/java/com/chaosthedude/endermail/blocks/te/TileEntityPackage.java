@@ -203,6 +203,7 @@ public class TileEntityPackage extends TileEntity implements IInventory {
 	}
 
 	public void setDeliveryPos(BlockPos pos) {
+		hasDeliveryLocation = true;
 		deliveryX = pos.getX();
 		deliveryY = pos.getY();
 		deliveryZ = pos.getZ();
