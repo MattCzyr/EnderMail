@@ -17,7 +17,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class GuiStamp extends GuiScreen {
 	
 	private static final ResourceLocation TEXTURE = new ResourceLocation("endermail:textures/gui/stamp.png");

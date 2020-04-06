@@ -2,10 +2,10 @@
 {
   "modid": "endermail",
   "name": "Ender Mail",
-  "description": "",
+  "description": "Employ Endermen to deliver packages anywhere in the world.",
   "version": "${version}",
   "mcversion": "${mcversion}",
-  "url": "",
+  "url": "https://github.com/MattCzyr/EnderMail",
   "updateUrl": "",
   "authorList": ["ChaosTheDude"],
   "credits": "",

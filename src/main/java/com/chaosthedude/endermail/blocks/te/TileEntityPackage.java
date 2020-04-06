@@ -137,8 +137,6 @@ public class TileEntityPackage extends TileEntity implements IInventory {
 
 	@Override
 	public void setInventorySlotContents(int index, ItemStack stack) {
-		// contents.set(index, stack);
-
 		ItemStack itemstack = contents.get(index);
 		boolean flag = !stack.isEmpty() && stack.isItemEqual(itemstack)
 				&& ItemStack.areItemStackTagsEqual(stack, itemstack);
@@ -204,14 +202,14 @@ public class TileEntityPackage extends TileEntity implements IInventory {
 		return null;
 	}
 
-	public void setCustomName(String name) {
-		customName = name;
-	}
-
 	public void setDeliveryPos(BlockPos pos) {
 		deliveryX = pos.getX();
 		deliveryY = pos.getY();
 		deliveryZ = pos.getZ();
+	}
+	
+	public void setCustomName(String name) {
+		customName = name;
 	}
 
 }

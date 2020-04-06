@@ -14,7 +14,10 @@ import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.ContainerHopper;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class GuiPackage extends GuiContainer {
 
 	private static final ResourceLocation TEXTURE = new ResourceLocation("endermail:textures/gui/package.png");

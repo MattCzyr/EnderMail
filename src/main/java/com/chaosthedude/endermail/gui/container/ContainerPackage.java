@@ -76,8 +76,4 @@ public class ContainerPackage extends Container {
 		packageInventory.closeInventory(player);
 	}
 
-	public IInventory getPackageInventory() {
-		return packageInventory;
-	}
-
 }
