@@ -116,14 +116,17 @@ public class BlockPackage extends BlockContainer {
 		if (te != null && te instanceof TileEntityPackage) {
 			TileEntityPackage tePackage = (TileEntityPackage) te;
 			ItemStack stackPackage = new ItemStack(Item.getItemFromBlock(this));
-			NBTTagCompound tag1 = new NBTTagCompound();
-			NBTTagCompound tag2 = new NBTTagCompound();
-			tag1.setTag("BlockEntityTag", ((TileEntityPackage) te).saveToNBT(tag2));
-			stackPackage.setTagCompound(tag1);
+			NBTTagCompound stackTag = new NBTTagCompound();
+			NBTTagCompound itemTag = tePackage.writeItems(new NBTTagCompound());
+			if (!itemTag.hasNoTags()) {
+				stackTag.setTag("BlockEntityTag", itemTag);
+			}
+			if (!stackTag.hasNoTags()) {
+				stackPackage.setTagCompound(stackTag);
+			}
 
 			if (tePackage.hasCustomName()) {
 				stackPackage.setStackDisplayName(tePackage.getName());
-				tePackage.setCustomName("");
 			}
 
 			spawnAsEntity(world, pos, stackPackage);
@@ -135,10 +138,21 @@ public class BlockPackage extends BlockContainer {
 	@Override
 	public ItemStack getItem(World world, BlockPos pos, IBlockState state) {
 		ItemStack stack = super.getItem(world, pos, state);
-		TileEntityPackage tileEntityPackage = (TileEntityPackage) world.getTileEntity(pos);
-		NBTTagCompound tag = tileEntityPackage.saveToNBT(new NBTTagCompound());
-		if (!tag.hasNoTags()) {
-			stack.setTagInfo("BlockEntityTag", tag);
+		TileEntity te = world.getTileEntity(pos);
+		if (te != null && te instanceof TileEntityPackage) {
+			TileEntityPackage tePackage = (TileEntityPackage) te;
+			NBTTagCompound stackTag = new NBTTagCompound();
+			NBTTagCompound itemTag = tePackage.writeItems(new NBTTagCompound());
+			if (!itemTag.hasNoTags()) {
+				stackTag.setTag("BlockEntityTag", itemTag);
+			}
+			if (!stackTag.hasNoTags()) {
+				stack.setTagCompound(stackTag);
+			}
+	
+			if (tePackage.hasCustomName()) {
+				stack.setStackDisplayName(tePackage.getName());
+			}
 		}
 
 		return stack;

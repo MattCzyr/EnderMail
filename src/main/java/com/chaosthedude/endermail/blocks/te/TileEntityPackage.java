@@ -91,6 +91,13 @@ public class TileEntityPackage extends TileEntity implements IInventory {
 
 		return compound;
 	}
+	
+	public NBTTagCompound writeItems(NBTTagCompound compound) {
+		if (!contents.isEmpty()) {
+			ItemStackHelper.saveAllItems(compound, contents, false);
+		}
+		return compound;
+	}
 
 	@Override
 	public int getInventoryStackLimit() {
@@ -185,15 +192,6 @@ public class TileEntityPackage extends TileEntity implements IInventory {
 		return contents;
 	}
 
-	public NBTTagCompound saveToNBT(NBTTagCompound compound) {
-		ItemStackHelper.saveAllItems(compound, contents, false);
-		if (hasCustomName()) {
-			compound.setString("CustomName", customName);
-		}
-
-		return compound;
-	}
-
 	public BlockPos getDeliveryPos() {
 		if (hasDeliveryLocation) {
 			return new BlockPos(deliveryX, deliveryY, deliveryZ);
@@ -211,6 +209,10 @@ public class TileEntityPackage extends TileEntity implements IInventory {
 	
 	public void setCustomName(String name) {
 		customName = name;
+	}
+	
+	public String getCustomName() {
+		return customName;
 	}
 
 }
