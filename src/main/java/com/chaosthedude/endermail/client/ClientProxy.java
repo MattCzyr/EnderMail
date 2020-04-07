@@ -1,15 +1,12 @@
 package com.chaosthedude.endermail.client;
 
 import com.chaosthedude.endermail.client.render.EnderMailmanRenderFactory;
-import com.chaosthedude.endermail.entity.EntityEnderMailman;
+import com.chaosthedude.endermail.entity.EnderMailmanEntity;
+import com.chaosthedude.endermail.gui.PackageScreen;
 import com.chaosthedude.endermail.proxy.CommonProxy;
-import com.chaosthedude.endermail.registry.EnderMailBlocks;
-import com.chaosthedude.endermail.registry.EnderMailItems;
+import com.chaosthedude.endermail.registry.EnderMailContainers;
 
-import net.minecraft.block.Block;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.item.Item;
-import net.minecraftforge.client.model.ModelLoader;
+import net.minecraft.client.gui.ScreenManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 
@@ -21,8 +18,13 @@ public class ClientProxy extends CommonProxy {
 	}
 	
 	@Override
+	public void registerScreenFactories() {
+		ScreenManager.registerFactory(EnderMailContainers.PACKAGE_CONTAINER, PackageScreen::new);
+	}
+	
+	@Override
 	public void registerRenderers() {
-		RenderingRegistry.registerEntityRenderingHandler(EntityEnderMailman.class, new EnderMailmanRenderFactory());
+		RenderingRegistry.registerEntityRenderingHandler(EnderMailmanEntity.class, new EnderMailmanRenderFactory());
 	}
 
 }

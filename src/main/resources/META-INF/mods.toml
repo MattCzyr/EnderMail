@@ -1,0 +1,24 @@
+modLoader="javafml"
+loaderVersion="[28,)"
+issueTrackerURL="https://github.com/MattCzyr/EnderMail/issues"
+[[mods]]
+    modId="endermail"
+    version="${file.jarVersion}"
+    displayName="Ender Mail"
+    displayURL="https://github.com/MattCzyr/EnderMail"
+    authors="ChaosTheDude"
+    description='''
+    Employ Endermen to deliver packages anywhere in the world.
+    '''
+[[dependencies.endermail]]
+    modId="forge"
+    mandatory=true
+    versionRange="[28,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.endermail]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.14.4]"
+    ordering="NONE"
+    side="BOTH"

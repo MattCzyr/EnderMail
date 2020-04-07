@@ -1,44 +1,34 @@
 package com.chaosthedude.endermail.registry;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.chaosthedude.endermail.EnderMail;
-import com.chaosthedude.endermail.blocks.BlockPackage;
-import com.chaosthedude.endermail.blocks.te.TileEntityPackage;
+import com.chaosthedude.endermail.blocks.PackageBlock;
+import com.chaosthedude.endermail.blocks.te.PackageTileEntity;
 
 import net.minecraft.block.Block;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.registries.ObjectHolder;
 
-@EventBusSubscriber(modid = EnderMail.MODID)
+@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
+@ObjectHolder(EnderMail.MODID)
 public class EnderMailBlocks {
+
+	@ObjectHolder(PackageBlock.NAME)
+	public static final PackageBlock PACKAGE_BLOCK = null;
 	
-	public static final List<Block> REGISTRY = new ArrayList<Block>();
-
-	public static BlockPackage package_block;
-
-	public static void register() {
-		package_block = registerBlock(new BlockPackage(), BlockPackage.NAME);
-		GameRegistry.registerTileEntity(TileEntityPackage.class, new ResourceLocation(TileEntityPackage.NAME));
-	}
-
-	protected static <T extends Block> T registerBlock(T blockType, String name) {
-		T block = blockType;
-		block.setRegistryName(name);
-		REGISTRY.add(block);
-
-		return block;
+	@ObjectHolder(PackageTileEntity.NAME)
+    public static final TileEntityType<?> PACKAGE_TE_TYPE = null;
+	
+	@SubscribeEvent
+    public static void registerBlocks(final RegistryEvent.Register<Block> event) {
+        event.getRegistry().register(new PackageBlock().setRegistryName(PackageBlock.NAME));
 	}
 	
 	@SubscribeEvent
-	public static void registerBlocks(final RegistryEvent.Register<Block> e) {
-		for (Block block : REGISTRY) {
-			e.getRegistry().register(block);
-		}
+	public static void registerTileEntities(final RegistryEvent.Register<TileEntityType<?>> event) {
+		event.getRegistry().register(TileEntityType.Builder.create(PackageTileEntity::new, EnderMailBlocks.PACKAGE_BLOCK).build(null).setRegistryName(PackageTileEntity.NAME));
 	}
 
 }

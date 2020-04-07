@@ -1,45 +1,54 @@
 package com.chaosthedude.endermail.util;
 
 import com.chaosthedude.endermail.config.ConfigHandler;
+import com.mojang.blaze3d.platform.GlStateManager;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class RenderUtils {
 
-	private static final Minecraft mc = Minecraft.getMinecraft();
+	private static final Minecraft mc = Minecraft.getInstance();
 	private static final FontRenderer fontRenderer = mc.fontRenderer;
 
 	public static void drawStringLeft(String string, FontRenderer fontRenderer, int x, int y, int color) {
-		fontRenderer.drawString(string, x, y, color, true);
+		fontRenderer.drawString(string, x, y, color);
 	}
     
 	public static void drawStringRight(String string, FontRenderer fontRenderer, int x, int y, int color) {
-		fontRenderer.drawString(string, x - fontRenderer.getStringWidth(string), y, color, true);
+		fontRenderer.drawString(string, x - fontRenderer.getStringWidth(string), y, color);
 	}
 
 	public static void drawConfiguredStringOnHUD(String string, int xOffset, int yOffset, int color, int relativeLineOffset) {
-		final ScaledResolution resolution = new ScaledResolution(mc);
-		final int lineOffset = ConfigHandler.lineOffset + relativeLineOffset;
+		final int lineOffset = ConfigHandler.CLIENT.lineOffset.get() + relativeLineOffset;
 
 		yOffset += lineOffset * 9;
-		if (ConfigHandler.overlaySide == EnumOverlaySide.LEFT) {
+		if (ConfigHandler.CLIENT.overlaySide.get() == OverlaySide.LEFT) {
 			drawStringLeft(string, fontRenderer, xOffset + 2, yOffset + 2, color);
 		} else {
-			drawStringRight(string, fontRenderer, resolution.getScaledWidth() - xOffset - 2, yOffset + 2, color);
+			drawStringRight(string, fontRenderer, mc.mainWindow.getScaledWidth() - xOffset - 2, yOffset + 2, color);
 		}
 	}
 	
 	public static void drawCenteredStringWithoutShadow(String string, int x, int y, int color) {
-        fontRenderer.drawString(string, (float)(x - fontRenderer.getStringWidth(string) / 2), (float) y, color, false);
+        fontRenderer.drawString(string, (float)(x - fontRenderer.getStringWidth(string) / 2), (float) y, color);
+    }
+	
+	public static void drawTexturedModalRect(int x, int y, int textureX, int textureY, int width, int height) {
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+        bufferbuilder.pos((double)(x + 0), (double)(y + height), 0).tex((double)((float)(textureX + 0) * 0.00390625F), (double)((float)(textureY + height) * 0.00390625F)).endVertex();
+        bufferbuilder.pos((double)(x + width), (double)(y + height), 0).tex((double)((float)(textureX + width) * 0.00390625F), (double)((float)(textureY + height) * 0.00390625F)).endVertex();
+        bufferbuilder.pos((double)(x + width), (double)(y + 0), 0).tex((double)((float)(textureX + width) * 0.00390625F), (double)((float)(textureY + 0) * 0.00390625F)).endVertex();
+        bufferbuilder.pos((double)(x + 0), (double)(y + 0), 0).tex((double)((float)(textureX + 0) * 0.00390625F), (double)((float)(textureY + 0) * 0.00390625F)).endVertex();
+        tessellator.draw();
     }
 
 	public static void drawRect(int left, int top, int right, int bottom, int color) {
@@ -64,9 +73,9 @@ public class RenderUtils {
 		final BufferBuilder buffer = tessellator.getBuffer();
 
 		GlStateManager.enableBlend();
-		GlStateManager.disableTexture2D();
-		GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-		GlStateManager.color(red, green, blue, alpha);
+		GlStateManager.disableTexture();
+		GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+		GlStateManager.color4f(red, green, blue, alpha);
 
 		buffer.begin(7, DefaultVertexFormats.POSITION);
 		buffer.pos((double) left, (double) bottom, 0.0D).endVertex();
@@ -75,7 +84,7 @@ public class RenderUtils {
 		buffer.pos((double) left, (double) top, 0.0D).endVertex();
 		tessellator.draw();
 
-		GlStateManager.enableTexture2D();
+		GlStateManager.enableTexture();
 		GlStateManager.disableBlend();
 	}
 

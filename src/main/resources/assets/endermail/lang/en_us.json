@@ -1,0 +1,31 @@
+{
+    "_comment": "Ender Mail Language File",
+    "_comment": "English - UNITED STATES",
+
+    "_comment": "BLOCKS",
+    "block.endermail.package": "Package",
+    "block.endermail.sealed_package": "Sealed Package",
+    "block.endermail.stamped_package": "Stamped Package",
+
+    "_comment": "ITEMS",
+    "item.endermail.package_controller": "Package Controller",
+    "item.endermail.packing_tape": "Packing Tape",
+    "item.endermail.stamp": "Stamp",
+
+    "_comment": "STRINGS",
+    "string.endermail.cancel": "Cancel",
+    "string.endermail.close": "Close",
+    "string.endermail.confirm": "Confirm",
+    "string.endermail.coordinates": "Coordinates",
+    "string.endermail.deliver": "Deliver",
+    "string.endermail.delivered": "Delivered",
+    "string.endermail.delivering": "Delivering",
+    "string.endermail.deliveryDistance": "Delivery Distance",
+    "string.endermail.deliveryLocation": "Delivery Location",
+    "string.endermail.error": "An error has occurred",
+    "string.endermail.holdShift": "Hold Shift for contents",
+    "string.endermail.maxDistance": "Max Distance",
+    "string.endermail.returned": "Returned to sender",
+    "string.endermail.status": "Status",
+    "string.endermail.tooFar": "Too far to deliver"
+}

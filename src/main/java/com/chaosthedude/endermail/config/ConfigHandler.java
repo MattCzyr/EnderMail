@@ -1,93 +1,53 @@
 package com.chaosthedude.endermail.config;
 
-import java.io.File;
+import com.chaosthedude.endermail.util.OverlaySide;
 
-import com.chaosthedude.endermail.EnderMail;
-import com.chaosthedude.endermail.util.EnumOverlaySide;
-
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
-import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.common.ForgeConfigSpec;
 
 public class ConfigHandler {
 	
-	public static Configuration config;
-	
-	// General
-	public static int maxDeliveryDistance = -1;
+	private static final ForgeConfigSpec.Builder GENERAL_BUILDER = new ForgeConfigSpec.Builder();
+	private static final ForgeConfigSpec.Builder CLIENT_BUILDER = new ForgeConfigSpec.Builder();
 
-	// Client
-	public static boolean displayWithChatOpen = true;
-	public static int lineOffset = 1;
-	public static EnumOverlaySide overlaySide = EnumOverlaySide.LEFT;
+	public static final General GENERAL = new General(GENERAL_BUILDER);
+	public static final Client CLIENT = new Client(CLIENT_BUILDER);
 
-	public static void loadConfig(File configFile) {
-		config = new Configuration(configFile);
+	public static final ForgeConfigSpec GENERAL_SPEC = GENERAL_BUILDER.build();
+	public static final ForgeConfigSpec CLIENT_SPEC = CLIENT_BUILDER.build();
 
-		config.load();
-		init();
-
-		MinecraftForge.EVENT_BUS.register(new ChangeListener());
-	}
-
-	public static void init() {
-		String comment;
+	public static class General {
+		public final ForgeConfigSpec.IntValue maxDeliveryDistance;
 		
-		comment = "The maximum distance that packages can be delivered over. Set to -1 for no distance limit.";
-		maxDeliveryDistance = loadInt(Configuration.CATEGORY_GENERAL, "endermail.maxDeliveryDistance", comment, maxDeliveryDistance);
-		
-		comment = "Displays Package Controller information even while chat is open.";
-		displayWithChatOpen = loadBool(Configuration.CATEGORY_CLIENT, "endermail.displayWithChatOpen", comment, displayWithChatOpen);
+		General(ForgeConfigSpec.Builder builder) {
+			String desc;
+			builder.push("General");
+			
+			desc = "The maximum distance that packages can be delivered over. Set to -1 for no distance limit.";
+			maxDeliveryDistance = builder.comment(desc).defineInRange("maxDeliveryDistance", -1, -1, 1000000);
 
-		comment = "The line offset for information rendered on the HUD.";
-		lineOffset = loadInt(Configuration.CATEGORY_CLIENT, "endermail.lineOffset", comment, lineOffset);
-		
-		comment = "The side for information rendered on the HUD. Ex: LEFT, RIGHT";
-		overlaySide = loadOverlaySide(Configuration.CATEGORY_CLIENT, "endermail.overlaySide", comment, overlaySide);
-
-		if (config.hasChanged()) {
-			config.save();
+			builder.pop();
 		}
 	}
 
-	public static int loadInt(String category, String name, String comment, int def) {
-		final Property prop = config.get(category, name, def);
-		prop.setComment(comment);
-		int val = prop.getInt(def);
-		if (val < 0) {
-			val = def;
-			prop.set(def);
-		}
+	public static class Client {
+		public final ForgeConfigSpec.BooleanValue displayWithChatOpen;
+		public final ForgeConfigSpec.IntValue lineOffset;
+		public final ForgeConfigSpec.EnumValue<OverlaySide> overlaySide;
 
-		return val;
-	}
+		Client(ForgeConfigSpec.Builder builder) {
+			String desc;
+			builder.push("Client");
 
-	public static boolean loadBool(String category, String name, String comment, boolean def) {
-		final Property prop = config.get(category, name, def);
-		prop.setComment(comment);
-		return prop.getBoolean(def);
-	}
-	
-	public static EnumOverlaySide loadOverlaySide(String category, String name, String comment, EnumOverlaySide def) {
-		Property prop = config.get(category, name, def.toString());
-		prop.setComment(comment);
-		return EnumOverlaySide.fromString(prop.getString());
-	}
+			desc = "Displays Package Controller information even while chat is open.";
+			displayWithChatOpen = builder.comment(desc).define("displayWithChatOpen", true);
+			
+			desc = "The line offset for information rendered on the HUD.";
+			lineOffset = builder.comment(desc).defineInRange("lineOffset", 1, 0, 50);
+			
+			desc = "The side for information rendered on the HUD. Ex: LEFT, RIGHT";
+			overlaySide = builder.comment(desc).defineEnum("overlaySide", OverlaySide.LEFT);
 
-	public static String[] loadStringArray(String category, String comment, String name, String[] def) {
-		Property prop = config.get(category, name, def);
-		prop.setComment(comment);
-		return prop.getStringList();
-	}
-
-	public static class ChangeListener {
-		@SubscribeEvent
-		public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
-			if (event.getModID().equals(EnderMail.MODID)) {
-				init();
-			}
+			builder.pop();
 		}
 	}
 

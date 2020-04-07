@@ -1,51 +1,42 @@
 package com.chaosthedude.endermail.registry;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.chaosthedude.endermail.EnderMail;
-import com.chaosthedude.endermail.items.ItemPackageController;
+import com.chaosthedude.endermail.blocks.PackageBlock;
+import com.chaosthedude.endermail.items.PackageControllerItem;
 
-import net.minecraft.block.Block;
-import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.Item.Properties;
+import net.minecraft.item.ItemGroup;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.registries.ObjectHolder;
 
-@EventBusSubscriber(modid = EnderMail.MODID)
+@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
+@ObjectHolder(EnderMail.MODID)
 public class EnderMailItems {
 	
-	public static final List<Item> REGISTRY = new ArrayList<Item>();
+	@ObjectHolder(PackageBlock.NAME)
+	public static final Item PACKAGE_ITEM = null;
 	
-	public static ItemPackageController packageController;
-	public static Item packingTape;
-	public static Item stamp;
-
-	public static void register() {
-		packageController = registerItem(new ItemPackageController(), "package_controller");
-		packingTape = registerItem(new Item().setUnlocalizedName(EnderMail.MODID + "." + "packing_tape").setCreativeTab(CreativeTabs.MISC), "packing_tape");
-		stamp = registerItem(new Item().setUnlocalizedName(EnderMail.MODID + "." + "stamp").setCreativeTab(CreativeTabs.MISC), "stamp");
-	}
+	@ObjectHolder(PackageControllerItem.NAME)
+	public static final PackageControllerItem PACKAGE_CONTROLLER = null;
+	
+	@ObjectHolder("packing_tape")
+	public static final Item PACKING_TAPE = null;
+	
+	@ObjectHolder("stamp")
+	public static final Item STAMP = null;
 	
 	@SubscribeEvent
-	public static void registerItems(final RegistryEvent.Register<Item> e) {
-		for (Item item : REGISTRY) {
-			e.getRegistry().register(item);
-		}
-		
-		for (Block block : EnderMailBlocks.REGISTRY) {
-			e.getRegistry().register(new ItemBlock(block).setRegistryName(block.getRegistryName()));
-		}
-	}
-
-	protected static <T extends Item> T registerItem(T itemType, String name) {
-		T item = itemType;
-		item.setRegistryName(name);
-		REGISTRY.add(item);
-
-		return item;
+	public static void registerBlocks(final RegistryEvent.Register<Item> event) {
+        event.getRegistry().registerAll(
+        		new BlockItem(EnderMailBlocks.PACKAGE_BLOCK, new Properties().group(ItemGroup.DECORATIONS)).setRegistryName(PackageBlock.NAME),
+        		new PackageControllerItem().setRegistryName("package_controller"),
+        		new Item(new Properties().group(ItemGroup.MISC)).setRegistryName("packing_tape"),
+        		new Item(new Properties().group(ItemGroup.MISC)).setRegistryName("stamp")
+        );
 	}
 
 }

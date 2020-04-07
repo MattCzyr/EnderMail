@@ -1,6 +1,6 @@
 package com.chaosthedude.endermail.util;
 
-public enum EnumControllerState {
+public enum ControllerState {
 	
 	DEFAULT(0),
 	DELIVERING(1),
@@ -10,7 +10,7 @@ public enum EnumControllerState {
 
 	private int id;
 
-	EnumControllerState(int id) {
+	ControllerState(int id) {
 		this.id = id;
 	}
 
@@ -18,8 +18,8 @@ public enum EnumControllerState {
 		return id;
 	}
 
-	public static EnumControllerState fromID(int id) {
-		for (EnumControllerState state : values()) {
+	public static ControllerState fromID(int id) {
+		for (ControllerState state : values()) {
 			if (state.getID() == id) {
 				return state;
 			}

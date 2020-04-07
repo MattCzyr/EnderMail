@@ -1,16 +1,19 @@
 package com.chaosthedude.endermail.client.render;
 
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraftforge.fml.client.registry.IRenderFactory;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import com.chaosthedude.endermail.entity.EnderMailmanEntity;
 
-@SideOnly(Side.CLIENT)
-public class EnderMailmanRenderFactory implements IRenderFactory {
-	
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.client.registry.IRenderFactory;
+
+@OnlyIn(Dist.CLIENT)
+public class EnderMailmanRenderFactory implements IRenderFactory<EnderMailmanEntity> {
+
 	@Override
-	public RenderEnderMailman createRenderFor(RenderManager manager) {
-		return new RenderEnderMailman(manager);
+	public EntityRenderer<EnderMailmanEntity> createRenderFor(EntityRendererManager manager) {
+		return new EnderMailmanRenderer(manager);
 	}
 
 }

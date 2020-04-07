@@ -1,60 +1,61 @@
 package com.chaosthedude.endermail.client.render.model;
 
-import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.entity.Entity;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import com.chaosthedude.endermail.entity.EnderMailmanEntity;
 
-@SideOnly(Side.CLIENT)
-public class ModelEnderMailman extends ModelBiped {
+import net.minecraft.client.renderer.entity.model.BipedModel;
+import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-	public ModelRenderer brim;
-	public ModelRenderer hat;
+@OnlyIn(Dist.CLIENT)
+public class EnderMailmanModel extends BipedModel<EnderMailmanEntity> {
+
+	public RendererModel brim;
+	public RendererModel hat;
 
 	public boolean isCarrying;
 
-	public ModelEnderMailman(float scale) {
+	public EnderMailmanModel(float scale) {
 		super(0.0F, -14.0F, 64, 64);
 		float f = -14.0F;
-		bipedHeadwear = new ModelRenderer(this, 0, 16);
+		bipedHeadwear = new RendererModel(this, 0, 16);
 		bipedHeadwear.addBox(-4.0F, -8.0F, -4.0F, 8, 8, 8, scale - 0.5F);
 		bipedHeadwear.setRotationPoint(0.0F, -14.0F, 0.0F);
 
-		bipedBody = new ModelRenderer(this, 32, 16);
+		bipedBody = new RendererModel(this, 32, 16);
 		bipedBody.addBox(-4.0F, 0.0F, -2.0F, 8, 12, 4, scale);
 		bipedBody.setRotationPoint(0.0F, -14.0F, 0.0F);
 
-		bipedRightArm = new ModelRenderer(this, 56, 0);
+		bipedRightArm = new RendererModel(this, 56, 0);
 		bipedRightArm.addBox(-1.0F, -2.0F, -1.0F, 2, 30, 2, scale);
 		bipedRightArm.setRotationPoint(-3.0F, -12.0F, 0.0F);
 
-		bipedLeftArm = new ModelRenderer(this, 56, 0);
+		bipedLeftArm = new RendererModel(this, 56, 0);
 		bipedLeftArm.mirror = true;
 		bipedLeftArm.addBox(-1.0F, -2.0F, -1.0F, 2, 30, 2, scale);
 		bipedLeftArm.setRotationPoint(5.0F, -12.0F, 0.0F);
 
-		bipedRightLeg = new ModelRenderer(this, 56, 0);
+		bipedRightLeg = new RendererModel(this, 56, 0);
 		bipedRightLeg.addBox(-1.0F, 0.0F, -1.0F, 2, 30, 2, scale);
 		bipedRightLeg.setRotationPoint(-2.0F, -2.0F, 0.0F);
 
-		bipedLeftLeg = new ModelRenderer(this, 56, 0);
+		bipedLeftLeg = new RendererModel(this, 56, 0);
 		bipedLeftLeg.mirror = true;
 		bipedLeftLeg.addBox(-1.0F, 0.0F, -1.0F, 2, 30, 2, scale);
 		bipedLeftLeg.setRotationPoint(2.0F, -2.0F, 0.0F);
 
-		brim = new ModelRenderer(this, 0, 49);
+		brim = new RendererModel(this, 0, 49);
 		brim.addBox(-5.0F, -9.0F, -9.0F, 10, 1, 14);
 		brim.setRotationPoint(0.0F, -14.0F, 0.0F);
 
-		hat = new ModelRenderer(this, 0, 38);
+		hat = new RendererModel(this, 0, 38);
 		hat.addBox(-4.0F, -12.0F, -4.0F, 8, 3, 8);
 		hat.setRotationPoint(0.0F, -14.0F, 0.0F);
 	}
 
 	@Override
-	public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entity) {
-		super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor, entity);
+	public void setRotationAngles(EnderMailmanEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor) {
+		super.setRotationAngles(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor);
 		bipedHead.showModel = true;
 		float f = -14.0F;
 		bipedBody.rotateAngleX = 0.0F;
@@ -136,7 +137,7 @@ public class ModelEnderMailman extends ModelBiped {
 	}
 
 	@Override
-	public void render(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+	public void render(EnderMailmanEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
 		super.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
 		brim.render(scale);
 		hat.render(scale);

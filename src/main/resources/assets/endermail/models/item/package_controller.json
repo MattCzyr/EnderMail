@@ -8,6 +8,6 @@
         { "predicate": { "state": 1 }, "model": "endermail:item/package_controller" },
         { "predicate": { "state": 2 }, "model": "endermail:item/package_controller_success" },
         { "predicate": { "state": 3 }, "model": "endermail:item/package_controller_failure" },
-	{ "predicate": { "state": 4 }, "model": "endermail:item/package_controller_failure" }
+        { "predicate": { "state": 4 }, "model": "endermail:item/package_controller_failure" }
     ]
 }
