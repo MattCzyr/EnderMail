@@ -64,7 +64,7 @@ public class EnderMailmanEntity extends MonsterEntity {
 		this.packageController = packageController;
 		setPosition(startingPos.getX() + getRandomOffset(), startingPos.getY(), startingPos.getZ() + getRandomOffset());
 		setStartingPos(startingPos);
-		int startY = deliveryPos.getY() < 0 ? world.getHeight(Type.WORLD_SURFACE, deliveryPos.getX(), deliveryPos.getZ()) : deliveryPos.getY();
+		int startY = deliveryPos.getY() <= 0 ? world.getHeight(Type.WORLD_SURFACE, deliveryPos.getX(), deliveryPos.getZ()) : deliveryPos.getY();
 		int offset = 0;
 		boolean negate = false;
 		int y = startY;
