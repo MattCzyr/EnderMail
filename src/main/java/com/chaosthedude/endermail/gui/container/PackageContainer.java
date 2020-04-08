@@ -17,12 +17,12 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
 public class PackageContainer extends Container {
-	
+
 	public static final String NAME = "package";
 
 	private final IInventory packageInventory;
 	private ITextComponent displayName;
-	
+
 	public PackageContainer(int windowId, PlayerInventory playerInventory) {
 		this(windowId, playerInventory, new Inventory(PackageBlock.INVENTORY_SIZE));
 	}
@@ -91,7 +91,7 @@ public class PackageContainer extends Container {
 		super.onContainerClosed(player);
 		packageInventory.closeInventory(player);
 	}
-	
+
 	public ITextComponent getDisplayName() {
 		return displayName;
 	}

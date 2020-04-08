@@ -20,12 +20,13 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 @OnlyIn(Dist.CLIENT)
 public class ClientEventHandler {
-	
+
 	private static final Minecraft mc = Minecraft.getInstance();
 
 	@SubscribeEvent
 	public void onRenderTick(RenderTickEvent event) {
-		if (event.phase == Phase.END && mc.player != null && !mc.gameSettings.hideGUI && !mc.gameSettings.showDebugInfo && (mc.currentScreen == null || (ConfigHandler.CLIENT.displayWithChatOpen.get() && mc.currentScreen instanceof ChatScreen))) {
+		if (event.phase == Phase.END && mc.player != null && !mc.gameSettings.hideGUI && !mc.gameSettings.showDebugInfo
+				&& (mc.currentScreen == null || (ConfigHandler.CLIENT.displayWithChatOpen.get() && mc.currentScreen instanceof ChatScreen))) {
 			final PlayerEntity player = mc.player;
 			final ItemStack stack = ItemUtils.getHeldItem(player, EnderMailItems.PACKAGE_CONTROLLER);
 			if (stack != null && stack.getItem() instanceof PackageControllerItem) {
@@ -43,15 +44,15 @@ public class ClientEventHandler {
 					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.endermail.status"), 5, 0, 0xFFFFFF, 0);
 					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.endermail.returned"), 5, 0, 0xAAAAAA, 1);
 				} else if (packageController.getState(stack) == ControllerState.TOOFAR) {
- 					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.endermail.status"), 5, 0, 0xFFFFFF, 0);
- 					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.endermail.tooFar"), 5, 0, 0xAAAAAA, 1);
+					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.endermail.status"), 5, 0, 0xFFFFFF, 0);
+					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.endermail.tooFar"), 5, 0, 0xAAAAAA, 1);
 
- 					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.endermail.deliveryDistance"), 5, 0, 0xFFFFFF, 3);
- 					RenderUtils.drawConfiguredStringOnHUD(String.valueOf(packageController.getDeliveryDistance(stack)), 5, 0, 0xAAAAAA, 4);
+					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.endermail.deliveryDistance"), 5, 0, 0xFFFFFF, 3);
+					RenderUtils.drawConfiguredStringOnHUD(String.valueOf(packageController.getDeliveryDistance(stack)), 5, 0, 0xAAAAAA, 4);
 
- 					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.endermail.maxDistance"), 5, 0, 0xFFFFFF, 6);
- 					RenderUtils.drawConfiguredStringOnHUD(String.valueOf(packageController.getMaxDistance(stack)), 5, 0, 0xAAAAAA, 7);
- 				}
+					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.endermail.maxDistance"), 5, 0, 0xFFFFFF, 6);
+					RenderUtils.drawConfiguredStringOnHUD(String.valueOf(packageController.getMaxDistance(stack)), 5, 0, 0xAAAAAA, 7);
+				}
 			}
 		}
 	}

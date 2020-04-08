@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 
 public class ItemUtils {
-	
+
 	public static boolean verifyNBT(ItemStack stack) {
 		if (stack.isEmpty() || stack.getItem() != EnderMailItems.PACKAGE_CONTROLLER) {
 			return false;
@@ -28,7 +28,7 @@ public class ItemUtils {
 
 		return ItemStack.EMPTY;
 	}
-	
+
 	public static boolean isHolding(PlayerEntity player, Item item) {
 		return player.getHeldItemMainhand().getItem() == item || player.getHeldItemOffhand().getItem() == item;
 	}

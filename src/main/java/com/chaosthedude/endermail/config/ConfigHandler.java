@@ -5,7 +5,7 @@ import com.chaosthedude.endermail.util.OverlaySide;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 public class ConfigHandler {
-	
+
 	private static final ForgeConfigSpec.Builder GENERAL_BUILDER = new ForgeConfigSpec.Builder();
 	private static final ForgeConfigSpec.Builder CLIENT_BUILDER = new ForgeConfigSpec.Builder();
 
@@ -17,11 +17,11 @@ public class ConfigHandler {
 
 	public static class General {
 		public final ForgeConfigSpec.IntValue maxDeliveryDistance;
-		
+
 		General(ForgeConfigSpec.Builder builder) {
 			String desc;
 			builder.push("General");
-			
+
 			desc = "The maximum distance that packages can be delivered over. Set to -1 for no distance limit.";
 			maxDeliveryDistance = builder.comment(desc).defineInRange("maxDeliveryDistance", -1, -1, 1000000);
 
@@ -40,10 +40,10 @@ public class ConfigHandler {
 
 			desc = "Displays Package Controller information even while chat is open.";
 			displayWithChatOpen = builder.comment(desc).define("displayWithChatOpen", true);
-			
+
 			desc = "The line offset for information rendered on the HUD.";
 			lineOffset = builder.comment(desc).defineInRange("lineOffset", 1, 0, 50);
-			
+
 			desc = "The side for information rendered on the HUD. Ex: LEFT, RIGHT";
 			overlaySide = builder.comment(desc).defineEnum("overlaySide", OverlaySide.LEFT);
 

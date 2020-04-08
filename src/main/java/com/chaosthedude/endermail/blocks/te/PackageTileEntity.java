@@ -23,7 +23,7 @@ public class PackageTileEntity extends TileEntity implements IInventory, INamedC
 
 	public static final String NAME = "package";
 
-	private NonNullList<ItemStack> contents = NonNullList.<ItemStack> withSize(PackageBlock.INVENTORY_SIZE, ItemStack.EMPTY);
+	private NonNullList<ItemStack> contents = NonNullList.<ItemStack>withSize(PackageBlock.INVENTORY_SIZE, ItemStack.EMPTY);
 	public int numPlayersUsing;
 	private int deliveryX;
 	private int deliveryY;
@@ -38,7 +38,7 @@ public class PackageTileEntity extends TileEntity implements IInventory, INamedC
 		deliveryZ = -1;
 		hasDeliveryLocation = false;
 	}
-	
+
 	public PackageTileEntity(NonNullList<ItemStack> contents) {
 		super(EnderMailBlocks.PACKAGE_TE_TYPE);
 		this.contents = contents;
@@ -63,38 +63,38 @@ public class PackageTileEntity extends TileEntity implements IInventory, INamedC
 	@Override
 	public void read(CompoundNBT compound) {
 		super.read(compound);
-		contents = NonNullList.<ItemStack> withSize(getSizeInventory(), ItemStack.EMPTY);
+		contents = NonNullList.<ItemStack>withSize(getSizeInventory(), ItemStack.EMPTY);
 		ItemStackHelper.loadAllItems(compound, contents);
-		
+
 		deliveryX = compound.getInt("DeliveryX");
 		deliveryY = compound.getInt("DeliveryY");
 		deliveryZ = compound.getInt("DeliveryZ");
-		
+
 		hasDeliveryLocation = compound.getBoolean("HasDeliveryLocation");
-		
+
 		if (compound.contains("CustomName", 8)) {
-            customName = compound.getString("CustomName");
-        }
+			customName = compound.getString("CustomName");
+		}
 	}
 
 	@Override
 	public CompoundNBT write(CompoundNBT compound) {
 		super.write(compound);
 		ItemStackHelper.saveAllItems(compound, contents);
-		
+
 		compound.putInt("DeliveryX", deliveryX);
 		compound.putInt("DeliveryY", deliveryY);
 		compound.putInt("DeliveryZ", deliveryZ);
-		
+
 		compound.putBoolean("HasDeliveryLocation", hasDeliveryLocation);
-		
+
 		if (hasCustomName()) {
-            compound.putString("CustomName", customName);
-        }
+			compound.putString("CustomName", customName);
+		}
 
 		return compound;
 	}
-	
+
 	public CompoundNBT writeItems(CompoundNBT compound) {
 		if (!contents.isEmpty()) {
 			ItemStackHelper.saveAllItems(compound, contents);
@@ -143,21 +143,21 @@ public class PackageTileEntity extends TileEntity implements IInventory, INamedC
 	@Override
 	public void setInventorySlotContents(int index, ItemStack stack) {
 		ItemStack itemstack = contents.get(index);
-        boolean flag = !stack.isEmpty() && stack.isItemEqual(itemstack) && ItemStack.areItemStackTagsEqual(stack, itemstack);
-        contents.set(index, stack);
+		boolean flag = !stack.isEmpty() && stack.isItemEqual(itemstack) && ItemStack.areItemStackTagsEqual(stack, itemstack);
+		contents.set(index, stack);
 
-        if (stack.getCount() > this.getInventoryStackLimit()) {
-            stack.setCount(this.getInventoryStackLimit());
-        }
+		if (stack.getCount() > this.getInventoryStackLimit()) {
+			stack.setCount(this.getInventoryStackLimit());
+		}
 	}
 
 	@Override
 	public boolean isUsableByPlayer(PlayerEntity player) {
 		if (world.getTileEntity(pos) != this) {
-            return false;
-        } else {
-            return player.getDistanceSq((double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D) <= 64.0D;
-        }
+			return false;
+		} else {
+			return player.getDistanceSq((double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D) <= 64.0D;
+		}
 	}
 
 	@Override
@@ -169,7 +169,7 @@ public class PackageTileEntity extends TileEntity implements IInventory, INamedC
 	public void clear() {
 		contents.clear();
 	}
-	
+
 	@Override
 	public Container createMenu(int windowId, PlayerInventory playerInventory, PlayerEntity player) {
 		return new PackageContainer(windowId, playerInventory, this);
@@ -183,26 +183,26 @@ public class PackageTileEntity extends TileEntity implements IInventory, INamedC
 	public NonNullList<ItemStack> getContents() {
 		return contents;
 	}
-	
+
 	public void setDeliveryPos(BlockPos pos) {
 		hasDeliveryLocation = true;
 		deliveryX = pos.getX();
 		deliveryY = pos.getY();
 		deliveryZ = pos.getZ();
 	}
-	
+
 	public BlockPos getDeliveryPos() {
 		if (hasDeliveryLocation) {
 			return new BlockPos(deliveryX, deliveryY, deliveryZ);
 		}
-		
+
 		return null;
 	}
 
 	public void setCustomName(String name) {
 		customName = name;
 	}
-	
+
 	public boolean hasCustomName() {
 		return customName != null && !customName.isEmpty();
 	}

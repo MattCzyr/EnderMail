@@ -40,11 +40,11 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
 
 public class EnderMailmanEntity extends MonsterEntity {
-	
+
 	public static final String NAME = "ender_mailman";
 
 	private static final DataParameter<Boolean> CARRYING_PACKAGE = EntityDataManager.<Boolean>createKey(EnderMailmanEntity.class, DataSerializers.BOOLEAN);
-	private NonNullList<ItemStack> contents = NonNullList.<ItemStack> withSize(PackageBlock.INVENTORY_SIZE, ItemStack.EMPTY);
+	private NonNullList<ItemStack> contents = NonNullList.<ItemStack>withSize(PackageBlock.INVENTORY_SIZE, ItemStack.EMPTY);
 	private int lastCreepySound;
 	private int timePickedUp;
 	private int timeDelivered;
@@ -90,7 +90,7 @@ public class EnderMailmanEntity extends MonsterEntity {
 
 		setDeliveryPos(new BlockPos(deliveryPos.getX(), y, deliveryPos.getZ()));
 	}
-	
+
 	@Override
 	protected void registerData() {
 		super.registerData();
@@ -115,24 +115,25 @@ public class EnderMailmanEntity extends MonsterEntity {
 		getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.30000001192092896D);
 		getAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(64.0D);
 	}
-	
+
 	@Override
 	public void livingTick() {
 		if (world.isRemote) {
 			for (int i = 0; i < 2; ++i) {
-				world.addParticle(ParticleTypes.PORTAL, this.posX + (this.rand.nextDouble() - 0.5D) * (double)this.getWidth(), this.posY + this.rand.nextDouble() * (double)this.getHeight() - 0.25D, this.posZ + (this.rand.nextDouble() - 0.5D) * (double)this.getWidth(), (this.rand.nextDouble() - 0.5D) * 2.0D, -this.rand.nextDouble(), (this.rand.nextDouble() - 0.5D) * 2.0D);
+				world.addParticle(ParticleTypes.PORTAL, getPosX() + (this.rand.nextDouble() - 0.5D) * (double) this.getWidth(), getPosY() + this.rand.nextDouble() * (double) this.getHeight() - 0.25D,
+						getPosZ() + (this.rand.nextDouble() - 0.5D) * (double) this.getWidth(), (this.rand.nextDouble() - 0.5D) * 2.0D, -this.rand.nextDouble(), (this.rand.nextDouble() - 0.5D) * 2.0D);
 			}
 
 			if (ticksExisted - timeDelivered > 100) {
 				kill();
-				
+
 			}
 		}
 
 		isJumping = false;
 		super.livingTick();
 	}
-	
+
 	public void kill() {
 		attackEntityFrom(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
 	}
@@ -180,7 +181,7 @@ public class EnderMailmanEntity extends MonsterEntity {
 	protected SoundEvent getAmbientSound() {
 		return SoundEvents.ENTITY_ENDERMAN_AMBIENT;
 	}
-	
+
 	@Override
 	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
 		return SoundEvents.ENTITY_ENDERMAN_HURT;
@@ -219,7 +220,7 @@ public class EnderMailmanEntity extends MonsterEntity {
 		isDelivering = compound.getBoolean("IsDelivering");
 		dataManager.set(CARRYING_PACKAGE, compound.getBoolean("IsCarryingPackage"));
 	}
-	
+
 	@Override
 	protected void dropInventory() {
 		super.dropInventory();
@@ -235,7 +236,7 @@ public class EnderMailmanEntity extends MonsterEntity {
 	public NonNullList<ItemStack> getContents() {
 		return contents;
 	}
-	
+
 	public double getDistance(double x, double y, double z) {
 		return Math.sqrt(getDistanceSq(x, y, z));
 	}
@@ -249,9 +250,9 @@ public class EnderMailmanEntity extends MonsterEntity {
 	}
 
 	protected boolean teleportRandomly() {
-		double x = posX + (rand.nextDouble() - 0.5D) * 64.0D;
-		double y = posY + (double) (rand.nextInt(64) - 32);
-		double z = posZ + (rand.nextDouble() - 0.5D) * 64.0D;
+		double x = getPosX() + (rand.nextDouble() - 0.5D) * 64.0D;
+		double y = getPosY() + (double) (rand.nextInt(64) - 32);
+		double z = getPosZ() + (rand.nextDouble() - 0.5D) * 64.0D;
 		return teleportTo(x, y, z);
 	}
 
@@ -283,25 +284,6 @@ public class EnderMailmanEntity extends MonsterEntity {
 		return startingPos;
 	}
 
-	public List<BlockPos> getNearbyPackages() {
-		List<BlockPos> packages = new ArrayList<BlockPos>();
-		for (int x = -5; x < 5; x++) {
-			for (int y = -5; y < 5; y++) {
-				for (int z = -5; z < 5; z++) {
-					BlockPos pos = new BlockPos(getPosition().getX() + x, getPosition().getY() + y, getPosition().getZ() + z);
-					if (world.getBlockState(new BlockPos(x, y, z)).getBlock() instanceof PackageBlock) {
-						TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
-						if (tileEntity != null && tileEntity instanceof PackageTileEntity) {
-							packages.add(pos);
-						}
-					}
-				}
-			}
-		}
-
-		return packages;
-	}
-
 	private boolean canPlacePackage(World world, BlockPos pos) {
 		return EnderMailBlocks.PACKAGE_BLOCK.getStampedState().isValidPosition(world, pos) && world.getBlockState(new BlockPos(pos.getX(), pos.getY() - 1, pos.getZ())).isSolid();
 	}
@@ -313,7 +295,7 @@ public class EnderMailmanEntity extends MonsterEntity {
 	public PackageControllerItem getPackageController() {
 		return (PackageControllerItem) packageController.getItem();
 	}
-	
+
 	public boolean isCarryingPackage() {
 		return dataManager.get(CARRYING_PACKAGE);
 	}
@@ -321,7 +303,7 @@ public class EnderMailmanEntity extends MonsterEntity {
 	public boolean isDelivering() {
 		return isDelivering;
 	}
-	
+
 	public void setCarryingPackage(boolean carrying) {
 		dataManager.set(CARRYING_PACKAGE, carrying);
 	}
@@ -350,7 +332,7 @@ public class EnderMailmanEntity extends MonsterEntity {
 		if (ticksExisted >= lastCreepySound + 400) {
 			lastCreepySound = ticksExisted;
 			if (!isSilent()) {
-				world.playSound(posX, posY + (double) getEyeHeight(), posZ, SoundEvents.ENTITY_ENDERMAN_STARE, getSoundCategory(), 2.5F, 1.0F, false);
+				world.playSound(getPosX(), getPosY() + (double) getEyeHeight(), getPosZ(), SoundEvents.ENTITY_ENDERMAN_STARE, getSoundCategory(), 2.5F, 1.0F, false);
 			}
 		}
 	}
@@ -400,7 +382,7 @@ public class EnderMailmanEntity extends MonsterEntity {
 					enderMailman.teleportToDeliveryPos();
 					enderMailman.world.setBlockState(enderMailman.getDeliveryPos(), EnderMailBlocks.PACKAGE_BLOCK.getStampedState(), 3);
 					enderMailman.world.setTileEntity(enderMailman.getDeliveryPos(), new PackageTileEntity(enderMailman.getContents()));
-					enderMailman.setContents(NonNullList.<ItemStack> withSize(PackageBlock.INVENTORY_SIZE, ItemStack.EMPTY));
+					enderMailman.setContents(NonNullList.<ItemStack>withSize(PackageBlock.INVENTORY_SIZE, ItemStack.EMPTY));
 					enderMailman.getPackageController().setState(enderMailman.packageController, ControllerState.DELIVERED);
 					enderMailman.getPackageController().setDeliveryPos(enderMailman.packageController, enderMailman.getDeliveryPos());
 					enderMailman.teleportToStartingPos();
@@ -408,7 +390,7 @@ public class EnderMailmanEntity extends MonsterEntity {
 					enderMailman.teleportToStartingPos();
 					enderMailman.world.setBlockState(enderMailman.getStartingPos(), EnderMailBlocks.PACKAGE_BLOCK.getStampedState(), 3);
 					enderMailman.world.setTileEntity(enderMailman.getStartingPos(), new PackageTileEntity(enderMailman.getContents()));
-					enderMailman.setContents(NonNullList.<ItemStack> withSize(PackageBlock.INVENTORY_SIZE, ItemStack.EMPTY));
+					enderMailman.setContents(NonNullList.<ItemStack>withSize(PackageBlock.INVENTORY_SIZE, ItemStack.EMPTY));
 					enderMailman.getPackageController().setState(enderMailman.packageController, ControllerState.RETURNED);
 				}
 

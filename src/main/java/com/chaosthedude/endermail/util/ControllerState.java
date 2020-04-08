@@ -1,7 +1,7 @@
 package com.chaosthedude.endermail.util;
 
 public enum ControllerState {
-	
+
 	DEFAULT(0),
 	DELIVERING(1),
 	DELIVERED(2),

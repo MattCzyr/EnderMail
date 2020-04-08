@@ -16,7 +16,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class PackageScreen extends ContainerScreen<PackageContainer> implements IHasContainer<PackageContainer> {
 
 	private static final ResourceLocation TEXTURE = new ResourceLocation("endermail:textures/gui/package.png");
-	
+
 	private final PackageContainer containerPackage;
 	private final PlayerInventory playerInventory;
 
@@ -29,10 +29,10 @@ public class PackageScreen extends ContainerScreen<PackageContainer> implements 
 
 	@Override
 	public void render(int mouseX, int mouseY, float partialTicks) {
-        renderBackground();
-        super.render(mouseX, mouseY, partialTicks);
-        renderHoveredToolTip(mouseX, mouseY);
-    }
+		renderBackground();
+		super.render(mouseX, mouseY, partialTicks);
+		renderHoveredToolTip(mouseX, mouseY);
+	}
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {

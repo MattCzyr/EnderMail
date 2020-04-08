@@ -73,13 +73,13 @@ public class PackageBlock extends ContainerBlock {
 	}
 
 	@Override
-	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
 		if (player.isSpectator()) {
-			return true;
+			return ActionResultType.SUCCESS;
 		}
 		if (world.isRemote() && !isStamped(state) && player.getHeldItem(hand).getItem() == EnderMailItems.STAMP) {
 			ScreenWrapper.openGUI(world, player, pos);
-			return true;
+			return ActionResultType.SUCCESS;
 		} else if (!world.isRemote()) {
 			boolean holdingStamp = ItemUtils.isHolding(player, EnderMailItems.STAMP);
 			boolean holdingPackageController = ItemUtils.isHolding(player, EnderMailItems.PACKAGE_CONTROLLER);
@@ -100,20 +100,20 @@ public class PackageBlock extends ContainerBlock {
 						world.addEntity(enderMailman);
 					}
 				}
-				return true;
-			} else if (isStamped(state) && (player.isSneaking() || (player.getHeldItem(hand) == null && !holdingStamp && !holdingPackageController))) {
+				return ActionResultType.SUCCESS;
+			} else if (isStamped(state) && (player.isCrouching() || (player.getHeldItem(hand) == null && !holdingStamp && !holdingPackageController))) {
 				setState(false, world, pos);
-				return true;
-			} else if (!isStamped(state) && !player.isSneaking() && !holdingStamp) {
+				return ActionResultType.SUCCESS;
+			} else if (!isStamped(state) && !player.isCrouching() && !holdingStamp) {
 				INamedContainerProvider container = getContainer(state, world, pos);
 				if (container != null) {
 					player.openContainer(container);
 				}
-				return true;
+				return ActionResultType.SUCCESS;
 			}
 		}
 
-		return true;
+		return ActionResultType.PASS;
 	}
 
 	@Override

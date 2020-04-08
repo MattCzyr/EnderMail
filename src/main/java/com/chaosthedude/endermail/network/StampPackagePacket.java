@@ -16,7 +16,7 @@ public class StampPackagePacket {
 	private int packageX;
 	private int packageY;
 	private int packageZ;
-	
+
 	private int deliveryX;
 	private int deliveryY;
 	private int deliveryZ;
@@ -28,7 +28,7 @@ public class StampPackagePacket {
 		this.packageX = packagePos.getX();
 		this.packageY = packagePos.getY();
 		this.packageZ = packagePos.getZ();
-		
+
 		this.deliveryX = deliveryPos.getX();
 		this.deliveryY = deliveryPos.getY();
 		this.deliveryZ = deliveryPos.getZ();
@@ -38,7 +38,7 @@ public class StampPackagePacket {
 		packageX = buf.readInt();
 		packageY = buf.readInt();
 		packageZ = buf.readInt();
-		
+
 		deliveryX = buf.readInt();
 		deliveryY = buf.readInt();
 		deliveryZ = buf.readInt();
@@ -48,7 +48,7 @@ public class StampPackagePacket {
 		buf.writeInt(packageX);
 		buf.writeInt(packageY);
 		buf.writeInt(packageZ);
-		
+
 		buf.writeInt(deliveryX);
 		buf.writeInt(deliveryY);
 		buf.writeInt(deliveryZ);
@@ -58,9 +58,9 @@ public class StampPackagePacket {
 		ctx.get().enqueueWork(() -> {
 			PackageBlock.stampPackage(ctx.get().getSender().world, new BlockPos(packageX, packageY, packageZ), new BlockPos(deliveryX, deliveryY, deliveryZ));
 			ItemStack stampStack = ItemUtils.getHeldItem(ctx.get().getSender(), EnderMailItems.STAMP);
- 			if (stampStack != null && !ctx.get().getSender().isCreative()) {
- 				stampStack.setCount(stampStack.getCount() - 1);
- 			}
+			if (stampStack != null && !ctx.get().getSender().isCreative()) {
+				stampStack.setCount(stampStack.getCount() - 1);
+			}
 		});
 		ctx.get().setPacketHandled(true);
 	}

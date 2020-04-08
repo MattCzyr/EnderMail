@@ -1,55 +1,37 @@
 package com.chaosthedude.endermail.client.render;
 
-import com.chaosthedude.endermail.EnderMail;
 import com.chaosthedude.endermail.client.render.model.EnderMailmanModel;
 import com.chaosthedude.endermail.entity.EnderMailmanEntity;
 import com.chaosthedude.endermail.registry.EnderMailBlocks;
-import com.mojang.blaze3d.platform.GLX;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class HeldPackageLayer extends LayerRenderer<EnderMailmanEntity, EnderMailmanModel> {
-	
-	private final EnderMailmanRenderer renderer;
-	
+
 	public HeldPackageLayer(EnderMailmanRenderer renderer) {
 		super(renderer);
-		this.renderer = renderer;
 	}
 
 	@Override
-	public void render(EnderMailmanEntity entityEnderMailman, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-		if (entityEnderMailman.isCarryingPackage()) {
-			BlockRendererDispatcher dispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
-			GlStateManager.enableRescaleNormal();
-			GlStateManager.pushMatrix();
-			GlStateManager.translatef(0.0F, 0.6875F, -0.75F);
-			GlStateManager.rotatef(20.0F, 1.0F, 0.0F, 0.0F);
-			GlStateManager.rotatef(45.0F, 0.0F, 1.0F, 0.0F);
-			GlStateManager.translatef(0.25F, 0.1875F, 0.25F);
-			GlStateManager.scalef(-0.5F, -0.5F, 0.5F);
-			int i = entityEnderMailman.getBrightnessForRender();
-			int j = i % 65536;
-			int k = i / 65536;
-			GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, (float)j, (float)k);
-			GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-			renderer.bindTexture(new ResourceLocation(EnderMail.MODID, "textures/blocks/package_side_1.png"));
-			dispatcher.renderBlockBrightness(EnderMailBlocks.PACKAGE_BLOCK.getStampedState(), 1.0F);
-			GlStateManager.popMatrix();
-			GlStateManager.disableRescaleNormal();
-		}
-	}
-
-	@Override
-	public boolean shouldCombineTextures() {
-		return false;
+	public void render(MatrixStack matrixStack, IRenderTypeBuffer buffer, int packedLight, EnderMailmanEntity entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+		matrixStack.push();
+		matrixStack.translate(0.0D, 0.6875D, -0.75D);
+		matrixStack.rotate(Vector3f.XP.rotationDegrees(20.0F));
+		matrixStack.rotate(Vector3f.YP.rotationDegrees(45.0F));
+		matrixStack.translate(0.25D, 0.1875D, 0.25D);
+		float f = 0.5F;
+		matrixStack.scale(-0.5F, -0.5F, 0.5F);
+		matrixStack.rotate(Vector3f.YP.rotationDegrees(90.0F));
+		Minecraft.getInstance().getBlockRendererDispatcher().renderBlock(EnderMailBlocks.PACKAGE_BLOCK.getStampedState(), matrixStack, buffer, packedLight, OverlayTexture.NO_OVERLAY);
+		matrixStack.pop();
 	}
 
 }

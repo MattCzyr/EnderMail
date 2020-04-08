@@ -87,51 +87,6 @@ public class StampScreen extends Screen {
 	}
 	
 	@Override
-	public boolean charTyped(char typedChar, int keyCode) {
-		/*super.charTyped(typedChar, keyCode);
-		if (Character.isDigit(typedChar) || keyCode == GLFW.GLFW_KEY_BACKSPACE) {
-			xTextField.charTyped(typedChar, keyCode);
-			yTextField.charTyped(typedChar, keyCode);
-			zTextField.charTyped(typedChar, keyCode);
-			errored = false;
-		} else if (typedChar == '-') {
-			if (xTextField.getCursorPosition() == 0) {
-				xTextField.charTyped(typedChar, keyCode);
-				errored = false;
-			} else if (yTextField.getCursorPosition() == 0) {
-				yTextField.charTyped(typedChar, keyCode);
-				errored = false;
-			} else if (zTextField.getCursorPosition() == 0) {
-				zTextField.charTyped(typedChar, keyCode);
-				errored = false;
-			}
-		} else if (keyCode == GLFW.GLFW_KEY_TAB) {
-			if (xTextField.isFocused()) {
-				xTextField.setFocused2(false);
-				yTextField.setFocused2(true);
-			} else if (yTextField.isFocused()) {
-				yTextField.setFocused2(false);
-				zTextField.setFocused2(true);
-			} else if (zTextField.isFocused()) {
-				zTextField.setFocused2(false);
-				xTextField.setFocused2(true);
-			}
-		}*/
-		if (typedChar == '-') {
-			if ((getFocused() == xTextField && xTextField.getCursorPosition() == 0)
-					|| (getFocused() == yTextField && yTextField.getCursorPosition() == 0)
-					|| (getFocused() == zTextField && zTextField.getCursorPosition() == 0)) {
-				return super.charTyped(typedChar, keyCode);
-			}
-		} else if (!Character.isDigit(typedChar)) {
-			if (getFocused() != xTextField && getFocused() != yTextField && getFocused() != zTextField) {
-				return super.charTyped(typedChar, keyCode);
-			}
-		}
-		return super.charTyped(typedChar, keyCode);
-	}
-	
-	@Override
 	public void onClose() {
 		super.onClose();
 		minecraft.keyboardListener.enableRepeatEvents(false);
@@ -166,7 +121,7 @@ public class StampScreen extends Screen {
 		yTextField = new TextFieldWidget(font, (width / 2) - 20, 90, 40, 20, "");
 		zTextField = new TextFieldWidget(font, (width / 2) + 25, 90, 40, 20, "");
 	
-		func_212928_a(xTextField);
+		setFocused(xTextField);
 		xTextField.setFocused2(true);
 		
 		children.add(xTextField);

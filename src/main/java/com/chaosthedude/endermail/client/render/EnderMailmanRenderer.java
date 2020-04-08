@@ -2,7 +2,9 @@ package com.chaosthedude.endermail.client.render;
 
 import com.chaosthedude.endermail.client.render.model.EnderMailmanModel;
 import com.chaosthedude.endermail.entity.EnderMailmanEntity;
+import com.mojang.blaze3d.matrix.MatrixStack;
 
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.IEntityRenderer;
 import net.minecraft.client.renderer.entity.MobRenderer;
@@ -26,15 +28,15 @@ public class EnderMailmanRenderer extends MobRenderer<EnderMailmanEntity, EnderM
 	}
 
 	@Override
-	public void doRender(EnderMailmanEntity entityEnderMailman, double x, double y, double z, float entityYaw, float partialTicks) {
+	public void render(EnderMailmanEntity entity, float entityYaw, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int packedLight) {
 		EnderMailmanModel model = getEntityModel();
-		model.isCarrying = entityEnderMailman.isCarryingPackage();
+		model.isCarrying = entity.isCarryingPackage();
 
-		super.doRender(entityEnderMailman, x, y, z, entityYaw, partialTicks);
+		super.render(entity, entityYaw, partialTicks, matrixStack, buffer, packedLight);
 	}
 
 	@Override
-	protected ResourceLocation getEntityTexture(EnderMailmanEntity soul) {
+	public ResourceLocation getEntityTexture(EnderMailmanEntity entity) {
 		return texture;
 	}
 

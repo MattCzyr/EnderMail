@@ -1,15 +1,15 @@
 package com.chaosthedude.endermail.util;
 
- public enum OverlaySide {
+public enum OverlaySide {
 
- 	LEFT,
- 	RIGHT;
+	LEFT,
+	RIGHT;
 
- 	public static OverlaySide fromString(String str) {
- 		if (str.equals("RIGHT")) {
- 			return RIGHT;
- 		}
- 		return LEFT;
- 	}
+	public static OverlaySide fromString(String str) {
+		if (str.equals("RIGHT")) {
+			return RIGHT;
+		}
+		return LEFT;
+	}
 
- }
+}

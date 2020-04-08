@@ -24,27 +24,27 @@ public class PackageControllerItem extends Item {
 	public PackageControllerItem() {
 		super(new Properties().group(ItemGroup.TOOLS));
 		addPropertyOverride(new ResourceLocation("state"), new IItemPropertyGetter() {
-            @Override
+			@Override
 			public float call(ItemStack stack, @Nullable World world, @Nullable LivingEntity entity) {
-                return getState(stack).getID();
-            }
-        });
+				return getState(stack).getID();
+			}
+		});
 	}
-	
+
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-		if (player.isSneaking()) {
+		if (player.isCrouching()) {
 			setState(player.getHeldItem(hand), ControllerState.DEFAULT);
 		}
 		return super.onItemRightClick(world, player, hand);
 	}
-	
+
 	public void setState(ItemStack stack, ControllerState state) {
 		if (ItemUtils.verifyNBT(stack)) {
 			stack.getTag().putInt("State", state.getID());
 		}
 	}
-	
+
 	public void setDeliveryPos(ItemStack stack, BlockPos pos) {
 		if (ItemUtils.verifyNBT(stack)) {
 			stack.getTag().putInt("DeliveryX", pos.getX());
@@ -52,19 +52,19 @@ public class PackageControllerItem extends Item {
 			stack.getTag().putInt("DeliveryZ", pos.getZ());
 		}
 	}
-	
-	public void setDeliveryDistance(ItemStack stack, int distance) {
- 		if (ItemUtils.verifyNBT(stack)) {
- 			stack.getTag().putInt("DeliveryDistance", distance);
- 		}
- 	}
 
- 	public void setMaxDistance(ItemStack stack, int distance) {
- 		if (ItemUtils.verifyNBT(stack)) {
- 			stack.getTag().putInt("MaxDistance", distance);
- 		}
- 	}
-	
+	public void setDeliveryDistance(ItemStack stack, int distance) {
+		if (ItemUtils.verifyNBT(stack)) {
+			stack.getTag().putInt("DeliveryDistance", distance);
+		}
+	}
+
+	public void setMaxDistance(ItemStack stack, int distance) {
+		if (ItemUtils.verifyNBT(stack)) {
+			stack.getTag().putInt("MaxDistance", distance);
+		}
+	}
+
 	public ControllerState getState(ItemStack stack) {
 		if (ItemUtils.verifyNBT(stack)) {
 			return ControllerState.fromID(stack.getTag().getInt("State"));
@@ -72,7 +72,7 @@ public class PackageControllerItem extends Item {
 
 		return null;
 	}
-	
+
 	public BlockPos getDeliveryPos(ItemStack stack) {
 		if (ItemUtils.verifyNBT(stack)) {
 			return new BlockPos(stack.getTag().getInt("DeliveryX"), stack.getTag().getInt("DeliveryY"), stack.getTag().getInt("DeliveryZ"));
@@ -80,21 +80,21 @@ public class PackageControllerItem extends Item {
 
 		return null;
 	}
-	
+
 	public int getDeliveryDistance(ItemStack stack) {
- 		if (ItemUtils.verifyNBT(stack)) {
- 			return stack.getTag().getInt("DeliveryDistance");
- 		}
+		if (ItemUtils.verifyNBT(stack)) {
+			return stack.getTag().getInt("DeliveryDistance");
+		}
 
- 		return -1;
- 	}
+		return -1;
+	}
 
- 	public int getMaxDistance(ItemStack stack) {
- 		if (ItemUtils.verifyNBT(stack)) {
- 			return stack.getTag().getInt("MaxDistance");
- 		}
+	public int getMaxDistance(ItemStack stack) {
+		if (ItemUtils.verifyNBT(stack)) {
+			return stack.getTag().getInt("MaxDistance");
+		}
 
- 		return -1;
- 	}
+		return -1;
+	}
 
 }

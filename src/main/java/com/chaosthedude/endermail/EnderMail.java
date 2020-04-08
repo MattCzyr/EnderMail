@@ -33,14 +33,14 @@ public class EnderMail {
 	public static CommonProxy proxy = DistExecutor.runForDist(() -> () -> new ClientProxy(), () -> () -> new CommonProxy());
 
 	public static EnderMail instance;
-	
+
 	public EnderMail() {
 		instance = this;
 
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::preInit);
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigHandler.GENERAL_SPEC);
 		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ConfigHandler.CLIENT_SPEC);
-		
+
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 
