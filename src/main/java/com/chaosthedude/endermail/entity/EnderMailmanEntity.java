@@ -1,8 +1,5 @@
 package com.chaosthedude.endermail.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.chaosthedude.endermail.blocks.PackageBlock;
 import com.chaosthedude.endermail.blocks.te.PackageTileEntity;
 import com.chaosthedude.endermail.items.PackageControllerItem;
@@ -35,7 +32,6 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.Heightmap.Type;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
 
@@ -64,31 +60,8 @@ public class EnderMailmanEntity extends MonsterEntity {
 		this.packageController = packageController;
 		setPosition(startingPos.getX() + getRandomOffset(), startingPos.getY(), startingPos.getZ() + getRandomOffset());
 		setStartingPos(startingPos);
-		int startY = deliveryPos.getY() <= 0 ? world.getHeight(Type.WORLD_SURFACE, deliveryPos.getX(), deliveryPos.getZ()) : deliveryPos.getY();
-		int offset = 0;
-		boolean negate = false;
-		int y = startY;
-		while (!(canPlacePackage(world, new BlockPos(deliveryPos.getX(), y, deliveryPos.getZ())))) {
-			y = startY + offset;
-			if (negate) {
-				offset = -offset;
-			} else {
-				if (offset < 0) {
-					offset--;
-				} else {
-					offset++;
-				}
-			}
-
-			negate = !negate;
-
-			if ((y + offset > 255 || y + offset < 0) && (y - offset > 255 || y - offset < 0)) {
-				y = -1;
-				break;
-			}
-		}
-
-		setDeliveryPos(new BlockPos(deliveryPos.getX(), y, deliveryPos.getZ()));
+		int deliveryY = findValidDeliveryHeight(deliveryPos);
+		setDeliveryPos(new BlockPos(deliveryPos.getX(), deliveryY, deliveryPos.getZ()));
 	}
 
 	@Override
@@ -126,7 +99,6 @@ public class EnderMailmanEntity extends MonsterEntity {
 
 			if (ticksExisted - timeDelivered > 100) {
 				kill();
-
 			}
 		}
 
@@ -285,7 +257,27 @@ public class EnderMailmanEntity extends MonsterEntity {
 	}
 
 	private boolean canPlacePackage(World world, BlockPos pos) {
-		return EnderMailBlocks.PACKAGE_BLOCK.getStampedState().isValidPosition(world, pos) && world.getBlockState(new BlockPos(pos.getX(), pos.getY() - 1, pos.getZ())).isSolid();
+		return EnderMailBlocks.PACKAGE_BLOCK.getStampedState().isValidPosition(world, pos) && world.isAirBlock(pos) && world.getBlockState(new BlockPos(pos.getX(), pos.getY() - 1, pos.getZ())).isSolid();
+	}
+	
+	private int findValidDeliveryHeight(BlockPos pos) {
+		int startY = pos.getY() <= 0 ? world.getSeaLevel() : pos.getY();
+		int upY = startY;
+		int downY = startY;
+		while (!(canPlacePackage(world, new BlockPos(pos.getX(), upY, pos.getZ())) || canPlacePackage(world, new BlockPos(pos.getX(), downY, pos.getZ())))
+				&& (upY < 255 || downY > 1)) {
+			upY++;
+			downY--;
+		}
+		BlockPos upPos = new BlockPos(pos.getX(), upY, pos.getZ());
+		BlockPos downPos = new BlockPos(pos.getX(), downY, pos.getZ());
+		if (upY < 255 && canPlacePackage(world, upPos)) {
+			return upY;
+		}
+		if (downY > 1 && canPlacePackage(world, downPos)) {
+			return downY;
+		}
+		return -1;
 	}
 
 	public void setPackageController(ItemStack packageController) {
@@ -310,6 +302,10 @@ public class EnderMailmanEntity extends MonsterEntity {
 
 	public void setDelivering(boolean delivering) {
 		isDelivering = delivering;
+	}
+	
+	public boolean isDeliverable() {
+		return canPlacePackage(world, getDeliveryPos());
 	}
 
 	public void updateTimePickedUp() {
@@ -378,17 +374,16 @@ public class EnderMailmanEntity extends MonsterEntity {
 		@Override
 		public void tick() {
 			if (enderMailman.ticksExisted - enderMailman.getTimePickedUp() >= 100) {
-				if (EnderMailBlocks.PACKAGE_BLOCK.getStampedState().isValidPosition(enderMailman.world, enderMailman.getDeliveryPos())) {
+				if (enderMailman.isDeliverable()) {
 					enderMailman.teleportToDeliveryPos();
-					enderMailman.world.setBlockState(enderMailman.getDeliveryPos(), EnderMailBlocks.PACKAGE_BLOCK.getStampedState(), 3);
+					enderMailman.world.setBlockState(enderMailman.getDeliveryPos(), EnderMailBlocks.PACKAGE_BLOCK.getRandomlyRotatedStampedState(), 3);
 					enderMailman.world.setTileEntity(enderMailman.getDeliveryPos(), new PackageTileEntity(enderMailman.getContents()));
 					enderMailman.setContents(NonNullList.<ItemStack>withSize(PackageBlock.INVENTORY_SIZE, ItemStack.EMPTY));
 					enderMailman.getPackageController().setState(enderMailman.packageController, ControllerState.DELIVERED);
 					enderMailman.getPackageController().setDeliveryPos(enderMailman.packageController, enderMailman.getDeliveryPos());
-					enderMailman.teleportToStartingPos();
 				} else {
 					enderMailman.teleportToStartingPos();
-					enderMailman.world.setBlockState(enderMailman.getStartingPos(), EnderMailBlocks.PACKAGE_BLOCK.getStampedState(), 3);
+					enderMailman.world.setBlockState(enderMailman.getStartingPos(), EnderMailBlocks.PACKAGE_BLOCK.getRandomlyRotatedStampedState(), 3);
 					enderMailman.world.setTileEntity(enderMailman.getStartingPos(), new PackageTileEntity(enderMailman.getContents()));
 					enderMailman.setContents(NonNullList.<ItemStack>withSize(PackageBlock.INVENTORY_SIZE, ItemStack.EMPTY));
 					enderMailman.getPackageController().setState(enderMailman.packageController, ControllerState.RETURNED);

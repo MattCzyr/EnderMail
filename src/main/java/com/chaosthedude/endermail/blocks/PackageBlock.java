@@ -1,6 +1,7 @@
 package com.chaosthedude.endermail.blocks;
 
 import java.util.List;
+import java.util.Random;
 
 import com.chaosthedude.endermail.blocks.te.PackageTileEntity;
 import com.chaosthedude.endermail.config.ConfigHandler;
@@ -229,6 +230,11 @@ public class PackageBlock extends ContainerBlock {
 
 	public BlockState getStampedState() {
 		return getDefaultState().with(STAMPED, true);
+	}
+	
+	public BlockState getRandomlyRotatedStampedState() {
+		Direction[] directions = { Direction.NORTH, Direction.EAST, Direction.WEST, Direction.SOUTH };
+		return getDefaultState().with(STAMPED, true).with(FACING, directions[new Random().nextInt(4)]);
 	}
 
 	public boolean isStamped(BlockState state) {
