@@ -55,7 +55,6 @@ public class EnderMailmanEntity extends MonsterEntity {
 
 	public EnderMailmanEntity(EntityType<? extends EnderMailmanEntity> entityType, World world) {
 		super(entityType, world);
-		//setSize(0.6F, 2.9F);
 		stepHeight = 1.0F;
 		setPathPriority(PathNodeType.WATER, -1.0F);
 	}
@@ -103,9 +102,9 @@ public class EnderMailmanEntity extends MonsterEntity {
 		goalSelector.addGoal(7, new WaterAvoidingRandomWalkingGoal(this, 1.0D, 0.0F));
 		goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
 		goalSelector.addGoal(8, new LookRandomlyGoal(this));
-		goalSelector.addGoal(10, new EnderMailmanEntity.AIDeliver(this));
-		goalSelector.addGoal(11, new EnderMailmanEntity.AITakePackage(this));
-		goalSelector.addGoal(12, new EnderMailmanEntity.AIKill(this));
+		goalSelector.addGoal(10, new EnderMailmanEntity.DeliverGoal(this));
+		goalSelector.addGoal(11, new EnderMailmanEntity.TakePackageGoal(this));
+		goalSelector.addGoal(12, new EnderMailmanEntity.DieGoal(this));
 		goalSelector.addGoal(1, new HurtByTargetGoal(this));
 	}
 
@@ -382,10 +381,10 @@ public class EnderMailmanEntity extends MonsterEntity {
 		startingPos = pos;
 	}
 
-	static class AIDeliver extends Goal {
+	static class DeliverGoal extends Goal {
 		private final EnderMailmanEntity enderMailman;
 
-		public AIDeliver(EnderMailmanEntity enderMailman) {
+		public DeliverGoal(EnderMailmanEntity enderMailman) {
 			this.enderMailman = enderMailman;
 		}
 
@@ -414,6 +413,7 @@ public class EnderMailmanEntity extends MonsterEntity {
 				}
 
 				enderMailman.updateTimeDelivered();
+				enderMailman.setCarryingPackage(false);
 				enderMailman.setDelivering(false);
 			} else if ((enderMailman.ticksExisted - enderMailman.getTimePickedUp()) % 20 == 0) {
 				enderMailman.teleportRandomly();
@@ -421,10 +421,10 @@ public class EnderMailmanEntity extends MonsterEntity {
 		}
 	}
 
-	static class AITakePackage extends Goal {
+	static class TakePackageGoal extends Goal {
 		private final EnderMailmanEntity enderMailman;
 
-		public AITakePackage(EnderMailmanEntity enderMailman) {
+		public TakePackageGoal(EnderMailmanEntity enderMailman) {
 			this.enderMailman = enderMailman;
 		}
 
@@ -449,10 +449,10 @@ public class EnderMailmanEntity extends MonsterEntity {
 		}
 	}
 
-	static class AIKill extends Goal {
+	static class DieGoal extends Goal {
 		private final EnderMailmanEntity enderMailman;
 
-		public AIKill(EnderMailmanEntity enderMailman) {
+		public DieGoal(EnderMailmanEntity enderMailman) {
 			this.enderMailman = enderMailman;
 		}
 

@@ -35,6 +35,7 @@ import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer.Builder;
 import net.minecraft.stats.Stats;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Mirror;
@@ -73,17 +74,16 @@ public class PackageBlock extends ContainerBlock {
 
 	@Override
 	public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-		if (world.isRemote() && !isStamped(state) && ItemUtils.isHolding(player, EnderMailItems.STAMP)) {
+		if (player.isSpectator()) {
+			return true;
+		}
+		if (world.isRemote() && !isStamped(state) && player.getHeldItem(hand).getItem() == EnderMailItems.STAMP) {
 			ScreenWrapper.openGUI(world, player, pos);
+			return true;
 		} else if (!world.isRemote()) {
-			if (!isStamped(state) && !ItemUtils.isHolding(player, EnderMailItems.STAMP)) {
-				INamedContainerProvider container = getContainer(state, world, pos);
-				if (container != null) {
-					player.openContainer(container);
-				}
-			} else if (isStamped(state) && player.isSneaking()) {
-				setState(false, world, pos);
-			} else if (isStamped(state) && ItemUtils.isHolding(player, EnderMailItems.PACKAGE_CONTROLLER)) {
+			boolean holdingStamp = ItemUtils.isHolding(player, EnderMailItems.STAMP);
+			boolean holdingPackageController = ItemUtils.isHolding(player, EnderMailItems.PACKAGE_CONTROLLER);
+			if (isStamped(state) && player.getHeldItem(hand).getItem() == EnderMailItems.PACKAGE_CONTROLLER) {
 				ItemStack stack = ItemUtils.getHeldItem(player, EnderMailItems.PACKAGE_CONTROLLER);
 				PackageControllerItem packageController = (PackageControllerItem) stack.getItem();
 				BlockPos deliveryPos = getDeliveryPos(world, pos);
@@ -100,6 +100,16 @@ public class PackageBlock extends ContainerBlock {
 						world.addEntity(enderMailman);
 					}
 				}
+				return true;
+			} else if (isStamped(state) && (player.isSneaking() || (player.getHeldItem(hand) == null && !holdingStamp && !holdingPackageController))) {
+				setState(false, world, pos);
+				return true;
+			} else if (!isStamped(state) && !player.isSneaking() && !holdingStamp) {
+				INamedContainerProvider container = getContainer(state, world, pos);
+				if (container != null) {
+					player.openContainer(container);
+				}
+				return true;
 			}
 		}
 
