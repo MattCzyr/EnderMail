@@ -17,11 +17,11 @@ public class RenderUtils {
 	private static final FontRenderer fontRenderer = mc.fontRenderer;
 
 	public static void drawStringLeft(String string, FontRenderer fontRenderer, int x, int y, int color) {
-		fontRenderer.drawString(string, x, y, color);
+		fontRenderer.drawStringWithShadow(string, x, y, color);
 	}
 
 	public static void drawStringRight(String string, FontRenderer fontRenderer, int x, int y, int color) {
-		fontRenderer.drawString(string, x - fontRenderer.getStringWidth(string), y, color);
+		fontRenderer.drawStringWithShadow(string, x - fontRenderer.getStringWidth(string), y, color);
 	}
 
 	public static void drawConfiguredStringOnHUD(String string, int xOffset, int yOffset, int color, int relativeLineOffset) {

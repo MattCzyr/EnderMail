@@ -6,6 +6,7 @@ import com.chaosthedude.endermail.items.PackageControllerItem;
 import com.chaosthedude.endermail.registry.EnderMailBlocks;
 import com.chaosthedude.endermail.util.ControllerState;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -32,8 +33,6 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.EnderTeleportEvent;
 
 public class EnderMailmanEntity extends MonsterEntity {
 
@@ -93,8 +92,8 @@ public class EnderMailmanEntity extends MonsterEntity {
 	public void livingTick() {
 		if (world.isRemote) {
 			for (int i = 0; i < 2; ++i) {
-				world.addParticle(ParticleTypes.PORTAL, getPosX() + (this.rand.nextDouble() - 0.5D) * (double) this.getWidth(), getPosY() + this.rand.nextDouble() * (double) this.getHeight() - 0.25D,
-						getPosZ() + (this.rand.nextDouble() - 0.5D) * (double) this.getWidth(), (this.rand.nextDouble() - 0.5D) * 2.0D, -this.rand.nextDouble(), (this.rand.nextDouble() - 0.5D) * 2.0D);
+				world.addParticle(ParticleTypes.PORTAL, getPosX() + (rand.nextDouble() - 0.5D) * (double) getWidth(), getPosY() + rand.nextDouble() * (double) getHeight() - 0.25D,
+						getPosZ() + (rand.nextDouble() - 0.5D) * (double) getWidth(), (rand.nextDouble() - 0.5D) * 2.0D, -rand.nextDouble(), (rand.nextDouble() - 0.5D) * 2.0D);
 			}
 
 			if (ticksExisted - timeDelivered > 100) {
@@ -104,10 +103,6 @@ public class EnderMailmanEntity extends MonsterEntity {
 
 		isJumping = false;
 		super.livingTick();
-	}
-
-	public void kill() {
-		attackEntityFrom(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
 	}
 
 	@Override
@@ -140,7 +135,6 @@ public class EnderMailmanEntity extends MonsterEntity {
 
 		if (world.isDaytime()) {
 			float f = getBrightness();
-
 			if (f > 0.5F && world.canBlockSeeSky(new BlockPos(this)) && rand.nextFloat() * 30.0F < (f - 0.4F) * 2.0F) {
 				teleportRandomly();
 			}
@@ -200,6 +194,51 @@ public class EnderMailmanEntity extends MonsterEntity {
 			entityDropItem(stack, 0.0F);
 		}
 	}
+	
+	private boolean teleportTo(double x, double y, double z) {
+		boolean canTeleport = attemptTeleport(x, y, z, false);
+		if (canTeleport) {
+			world.playSound((PlayerEntity) null, prevPosX, prevPosY, prevPosZ, SoundEvents.ENTITY_ENDERMAN_TELEPORT, getSoundCategory(), 1.0F, 1.0F);
+			playSound(SoundEvents.ENTITY_ENDERMAN_TELEPORT, 1.0F, 1.0F);
+		}
+
+		return canTeleport;
+	}
+	
+	protected boolean teleportRandomly() {
+		double x = getPosX() + (rand.nextDouble() - 0.5D) * 64.0D;
+		double y = getPosY() + (double) (rand.nextInt(64) - 32);
+		double z = getPosZ() + (rand.nextDouble() - 0.5D) * 64.0D;
+		return teleportTo(x, y, z);
+	}
+	
+	private boolean canPlacePackage(World world, BlockPos pos) {
+		return EnderMailBlocks.PACKAGE_BLOCK.getStampedState().isValidPosition(world, pos) && world.isAirBlock(pos) && Block.hasSolidSideOnTop(world, pos.down());
+	}
+	
+	private int findValidDeliveryHeight(BlockPos pos) {
+		int startY = pos.getY() <= 0 ? world.getSeaLevel() : pos.getY();
+		int upY = startY;
+		int downY = startY;
+		while (!(canPlacePackage(world, new BlockPos(pos.getX(), upY, pos.getZ())) || canPlacePackage(world, new BlockPos(pos.getX(), downY, pos.getZ())))
+				&& (upY < 255 || downY > 1)) {
+			upY++;
+			downY--;
+		}
+		BlockPos upPos = new BlockPos(pos.getX(), upY, pos.getZ());
+		BlockPos downPos = new BlockPos(pos.getX(), downY, pos.getZ());
+		if (upY < 255 && canPlacePackage(world, upPos)) {
+			return upY;
+		}
+		if (downY > 1 && canPlacePackage(world, downPos)) {
+			return downY;
+		}
+		return -1;
+	}
+	
+	public void kill() {
+		attackEntityFrom(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
+	}
 
 	public void setContents(NonNullList<ItemStack> contents) {
 		this.contents = contents;
@@ -221,28 +260,6 @@ public class EnderMailmanEntity extends MonsterEntity {
 		return getDistance(startingPos.getX(), startingPos.getY(), startingPos.getZ());
 	}
 
-	protected boolean teleportRandomly() {
-		double x = getPosX() + (rand.nextDouble() - 0.5D) * 64.0D;
-		double y = getPosY() + (double) (rand.nextInt(64) - 32);
-		double z = getPosZ() + (rand.nextDouble() - 0.5D) * 64.0D;
-		return teleportTo(x, y, z);
-	}
-
-	private boolean teleportTo(double x, double y, double z) {
-		EnderTeleportEvent event = new EnderTeleportEvent(this, x, y, z, 0);
-		if (MinecraftForge.EVENT_BUS.post(event)) {
-			return false;
-		}
-		boolean canTeleport = attemptTeleport(event.getTargetX(), event.getTargetY(), event.getTargetZ(), false);
-
-		if (canTeleport) {
-			world.playSound((PlayerEntity) null, prevPosX, prevPosY, prevPosZ, SoundEvents.ENTITY_ENDERMAN_TELEPORT, getSoundCategory(), 1.0F, 1.0F);
-			playSound(SoundEvents.ENTITY_ENDERMAN_TELEPORT, 1.0F, 1.0F);
-		}
-
-		return canTeleport;
-	}
-
 	public BlockPos getDeliveryPos() {
 		return deliveryPos;
 	}
@@ -254,30 +271,6 @@ public class EnderMailmanEntity extends MonsterEntity {
 
 	public BlockPos getStartingPos() {
 		return startingPos;
-	}
-
-	private boolean canPlacePackage(World world, BlockPos pos) {
-		return EnderMailBlocks.PACKAGE_BLOCK.getStampedState().isValidPosition(world, pos) && world.isAirBlock(pos) && world.getBlockState(new BlockPos(pos.getX(), pos.getY() - 1, pos.getZ())).isSolid();
-	}
-	
-	private int findValidDeliveryHeight(BlockPos pos) {
-		int startY = pos.getY() <= 0 ? world.getSeaLevel() : pos.getY();
-		int upY = startY;
-		int downY = startY;
-		while (!(canPlacePackage(world, new BlockPos(pos.getX(), upY, pos.getZ())) || canPlacePackage(world, new BlockPos(pos.getX(), downY, pos.getZ())))
-				&& (upY < 255 || downY > 1)) {
-			upY++;
-			downY--;
-		}
-		BlockPos upPos = new BlockPos(pos.getX(), upY, pos.getZ());
-		BlockPos downPos = new BlockPos(pos.getX(), downY, pos.getZ());
-		if (upY < 255 && canPlacePackage(world, upPos)) {
-			return upY;
-		}
-		if (downY > 1 && canPlacePackage(world, downPos)) {
-			return downY;
-		}
-		return -1;
 	}
 
 	public void setPackageController(ItemStack packageController) {

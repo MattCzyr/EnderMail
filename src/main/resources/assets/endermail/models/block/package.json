@@ -1,12 +1,12 @@
 {
-    "parent": "block/orientable",
-    "textures": {
-        "up": "endermail:blocks/package_side_3",
-        "down": "endermail:blocks/package_side_1",
-        "north": "endermail:blocks/package_side_1",
-        "south": "endermail:blocks/package_side_1",
-        "east": "endermail:blocks/package_side_2",
-        "west": "endermail:blocks/package_side_2",
-        "front": "endermail:blocks/package_side_1"
-    }
+	"parent": "block/orientable",
+	"textures": {
+		"up": "endermail:blocks/package_side_3",
+		"down": "endermail:blocks/package_side_1",
+		"north": "endermail:blocks/package_side_1",
+		"south": "endermail:blocks/package_side_1",
+		"east": "endermail:blocks/package_side_2",
+		"west": "endermail:blocks/package_side_2",
+		"front": "endermail:blocks/package_side_1"
+	}
 }

@@ -1,12 +1,12 @@
 {
-    "variants": {
-        "facing=north,stamped=false": { "model": "endermail:block/package" },
-        "facing=south,stamped=false": { "model": "endermail:block/package", "y": 180 },
-        "facing=west,stamped=false":  { "model": "endermail:block/package", "y": 270 },
-        "facing=east,stamped=false":  { "model": "endermail:block/package", "y": 90 },
-        "facing=north,stamped=true": { "model": "endermail:block/stamped_package" },
-        "facing=south,stamped=true": { "model": "endermail:block/stamped_package", "y": 180 },
-        "facing=west,stamped=true":  { "model": "endermail:block/stamped_package", "y": 270 },
-        "facing=east,stamped=true":  { "model": "endermail:block/stamped_package", "y": 90 }
-    }
+	"variants": {
+		"facing=north,stamped=false": { "model": "endermail:block/package" },
+		"facing=south,stamped=false": { "model": "endermail:block/package", "y": 180 },
+		"facing=west,stamped=false":  { "model": "endermail:block/package", "y": 270 },
+		"facing=east,stamped=false":  { "model": "endermail:block/package", "y": 90 },
+		"facing=north,stamped=true": { "model": "endermail:block/stamped_package" },
+		"facing=south,stamped=true": { "model": "endermail:block/stamped_package", "y": 180 },
+		"facing=west,stamped=true":  { "model": "endermail:block/stamped_package", "y": 270 },
+		"facing=east,stamped=true":  { "model": "endermail:block/stamped_package", "y": 90 }
+	}
 }
