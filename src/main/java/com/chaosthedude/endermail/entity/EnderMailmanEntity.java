@@ -379,7 +379,7 @@ public class EnderMailmanEntity extends MonsterEntity {
 					enderMailman.world.setBlockState(enderMailman.getStartingPos(), EnderMailBlocks.PACKAGE_BLOCK.getRandomlyRotatedStampedState(), 3);
 					enderMailman.world.setTileEntity(enderMailman.getStartingPos(), new PackageTileEntity(enderMailman.getContents()));
 					enderMailman.setContents(NonNullList.<ItemStack>withSize(PackageBlock.INVENTORY_SIZE, ItemStack.EMPTY));
-					enderMailman.getPackageController().setState(enderMailman.packageController, ControllerState.RETURNED);
+					enderMailman.getPackageController().setState(enderMailman.packageController, ControllerState.UNDELIVERABLE);
 				}
 
 				enderMailman.updateTimeDelivered();

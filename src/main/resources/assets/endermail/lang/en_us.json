@@ -25,7 +25,7 @@
     "string.endermail.error": "An error has occurred",
     "string.endermail.holdShift": "Hold Shift for contents",
     "string.endermail.maxDistance": "Max Distance",
-    "string.endermail.returned": "Returned to sender",
     "string.endermail.status": "Status",
-    "string.endermail.tooFar": "Too far to deliver"
+    "string.endermail.tooFar": "Too far to deliver",
+    "string.endermail.undeliverable": "Undeliverable"
 }

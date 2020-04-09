@@ -40,9 +40,9 @@ public class ClientEventHandler {
 
 					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.endermail.coordinates"), 5, 0, 0xFFFFFF, 3);
 					RenderUtils.drawConfiguredStringOnHUD(packageController.getDeliveryPos(stack).getX() + " " + packageController.getDeliveryPos(stack).getY() + " " + packageController.getDeliveryPos(stack).getZ(), 5, 0, 0xAAAAAA, 4);
-				} else if (packageController.getState(stack) == ControllerState.RETURNED) {
+				} else if (packageController.getState(stack) == ControllerState.UNDELIVERABLE) {
 					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.endermail.status"), 5, 0, 0xFFFFFF, 0);
-					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.endermail.returned"), 5, 0, 0xAAAAAA, 1);
+					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.endermail.undeliverable"), 5, 0, 0xAAAAAA, 1);
 				} else if (packageController.getState(stack) == ControllerState.TOOFAR) {
 					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.endermail.status"), 5, 0, 0xFFFFFF, 0);
 					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.endermail.tooFar"), 5, 0, 0xAAAAAA, 1);

@@ -5,7 +5,7 @@ public enum ControllerState {
 	DEFAULT(0),
 	DELIVERING(1),
 	DELIVERED(2),
-	RETURNED(3),
+	UNDELIVERABLE(3),
 	TOOFAR(4);
 
 	private int id;
