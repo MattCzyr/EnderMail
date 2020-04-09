@@ -6,7 +6,6 @@ import com.chaosthedude.endermail.util.RenderUtils;
 import com.mojang.blaze3d.platform.GlStateManager;
 
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
@@ -25,9 +24,9 @@ public class StampScreen extends Screen {
 	private Button confirmButton;
 	private Button cancelButton;
 
-	private TextFieldWidget xTextField;
-	private TextFieldWidget yTextField;
-	private TextFieldWidget zTextField;
+	private StampTextField xTextField;
+	private StampTextField yTextField;
+	private StampTextField zTextField;
 
 	private World world;
 	private PlayerEntity player;
@@ -44,8 +43,8 @@ public class StampScreen extends Screen {
 
 	@Override
 	public void init() {
-		setupButtons();
 		setupTextFields();
+		setupButtons();
 		minecraft.keyboardListener.enableRepeatEvents(true);
 	}
 
@@ -61,10 +60,10 @@ public class StampScreen extends Screen {
 		if (errored) {
 			drawCenteredString(font, I18n.format("string.endermail.error"), width / 2, height - 65, 0xAAAAAA);
 		}
-		RenderUtils.drawCenteredStringWithoutShadow(I18n.format("string.endermail.deliveryLocation"), width / 2, 78, 0xAAAAAA);
-		RenderUtils.drawCenteredStringWithoutShadow("X", (width / 2) - 45, 115, 0xAAAAAA);
-		RenderUtils.drawCenteredStringWithoutShadow("Y", (width / 2) + 0, 115, 0xAAAAAA);
-		RenderUtils.drawCenteredStringWithoutShadow("Z", (width / 2) + 45, 115, 0xAAAAAA);
+		RenderUtils.drawCenteredStringWithoutShadow(I18n.format("string.endermail.deliveryLocation"), width / 2, height / 2 - 32, 0xAAAAAA);
+		RenderUtils.drawCenteredStringWithoutShadow("X", (width / 2) - 45, height / 2 + 5, 0xAAAAAA);
+		RenderUtils.drawCenteredStringWithoutShadow("Y", (width / 2) + 0, height / 2 + 5, 0xAAAAAA);
+		RenderUtils.drawCenteredStringWithoutShadow("Z", (width / 2) + 45, height / 2 + 5, 0xAAAAAA);
 		
 		xTextField.render(mouseX, mouseY, partialTicks);
 		yTextField.render(mouseX, mouseY, partialTicks);
@@ -117,11 +116,12 @@ public class StampScreen extends Screen {
 	}
 
 	private void setupTextFields() {
-		xTextField = new TextFieldWidget(font, (width / 2) - 65, 90, 40, 20, "");
-		yTextField = new TextFieldWidget(font, (width / 2) - 20, 90, 40, 20, "");
-		zTextField = new TextFieldWidget(font, (width / 2) + 25, 90, 40, 20, "");
+		children.clear();
+		xTextField = new StampTextField(font, (width / 2) - 65, height / 2 - 20, 40, 20, "");
+		yTextField = new StampTextField(font, (width / 2) - 20, height / 2 - 20, 40, 20, "");
+		zTextField = new StampTextField(font, (width / 2) + 25, height / 2 - 20, 40, 20, "");
 	
-		setFocused(xTextField);
+		setFocusedDefault(xTextField);
 		xTextField.setFocused2(true);
 		
 		children.add(xTextField);
