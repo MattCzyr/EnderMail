@@ -1,6 +1,8 @@
 # Ender Mail
 
-Ender Mil is a Minecraft mod that allows players to deliver packages anywhere in the world.
+Ender Mail is a Minecraft mod that allows players to deliver packages anywhere in the world.
+
+[Downloads and more information can be found on Curse](https://www.curseforge.com/minecraft/mc-mods/ender-mail)
 
 ## License
 
