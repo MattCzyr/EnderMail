@@ -21,8 +21,8 @@ public class StampTextField extends TextFieldWidget {
 	private boolean pseudoEnableBackgroundDrawing = true;
 	private int pseudoMaxStringLength = 32;
 	private int pseudoLineScrollOffset;
-	private int pseudoEnabledColor = 0xcc00fa;
-	private int pseudoDisabledColor = 0xefb0ff;
+	private int pseudoEnabledColor = 0x6e6e6e;
+	private int pseudoDisabledColor = 0xcfcfcf;
 	private int pseudoCursorCounter;
 	private int pseudoSelectionEnd;
 

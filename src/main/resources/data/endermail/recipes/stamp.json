@@ -1,9 +1,8 @@
 {
-  "type": "forge:ore_shapeless",
+  "type": "crafting_shapeless",
   "ingredients": [
     {
-      "type": "forge:ore_dict",
-      "ore": "paper"
+      "item": "minecraft:paper"
     },
     {
       "item": "minecraft:ender_pearl"
