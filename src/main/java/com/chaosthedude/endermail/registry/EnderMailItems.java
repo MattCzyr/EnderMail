@@ -31,8 +31,8 @@ public class EnderMailItems {
 
 	@SubscribeEvent
 	public static void registerBlocks(final RegistryEvent.Register<Item> event) {
-		event.getRegistry().registerAll(new BlockItem(EnderMailBlocks.PACKAGE_BLOCK,
-				new Properties().group(ItemGroup.DECORATIONS)).setRegistryName(PackageBlock.NAME),
+		event.getRegistry().registerAll(
+				new BlockItem(EnderMailBlocks.PACKAGE_BLOCK, new Properties().group(ItemGroup.DECORATIONS)).setRegistryName(PackageBlock.NAME),
 				new PackageControllerItem().setRegistryName("package_controller"),
 				new Item(new Properties().group(ItemGroup.MISC)).setRegistryName("packing_tape"),
 				new Item(new Properties().group(ItemGroup.MISC)).setRegistryName("stamp"));

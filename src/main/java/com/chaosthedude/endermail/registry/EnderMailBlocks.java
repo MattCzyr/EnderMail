@@ -20,10 +20,12 @@ public class EnderMailBlocks {
 
 	@ObjectHolder(PackageTileEntity.NAME)
 	public static final TileEntityType<?> PACKAGE_TE_TYPE = null;
-
+	
 	@SubscribeEvent
 	public static void registerBlocks(final RegistryEvent.Register<Block> event) {
-		event.getRegistry().register(new PackageBlock().setRegistryName(PackageBlock.NAME));
+		event.getRegistry().registerAll(
+				new PackageBlock().setRegistryName(PackageBlock.NAME)
+		);
 	}
 
 	@SubscribeEvent

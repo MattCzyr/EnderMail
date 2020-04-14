@@ -372,14 +372,18 @@ public class EnderMailmanEntity extends MonsterEntity {
 					enderMailman.world.setBlockState(enderMailman.getDeliveryPos(), EnderMailBlocks.PACKAGE_BLOCK.getRandomlyRotatedStampedState(), 3);
 					enderMailman.world.setTileEntity(enderMailman.getDeliveryPos(), new PackageTileEntity(enderMailman.getContents()));
 					enderMailman.setContents(NonNullList.<ItemStack>withSize(PackageBlock.INVENTORY_SIZE, ItemStack.EMPTY));
-					enderMailman.getPackageController().setState(enderMailman.packageController, ControllerState.DELIVERED);
-					enderMailman.getPackageController().setDeliveryPos(enderMailman.packageController, enderMailman.getDeliveryPos());
+					if (enderMailman.getPackageController() != null) {
+						enderMailman.getPackageController().setState(enderMailman.packageController, ControllerState.DELIVERED);
+						enderMailman.getPackageController().setDeliveryPos(enderMailman.packageController, enderMailman.getDeliveryPos());
+					}
 				} else {
 					enderMailman.teleportToStartingPos();
 					enderMailman.world.setBlockState(enderMailman.getStartingPos(), EnderMailBlocks.PACKAGE_BLOCK.getRandomlyRotatedStampedState(), 3);
 					enderMailman.world.setTileEntity(enderMailman.getStartingPos(), new PackageTileEntity(enderMailman.getContents()));
 					enderMailman.setContents(NonNullList.<ItemStack>withSize(PackageBlock.INVENTORY_SIZE, ItemStack.EMPTY));
-					enderMailman.getPackageController().setState(enderMailman.packageController, ControllerState.UNDELIVERABLE);
+					if (enderMailman.getPackageController() != null) {
+						enderMailman.getPackageController().setState(enderMailman.packageController, ControllerState.UNDELIVERABLE);
+					}
 				}
 
 				enderMailman.updateTimeDelivered();
@@ -411,7 +415,9 @@ public class EnderMailmanEntity extends MonsterEntity {
 				enderMailman.setContents(tileEntityPackage.getContents());
 				enderMailman.setCarryingPackage(true);
 				enderMailman.world.setBlockState(enderMailman.startingPos, Blocks.AIR.getDefaultState());
-				enderMailman.getPackageController().setState(enderMailman.packageController, ControllerState.DELIVERING);
+				if (enderMailman.getPackageController() != null) {
+					enderMailman.getPackageController().setState(enderMailman.packageController, ControllerState.DELIVERING);
+				}
 				enderMailman.updateTimePickedUp();
 			} else {
 				enderMailman.setDelivering(false);
