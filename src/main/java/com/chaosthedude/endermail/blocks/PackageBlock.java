@@ -26,8 +26,8 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -51,6 +51,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 public class PackageBlock extends ContainerBlock {
 
@@ -106,9 +107,9 @@ public class PackageBlock extends ContainerBlock {
 				setState(false, world, pos);
 				return ActionResultType.SUCCESS;
 			} else if (!isStamped(state) && !player.isCrouching() && !holdingStamp) {
-				INamedContainerProvider container = getContainer(state, world, pos);
-				if (container != null) {
-					player.openContainer(container);
+				TileEntity te = world.getTileEntity(pos);
+				if (te != null && te instanceof PackageTileEntity) {
+					NetworkHooks.openGui((ServerPlayerEntity) player, (PackageTileEntity) te, pos);
 				}
 				return ActionResultType.SUCCESS;
 			}

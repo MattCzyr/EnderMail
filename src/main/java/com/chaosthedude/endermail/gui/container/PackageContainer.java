@@ -1,7 +1,6 @@
 package com.chaosthedude.endermail.gui.container;
 
 import com.chaosthedude.endermail.blocks.PackageBlock;
-import com.chaosthedude.endermail.blocks.te.PackageTileEntity;
 import com.chaosthedude.endermail.registry.EnderMailContainers;
 import com.chaosthedude.endermail.registry.EnderMailItems;
 
@@ -13,15 +12,15 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.INameable;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
-public class PackageContainer extends Container {
+public class PackageContainer extends Container implements INameable {
 
 	public static final String NAME = "package";
 
 	private final IInventory packageInventory;
-	private ITextComponent displayName;
 
 	public PackageContainer(int windowId, PlayerInventory playerInventory) {
 		this(windowId, playerInventory, new Inventory(PackageBlock.INVENTORY_SIZE));
@@ -30,10 +29,6 @@ public class PackageContainer extends Container {
 	public PackageContainer(int windowId, PlayerInventory playerInventory, IInventory packageInventory) {
 		super(EnderMailContainers.PACKAGE_CONTAINER, windowId);
 		this.packageInventory = packageInventory;
-		displayName = new StringTextComponent(I18n.format("block.endermail.package"));
-		if (packageInventory instanceof PackageTileEntity) {
-			displayName = ((PackageTileEntity) packageInventory).getDisplayName();
-		}
 		packageInventory.openInventory(playerInventory.player);
 		for (int j = 0; j < packageInventory.getSizeInventory(); ++j) {
 			addSlot(new Slot(packageInventory, j, 44 + j * 18, 20) {
@@ -92,8 +87,9 @@ public class PackageContainer extends Container {
 		packageInventory.closeInventory(player);
 	}
 
-	public ITextComponent getDisplayName() {
-		return displayName;
+	@Override
+	public ITextComponent getName() {
+		return new StringTextComponent(I18n.format("block.endermail.package"));
 	}
 
 }
