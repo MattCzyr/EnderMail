@@ -122,9 +122,8 @@ public class PackageBlock extends ContainerBlock {
 	public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
 		if (stack.hasDisplayName()) {
 			TileEntity tileentity = world.getTileEntity(pos);
-
 			if (tileentity instanceof PackageTileEntity) {
-				((PackageTileEntity) tileentity).setCustomName(stack.getDisplayName().getFormattedText());
+				((PackageTileEntity) tileentity).setCustomName(stack.getDisplayName());
 			}
 		}
 	}

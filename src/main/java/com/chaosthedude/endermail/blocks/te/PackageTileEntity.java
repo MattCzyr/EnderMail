@@ -17,7 +17,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 public class PackageTileEntity extends TileEntity implements IInventory, INamedContainerProvider {
 
@@ -29,7 +29,7 @@ public class PackageTileEntity extends TileEntity implements IInventory, INamedC
 	private int deliveryY;
 	private int deliveryZ;
 	private boolean hasDeliveryLocation;
-	protected String customName;
+	protected ITextComponent customName;
 
 	public PackageTileEntity() {
 		super(EnderMailBlocks.PACKAGE_TE_TYPE);
@@ -73,7 +73,7 @@ public class PackageTileEntity extends TileEntity implements IInventory, INamedC
 		hasDeliveryLocation = compound.getBoolean("HasDeliveryLocation");
 
 		if (compound.contains("CustomName", 8)) {
-			customName = compound.getString("CustomName");
+			customName = ITextComponent.Serializer.fromJson(compound.getString("CustomName"));
 		}
 	}
 
@@ -88,8 +88,8 @@ public class PackageTileEntity extends TileEntity implements IInventory, INamedC
 
 		compound.putBoolean("HasDeliveryLocation", hasDeliveryLocation);
 
-		if (hasCustomName()) {
-			compound.putString("CustomName", customName);
+		if (customName != null) {
+			compound.putString("CustomName", ITextComponent.Serializer.toJson(this.customName));
 		}
 
 		return compound;
@@ -177,7 +177,7 @@ public class PackageTileEntity extends TileEntity implements IInventory, INamedC
 
 	@Override
 	public ITextComponent getDisplayName() {
-		return new StringTextComponent(customName);
+		return (ITextComponent) (customName != null ? customName : new TranslationTextComponent("block.endermail.package"));
 	}
 
 	public NonNullList<ItemStack> getContents() {
@@ -199,12 +199,12 @@ public class PackageTileEntity extends TileEntity implements IInventory, INamedC
 		return null;
 	}
 
-	public void setCustomName(String name) {
+	public void setCustomName(ITextComponent name) {
 		customName = name;
 	}
-
+	
 	public boolean hasCustomName() {
-		return customName != null && !customName.isEmpty();
+		return customName != null;
 	}
 
 }
