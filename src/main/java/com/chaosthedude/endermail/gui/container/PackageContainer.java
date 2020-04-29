@@ -34,7 +34,7 @@ public class PackageContainer extends Container implements INameable {
 			addSlot(new Slot(packageInventory, j, 44 + j * 18, 20) {
 				@Override
 				public boolean isItemValid(ItemStack stack) {
-					return stack.getItem() != EnderMailItems.PACKAGE_ITEM;
+					return stack.getItem() != EnderMailItems.PACKAGE;
 				}
 			});
 		}

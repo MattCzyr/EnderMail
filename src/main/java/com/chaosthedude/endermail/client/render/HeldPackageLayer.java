@@ -31,7 +31,7 @@ public class HeldPackageLayer extends LayerRenderer<EnderMailmanEntity, EnderMai
 			float f = 0.5F;
 			matrixStack.scale(-0.5F, -0.5F, 0.5F);
 			matrixStack.rotate(Vector3f.YP.rotationDegrees(90.0F));
-			Minecraft.getInstance().getBlockRendererDispatcher().renderBlock(EnderMailBlocks.PACKAGE_BLOCK.getStampedState(), matrixStack, buffer, packedLight, OverlayTexture.NO_OVERLAY);
+			Minecraft.getInstance().getBlockRendererDispatcher().renderBlock(EnderMailBlocks.PACKAGE.getStampedState(), matrixStack, buffer, packedLight, OverlayTexture.NO_OVERLAY);
 			matrixStack.pop();
 		}
 	}

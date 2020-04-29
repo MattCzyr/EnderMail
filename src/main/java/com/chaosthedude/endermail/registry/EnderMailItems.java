@@ -1,6 +1,7 @@
 package com.chaosthedude.endermail.registry;
 
 import com.chaosthedude.endermail.EnderMail;
+import com.chaosthedude.endermail.blocks.LockerBlock;
 import com.chaosthedude.endermail.blocks.PackageBlock;
 import com.chaosthedude.endermail.items.PackageControllerItem;
 
@@ -18,7 +19,10 @@ import net.minecraftforge.registries.ObjectHolder;
 public class EnderMailItems {
 
 	@ObjectHolder(PackageBlock.NAME)
-	public static final Item PACKAGE_ITEM = null;
+	public static final Item PACKAGE = null;
+	
+	@ObjectHolder(LockerBlock.NAME)
+	public static final Item LOCKER = null;
 
 	@ObjectHolder(PackageControllerItem.NAME)
 	public static final PackageControllerItem PACKAGE_CONTROLLER = null;
@@ -32,7 +36,8 @@ public class EnderMailItems {
 	@SubscribeEvent
 	public static void registerBlocks(final RegistryEvent.Register<Item> event) {
 		event.getRegistry().registerAll(
-				new BlockItem(EnderMailBlocks.PACKAGE_BLOCK, new Properties().group(ItemGroup.DECORATIONS)).setRegistryName(PackageBlock.NAME),
+				new BlockItem(EnderMailBlocks.PACKAGE, new Properties().group(ItemGroup.DECORATIONS)).setRegistryName(PackageBlock.NAME),
+				new BlockItem(EnderMailBlocks.LOCKER, new Properties().group(ItemGroup.DECORATIONS)).setRegistryName(LockerBlock.NAME),
 				new PackageControllerItem().setRegistryName("package_controller"),
 				new Item(new Properties().group(ItemGroup.MISC)).setRegistryName("packing_tape"),
 				new Item(new Properties().group(ItemGroup.MISC)).setRegistryName("stamp"));

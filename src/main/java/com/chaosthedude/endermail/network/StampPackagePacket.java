@@ -20,11 +20,13 @@ public class StampPackagePacket {
 	private int deliveryX;
 	private int deliveryY;
 	private int deliveryZ;
+	
+	private String lockerID;
 
 	public StampPackagePacket() {
 	}
 
-	public StampPackagePacket(BlockPos packagePos, BlockPos deliveryPos) {
+	public StampPackagePacket(BlockPos packagePos, BlockPos deliveryPos, String lockerID) {
 		this.packageX = packagePos.getX();
 		this.packageY = packagePos.getY();
 		this.packageZ = packagePos.getZ();
@@ -32,6 +34,8 @@ public class StampPackagePacket {
 		this.deliveryX = deliveryPos.getX();
 		this.deliveryY = deliveryPos.getY();
 		this.deliveryZ = deliveryPos.getZ();
+		
+		this.lockerID = lockerID;
 	}
 
 	public StampPackagePacket(PacketBuffer buf) {
@@ -42,6 +46,8 @@ public class StampPackagePacket {
 		deliveryX = buf.readInt();
 		deliveryY = buf.readInt();
 		deliveryZ = buf.readInt();
+		
+		lockerID = buf.readString();
 	}
 
 	public void toBytes(PacketBuffer buf) {
@@ -52,11 +58,13 @@ public class StampPackagePacket {
 		buf.writeInt(deliveryX);
 		buf.writeInt(deliveryY);
 		buf.writeInt(deliveryZ);
+		
+		buf.writeString(lockerID);
 	}
 
 	public void handle(Supplier<NetworkEvent.Context> ctx) {
 		ctx.get().enqueueWork(() -> {
-			PackageBlock.stampPackage(ctx.get().getSender().world, new BlockPos(packageX, packageY, packageZ), new BlockPos(deliveryX, deliveryY, deliveryZ));
+			PackageBlock.stampPackage(ctx.get().getSender().world, new BlockPos(packageX, packageY, packageZ), new BlockPos(deliveryX, deliveryY, deliveryZ), lockerID);
 			ItemStack stampStack = ItemUtils.getHeldItem(ctx.get().getSender(), EnderMailItems.STAMP);
 			if (stampStack != null && !ctx.get().getSender().isCreative()) {
 				stampStack.setCount(stampStack.getCount() - 1);

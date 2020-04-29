@@ -1,0 +1,12 @@
+{
+	"variants": {
+		"facing=north,filled=false": { "model": "endermail:block/locker" },
+		"facing=south,filled=false": { "model": "endermail:block/locker", "y": 180 },
+		"facing=west,filled=false":  { "model": "endermail:block/locker", "y": 270 },
+		"facing=east,filled=false":  { "model": "endermail:block/locker", "y": 90 },
+		"facing=north,filled=true": { "model": "endermail:block/locker_filled" },
+		"facing=south,filled=true": { "model": "endermail:block/locker_filled", "y": 180 },
+		"facing=west,filled=true":  { "model": "endermail:block/locker_filled", "y": 270 },
+		"facing=east,filled=true":  { "model": "endermail:block/locker_filled", "y": 90 }
+	}
+}

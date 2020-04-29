@@ -10,7 +10,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class ScreenWrapper {
 
-	public static void openGUI(World world, PlayerEntity player, BlockPos packagePos) {
+	public static void openStampScreen(World world, PlayerEntity player, BlockPos packagePos) {
 		Minecraft.getInstance().displayGuiScreen(new StampScreen(world, player, packagePos));
 	}
 

@@ -1,7 +1,8 @@
 package com.chaosthedude.endermail.blocks.te;
 
-import com.chaosthedude.endermail.blocks.PackageBlock;
-import com.chaosthedude.endermail.gui.container.PackageContainer;
+import com.chaosthedude.endermail.blocks.LockerBlock;
+import com.chaosthedude.endermail.data.LockerWorldData;
+import com.chaosthedude.endermail.gui.container.LockerContainer;
 import com.chaosthedude.endermail.registry.EnderMailBlocks;
 import com.chaosthedude.endermail.registry.EnderMailItems;
 
@@ -15,41 +16,30 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
-public class PackageTileEntity extends TileEntity implements IInventory, INamedContainerProvider {
+public class LockerTileEntity extends TileEntity implements IInventory, INamedContainerProvider {
 
-	public static final String NAME = "package";
+	public static final String NAME = "locker";
 
-	private NonNullList<ItemStack> contents = NonNullList.<ItemStack>withSize(PackageBlock.INVENTORY_SIZE, ItemStack.EMPTY);
-	public int numPlayersUsing;
-	private int deliveryX;
-	private int deliveryY;
-	private int deliveryZ;
-	private String lockerID;
-	private boolean hasDeliveryLocation;
-	private boolean hasLockerID;
-	protected ITextComponent customName;
+	private NonNullList<ItemStack> contents = NonNullList.<ItemStack>withSize(LockerBlock.INVENTORY_SIZE, ItemStack.EMPTY);
+	protected String lockerID;
 
-	public PackageTileEntity() {
-		super(EnderMailBlocks.PACKAGE_TE_TYPE);
-		deliveryX = -1;
-		deliveryY = -1;
-		deliveryZ = -1;
+	public LockerTileEntity() {
+		super(EnderMailBlocks.LOCKER_TE_TYPE);
 		lockerID = "";
-		hasDeliveryLocation = false;
 	}
 
-	public PackageTileEntity(NonNullList<ItemStack> contents) {
-		super(EnderMailBlocks.PACKAGE_TE_TYPE);
+	public LockerTileEntity(NonNullList<ItemStack> contents) {
+		super(EnderMailBlocks.LOCKER_TE_TYPE);
 		this.contents = contents;
 	}
 
 	@Override
 	public int getSizeInventory() {
-		return PackageBlock.INVENTORY_SIZE;
+		return LockerBlock.INVENTORY_SIZE;
 	}
 
 	@Override
@@ -69,18 +59,7 @@ public class PackageTileEntity extends TileEntity implements IInventory, INamedC
 		contents = NonNullList.<ItemStack>withSize(getSizeInventory(), ItemStack.EMPTY);
 		ItemStackHelper.loadAllItems(compound, contents);
 
-		deliveryX = compound.getInt("DeliveryX");
-		deliveryY = compound.getInt("DeliveryY");
-		deliveryZ = compound.getInt("DeliveryZ");
-		
 		lockerID = compound.getString("LockerID");
-
-		hasDeliveryLocation = compound.getBoolean("HasDeliveryLocation");
-		hasLockerID = compound.getBoolean("HasLockerID");
-
-		if (compound.contains("CustomName", 8)) {
-			customName = ITextComponent.Serializer.fromJson(compound.getString("CustomName"));
-		}
 	}
 
 	@Override
@@ -88,18 +67,7 @@ public class PackageTileEntity extends TileEntity implements IInventory, INamedC
 		super.write(compound);
 		ItemStackHelper.saveAllItems(compound, contents);
 
-		compound.putInt("DeliveryX", deliveryX);
-		compound.putInt("DeliveryY", deliveryY);
-		compound.putInt("DeliveryZ", deliveryZ);
-		
 		compound.putString("LockerID", lockerID);
-
-		compound.putBoolean("HasDeliveryLocation", hasDeliveryLocation);
-		compound.putBoolean("HasLockerID", hasLockerID);
-
-		if (hasCustomName()) {
-			compound.putString("CustomName", ITextComponent.Serializer.toJson(this.customName));
-		}
 
 		return compound;
 	}
@@ -114,16 +82,6 @@ public class PackageTileEntity extends TileEntity implements IInventory, INamedC
 	@Override
 	public int getInventoryStackLimit() {
 		return 64;
-	}
-
-	@Override
-	public boolean receiveClientEvent(int id, int type) {
-		if (id == 1) {
-			numPlayersUsing = type;
-			return true;
-		} else {
-			return super.receiveClientEvent(id, type);
-		}
 	}
 
 	@Override
@@ -158,6 +116,7 @@ public class PackageTileEntity extends TileEntity implements IInventory, INamedC
 		if (stack.getCount() > this.getInventoryStackLimit()) {
 			stack.setCount(this.getInventoryStackLimit());
 		}
+		LockerBlock.setFilled(!isEmpty(), world, pos);
 	}
 
 	@Override
@@ -171,7 +130,7 @@ public class PackageTileEntity extends TileEntity implements IInventory, INamedC
 
 	@Override
 	public boolean isItemValidForSlot(int index, ItemStack stack) {
-		return stack.getItem() != EnderMailItems.PACKAGE;
+		return stack.getItem() == EnderMailItems.PACKAGE;
 	}
 
 	@Override
@@ -181,51 +140,57 @@ public class PackageTileEntity extends TileEntity implements IInventory, INamedC
 
 	@Override
 	public Container createMenu(int windowId, PlayerInventory playerInventory, PlayerEntity player) {
-		return new PackageContainer(windowId, playerInventory, this);
+		return new LockerContainer(windowId, playerInventory, this, pos, lockerID);
 	}
 
 	@Override
 	public ITextComponent getDisplayName() {
-		return (ITextComponent) (customName != null ? customName : new TranslationTextComponent("block.endermail.package"));
+		return (ITextComponent) (lockerID != null && !lockerID.isEmpty() ? new StringTextComponent(lockerID) : new TranslationTextComponent("block.endermail.locker"));
+	}
+	
+	@Override
+	public void remove() {
+		super.remove();
+		LockerWorldData data = LockerWorldData.get(world);
+		if (data != null) {
+			data.removeLocker(lockerID);
+		}
+	}
+	
+	public boolean isFull() {
+		for (ItemStack stack : contents) {
+			if (stack.isEmpty()) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public boolean addPackage(ItemStack stack) {
+		for (int i = 0; i < contents.size(); i++) {
+			if (contents.get(i).isEmpty()) {
+				setInventorySlotContents(i, stack);
+				LockerBlock.setFilled(true, world, pos);
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public NonNullList<ItemStack> getContents() {
 		return contents;
 	}
-
-	public void setDeliveryPos(BlockPos pos) {
-		hasDeliveryLocation = true;
-		deliveryX = pos.getX();
-		deliveryY = pos.getY();
-		deliveryZ = pos.getZ();
-	}
 	
 	public void setLockerID(String lockerID) {
-		hasLockerID = true;
-		this.lockerID = lockerID;
+		LockerWorldData data = LockerWorldData.get(world);
+		if (data != null) {
+			data.removeLocker(this.lockerID);
+			this.lockerID = data.createLocker(lockerID, pos);
+		}
 	}
 	
 	public String getLockerID() {
-		if (hasLockerID) {
-			return lockerID;
-		}
-		return null;
-	}
-
-	public BlockPos getDeliveryPos() {
-		if (hasDeliveryLocation) {
-			return new BlockPos(deliveryX, deliveryY, deliveryZ);
-		}
-
-		return null;
-	}
-
-	public void setCustomName(ITextComponent name) {
-		customName = name;
-	}
-
-	public boolean hasCustomName() {
-		return customName != null && !customName.getString().isEmpty();
+		return lockerID;
 	}
 
 }

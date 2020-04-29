@@ -80,7 +80,7 @@ public class PackageBlock extends ContainerBlock {
 			return ActionResultType.SUCCESS;
 		}
 		if (world.isRemote() && !isStamped(state) && player.getHeldItem(hand).getItem() == EnderMailItems.STAMP) {
-			ScreenWrapper.openGUI(world, player, pos);
+			ScreenWrapper.openStampScreen(world, player, pos);
 			return ActionResultType.SUCCESS;
 		} else if (!world.isRemote()) {
 			boolean holdingStamp = ItemUtils.isHolding(player, EnderMailItems.STAMP);
@@ -89,6 +89,7 @@ public class PackageBlock extends ContainerBlock {
 				ItemStack stack = ItemUtils.getHeldItem(player, EnderMailItems.PACKAGE_CONTROLLER);
 				PackageControllerItem packageController = (PackageControllerItem) stack.getItem();
 				BlockPos deliveryPos = getDeliveryPos(world, pos);
+				String lockerID = getLockerID(world, pos);
 				if (deliveryPos != null) {
 					packageController.setDeliveryPos(stack, deliveryPos);
 					int distanceToDelivery = (int) Math.sqrt(pos.distanceSq(deliveryPos));
@@ -98,7 +99,7 @@ public class PackageBlock extends ContainerBlock {
 						packageController.setMaxDistance(stack, ConfigHandler.GENERAL.maxDeliveryDistance.get());
 					} else {
 						packageController.setState(stack, ControllerState.DELIVERING);
-						EnderMailmanEntity enderMailman = new EnderMailmanEntity(EnderMailEntities.ENDER_MAILMAN_TYPE, world, pos, deliveryPos, stack);
+						EnderMailmanEntity enderMailman = new EnderMailmanEntity(EnderMailEntities.ENDER_MAILMAN_TYPE, world, pos, deliveryPos, lockerID, stack);
 						world.addEntity(enderMailman);
 					}
 				}
@@ -108,9 +109,9 @@ public class PackageBlock extends ContainerBlock {
 				return ActionResultType.SUCCESS;
 			} else if (!isStamped(state) && !player.isCrouching() && !holdingStamp) {
 				TileEntity te = world.getTileEntity(pos);
-				if (te != null && te instanceof PackageTileEntity) {
-					NetworkHooks.openGui((ServerPlayerEntity) player, (PackageTileEntity) te, pos);
-				}
+ 				if (te != null && te instanceof PackageTileEntity) {
+ 					NetworkHooks.openGui((ServerPlayerEntity) player, (PackageTileEntity) te, pos);
+ 				}
 				return ActionResultType.SUCCESS;
 			}
 		}
@@ -135,7 +136,7 @@ public class PackageBlock extends ContainerBlock {
 
 		if (te != null && te instanceof PackageTileEntity) {
 			PackageTileEntity tePackage = (PackageTileEntity) te;
-			ItemStack stackPackage = new ItemStack(EnderMailItems.PACKAGE_ITEM);
+			ItemStack stackPackage = new ItemStack(EnderMailItems.PACKAGE);
 			CompoundNBT stackTag = new CompoundNBT();
 			CompoundNBT itemTag = tePackage.writeItems(new CompoundNBT());
 			if (!itemTag.isEmpty()) {
@@ -241,12 +242,13 @@ public class PackageBlock extends ContainerBlock {
 		return state.get(STAMPED).booleanValue();
 	}
 
-	public static void stampPackage(World world, BlockPos packagePos, BlockPos deliveryPos) {
+	public static void stampPackage(World world, BlockPos packagePos, BlockPos deliveryPos, String lockerID) {
 		setState(true, world, packagePos);
 		TileEntity te = world.getTileEntity(packagePos);
 		if (te != null && te instanceof PackageTileEntity) {
 			PackageTileEntity tePackage = (PackageTileEntity) te;
 			tePackage.setDeliveryPos(deliveryPos);
+			tePackage.setLockerID(lockerID);
 		}
 	}
 
@@ -256,14 +258,22 @@ public class PackageBlock extends ContainerBlock {
 			PackageTileEntity tePackage = (PackageTileEntity) te;
 			return tePackage.getDeliveryPos();
 		}
-
+		return null;
+	}
+	
+	public static String getLockerID(World world, BlockPos pos) {
+		TileEntity te = world.getTileEntity(pos);
+		if (te != null && te instanceof PackageTileEntity) {
+			PackageTileEntity tePackage = (PackageTileEntity) te;
+			return tePackage.getLockerID();
+		}
 		return null;
 	}
 
 	public static void setState(boolean stamped, World world, BlockPos pos) {
 		BlockState iblockstate = world.getBlockState(pos);
 		TileEntity tileentity = world.getTileEntity(pos);
-		world.setBlockState(pos, EnderMailBlocks.PACKAGE_BLOCK.getDefaultState().with(FACING, iblockstate.get(FACING)).with(STAMPED, stamped), 3);
+		world.setBlockState(pos, EnderMailBlocks.PACKAGE.getDefaultState().with(FACING, iblockstate.get(FACING)).with(STAMPED, stamped), 3);
 		if (tileentity != null) {
 			tileentity.validate();
 			world.setTileEntity(pos, tileentity);

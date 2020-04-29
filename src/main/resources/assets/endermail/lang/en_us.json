@@ -4,8 +4,7 @@
 
     "_comment": "BLOCKS",
     "block.endermail.package": "Package",
-    "block.endermail.sealed_package": "Sealed Package",
-    "block.endermail.stamped_package": "Stamped Package",
+    "block.endermail.locker": "Locker",
 
     "_comment": "ITEMS",
     "item.endermail.package_controller": "Package Controller",
@@ -19,12 +18,16 @@
     "string.endermail.coordinates": "Coordinates",
     "string.endermail.deliver": "Deliver",
     "string.endermail.delivered": "Delivered",
+    "string.endermail.deliveredToLocker": "Delivered to Locker",
     "string.endermail.delivering": "Delivering",
     "string.endermail.deliveryDistance": "Delivery Distance",
     "string.endermail.deliveryLocation": "Delivery Location",
     "string.endermail.error": "An error has occurred",
     "string.endermail.holdShift": "Hold Shift for contents",
+    "string.endermail.lockerID": "Locker ID",
+    "string.endermail.id": "ID",
     "string.endermail.maxDistance": "Max Distance",
+    "string.endermail.setID": "Set ID",
     "string.endermail.status": "Status",
     "string.endermail.tooFar": "Too far to deliver",
     "string.endermail.undeliverable": "Undeliverable"

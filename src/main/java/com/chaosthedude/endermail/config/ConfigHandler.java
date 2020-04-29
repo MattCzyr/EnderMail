@@ -17,6 +17,8 @@ public class ConfigHandler {
 
 	public static class General {
 		public final ForgeConfigSpec.IntValue maxDeliveryDistance;
+		public final ForgeConfigSpec.IntValue lockerDeliveryRadius;
+		public final ForgeConfigSpec.BooleanValue lockerDeliveryRadiusIgnoresY;
 
 		General(ForgeConfigSpec.Builder builder) {
 			String desc;
@@ -24,6 +26,12 @@ public class ConfigHandler {
 
 			desc = "The maximum distance that packages can be delivered over. Set to -1 for no distance limit.";
 			maxDeliveryDistance = builder.comment(desc).defineInRange("maxDeliveryDistance", -1, -1, 1000000);
+			
+			desc = "Packages with delivery locations within this radius of a locker will be delivered to the locker.";
+			lockerDeliveryRadius = builder.comment(desc).defineInRange("lockerDeliveryRadius", 50, 0, 500);
+			
+			desc = "Determines whether a locker\'s delivery radius will ignore a package\'s delivery location\'s Y-coordinate.";
+			lockerDeliveryRadiusIgnoresY = builder.comment(desc).define("lockerDeliveryRadiusIgnoresY", true);
 
 			builder.pop();
 		}

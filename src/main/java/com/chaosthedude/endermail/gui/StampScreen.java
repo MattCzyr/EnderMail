@@ -23,6 +23,8 @@ public class StampScreen extends Screen {
 
 	private Button confirmButton;
 	private Button cancelButton;
+	
+	private StampTextField lockerIDTextField;
 
 	private StampTextField xTextField;
 	private StampTextField yTextField;
@@ -58,12 +60,16 @@ public class StampScreen extends Screen {
 		int j = (height - ySize) / 2;
 		RenderUtils.drawTexturedModalRect(i, j, 0, 0, xSize, ySize);
 		if (errored) {
-			drawCenteredString(font, I18n.format("string.endermail.error"), width / 2, height - 65, 0xAAAAAA);
+			RenderUtils.drawCenteredStringWithoutShadow(I18n.format("string.endermail.error"), width / 2, height - 65, 0xAAAAAA);
 		}
-		RenderUtils.drawCenteredStringWithoutShadow(I18n.format("string.endermail.deliveryLocation"), width / 2, height / 2 - 32, 0xAAAAAA);
-		RenderUtils.drawCenteredStringWithoutShadow("X", (width / 2) - 45, height / 2 + 5, 0xAAAAAA);
-		RenderUtils.drawCenteredStringWithoutShadow("Y", (width / 2) + 0, height / 2 + 5, 0xAAAAAA);
-		RenderUtils.drawCenteredStringWithoutShadow("Z", (width / 2) + 45, height / 2 + 5, 0xAAAAAA);
+		RenderUtils.drawCenteredStringWithoutShadow(I18n.format("string.endermail.lockerID"), width / 2, height / 2 + 8, 0xAAAAAA);
+		
+		RenderUtils.drawCenteredStringWithoutShadow(I18n.format("string.endermail.deliveryLocation"), width / 2, height / 2 - 42, 0xAAAAAA);
+		RenderUtils.drawCenteredStringWithoutShadow("X", (width / 2) - 45, height / 2 - 5, 0xAAAAAA);
+		RenderUtils.drawCenteredStringWithoutShadow("Y", (width / 2) + 0, height / 2 - 5, 0xAAAAAA);
+		RenderUtils.drawCenteredStringWithoutShadow("Z", (width / 2) + 45, height / 2 - 5, 0xAAAAAA);
+		
+		lockerIDTextField.render(mouseX, mouseY, partialTicks);
 		
 		xTextField.render(mouseX, mouseY, partialTicks);
 		yTextField.render(mouseX, mouseY, partialTicks);
@@ -75,14 +81,11 @@ public class StampScreen extends Screen {
 	@Override
 	public void tick() {
 		super.tick();
+		lockerIDTextField.tick();
 		xTextField.tick();
 		yTextField.tick();
 		zTextField.tick();
-		if (isNumeric(xTextField.getText()) && (yTextField.getText().isEmpty() || isNumeric(yTextField.getText())) && isNumeric(zTextField.getText())) {
-			confirmButton.active = true;
-		} else {
-			confirmButton.active = false;
-		}
+		confirmButton.active = (!lockerIDTextField.getText().isEmpty() && xTextField.getText().isEmpty() && yTextField.getText().isEmpty() && zTextField.getText().isEmpty()) || (isNumeric(xTextField.getText()) && (yTextField.getText().isEmpty() || isNumeric(yTextField.getText())) && isNumeric(zTextField.getText()));
 	}
 	
 	@Override
@@ -98,15 +101,20 @@ public class StampScreen extends Screen {
 		}));
 		confirmButton = addButton(new Button(width - 100, height - 40, 80, 20, I18n.format("string.endermail.confirm"), (onPress) -> {
 			try {
-				int x = Integer.valueOf(xTextField.getText());
+				String lockerID = lockerIDTextField.getText();
+				int x = -1;
 				int y = -1;
-				if (!yTextField.getText().isEmpty()) {
-					y = Integer.valueOf(yTextField.getText());
+				int z = -1;
+				if (lockerID.isEmpty() || (!xTextField.getText().isEmpty() && !yTextField.getText().isEmpty() && !zTextField.getText().isEmpty())) {
+					x = Integer.valueOf(xTextField.getText());
+					if (!yTextField.getText().isEmpty()) {
+						y = Integer.valueOf(yTextField.getText());
+					}
+					z = Integer.valueOf(zTextField.getText());
 				}
-				int z = Integer.valueOf(zTextField.getText());
 				BlockPos deliveryPos = new BlockPos(x, y, z);
 
-				EnderMail.network.sendToServer(new StampPackagePacket(packagePos, deliveryPos));
+				EnderMail.network.sendToServer(new StampPackagePacket(packagePos, deliveryPos, lockerID));
 				minecraft.displayGuiScreen(null);
 			} catch (NumberFormatException e) {
 				errored = true;
@@ -117,9 +125,12 @@ public class StampScreen extends Screen {
 
 	private void setupTextFields() {
 		children.clear();
-		xTextField = new StampTextField(font, (width / 2) - 65, height / 2 - 20, 40, 20, "");
-		yTextField = new StampTextField(font, (width / 2) - 20, height / 2 - 20, 40, 20, "");
-		zTextField = new StampTextField(font, (width / 2) + 25, height / 2 - 20, 40, 20, "");
+		
+		lockerIDTextField = new StampTextField(font, (width / 2) - 65, (height / 2) + 20, 130, 20, "");
+		
+		xTextField = new StampTextField(font, (width / 2) - 65, height / 2 - 30, 40, 20, "");
+		yTextField = new StampTextField(font, (width / 2) - 20, height / 2 - 30, 40, 20, "");
+		zTextField = new StampTextField(font, (width / 2) + 25, height / 2 - 30, 40, 20, "");
 	
 		setFocusedDefault(xTextField);
 		xTextField.setFocused2(true);
@@ -127,6 +138,7 @@ public class StampScreen extends Screen {
 		children.add(xTextField);
 		children.add(yTextField);
 		children.add(zTextField);
+		children.add(lockerIDTextField);
 	}
 
 	public static boolean isNumeric(String s) {
