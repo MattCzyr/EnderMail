@@ -24,7 +24,6 @@ public class PackageTileEntity extends TileEntity implements IInventory, INamedC
 	public static final String NAME = "package";
 
 	private NonNullList<ItemStack> contents = NonNullList.<ItemStack>withSize(PackageBlock.INVENTORY_SIZE, ItemStack.EMPTY);
-	public int numPlayersUsing;
 	private int deliveryX;
 	private int deliveryY;
 	private int deliveryZ;
@@ -114,16 +113,6 @@ public class PackageTileEntity extends TileEntity implements IInventory, INamedC
 	@Override
 	public int getInventoryStackLimit() {
 		return 64;
-	}
-
-	@Override
-	public boolean receiveClientEvent(int id, int type) {
-		if (id == 1) {
-			numPlayersUsing = type;
-			return true;
-		} else {
-			return super.receiveClientEvent(id, type);
-		}
 	}
 
 	@Override
