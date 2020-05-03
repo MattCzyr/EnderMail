@@ -23,12 +23,12 @@ public class StampScreen extends Screen {
 
 	private Button confirmButton;
 	private Button cancelButton;
-	
-	private StampTextField lockerIDTextField;
 
 	private StampTextField xTextField;
 	private StampTextField yTextField;
 	private StampTextField zTextField;
+	
+	private StampTextField lockerIDTextField;
 
 	private World world;
 	private PlayerEntity player;
@@ -62,12 +62,13 @@ public class StampScreen extends Screen {
 		if (errored) {
 			RenderUtils.drawCenteredStringWithoutShadow(I18n.format("string.endermail.error"), width / 2, height - 65, 0xAAAAAA);
 		}
-		RenderUtils.drawCenteredStringWithoutShadow(I18n.format("string.endermail.lockerID"), width / 2, height / 2 + 8, 0xAAAAAA);
 		
 		RenderUtils.drawCenteredStringWithoutShadow(I18n.format("string.endermail.deliveryLocation"), width / 2, height / 2 - 42, 0xAAAAAA);
 		RenderUtils.drawCenteredStringWithoutShadow("X", (width / 2) - 45, height / 2 - 5, 0xAAAAAA);
 		RenderUtils.drawCenteredStringWithoutShadow("Y", (width / 2) + 0, height / 2 - 5, 0xAAAAAA);
 		RenderUtils.drawCenteredStringWithoutShadow("Z", (width / 2) + 45, height / 2 - 5, 0xAAAAAA);
+		
+		RenderUtils.drawCenteredStringWithoutShadow(I18n.format("string.endermail.lockerID"), width / 2, height / 2 + 13, 0xAAAAAA);
 		
 		lockerIDTextField.render(mouseX, mouseY, partialTicks);
 		
@@ -126,11 +127,11 @@ public class StampScreen extends Screen {
 	private void setupTextFields() {
 		children.clear();
 		
-		lockerIDTextField = new StampTextField(font, (width / 2) - 65, (height / 2) + 20, 130, 20, "");
-		
 		xTextField = new StampTextField(font, (width / 2) - 65, height / 2 - 30, 40, 20, "");
 		yTextField = new StampTextField(font, (width / 2) - 20, height / 2 - 30, 40, 20, "");
 		zTextField = new StampTextField(font, (width / 2) + 25, height / 2 - 30, 40, 20, "");
+		
+		lockerIDTextField = new StampTextField(font, (width / 2) - 65, (height / 2) + 25, 130, 20, "");
 	
 		setFocusedDefault(xTextField);
 		xTextField.setFocused2(true);
