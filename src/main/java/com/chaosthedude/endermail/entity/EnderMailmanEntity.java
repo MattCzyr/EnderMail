@@ -203,6 +203,11 @@ public class EnderMailmanEntity extends MonsterEntity {
 			entityDropItem(stack, 0.0F);
 		}
 	}
+	
+	@Override
+	protected boolean isDespawnPeaceful() {
+		return false;
+	}
 
 	private boolean teleportTo(double x, double y, double z) {
 		boolean canTeleport = attemptTeleport(x, y, z, false);
