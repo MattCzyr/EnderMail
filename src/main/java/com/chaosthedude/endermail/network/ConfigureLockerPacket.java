@@ -2,6 +2,7 @@ package com.chaosthedude.endermail.network;
 
 import java.util.function.Supplier;
 
+import com.chaosthedude.endermail.blocks.LockerBlock;
 import com.chaosthedude.endermail.blocks.te.LockerTileEntity;
 
 import net.minecraft.network.PacketBuffer;
@@ -31,7 +32,7 @@ public class ConfigureLockerPacket {
 		lockerY = buf.readInt();
 		lockerZ = buf.readInt();
 
-		lockerID = buf.readString();
+		lockerID = buf.readString(LockerBlock.MAX_ID_LENGTH);
 	}
 
 	public void toBytes(PacketBuffer buf) {

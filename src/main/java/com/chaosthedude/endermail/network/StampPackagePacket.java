@@ -2,6 +2,7 @@ package com.chaosthedude.endermail.network;
 
 import java.util.function.Supplier;
 
+import com.chaosthedude.endermail.blocks.LockerBlock;
 import com.chaosthedude.endermail.blocks.PackageBlock;
 import com.chaosthedude.endermail.registry.EnderMailItems;
 import com.chaosthedude.endermail.util.ItemUtils;
@@ -47,7 +48,7 @@ public class StampPackagePacket {
 		deliveryY = buf.readInt();
 		deliveryZ = buf.readInt();
 		
-		lockerID = buf.readString();
+		lockerID = buf.readString(LockerBlock.MAX_ID_LENGTH);
 	}
 
 	public void toBytes(PacketBuffer buf) {
