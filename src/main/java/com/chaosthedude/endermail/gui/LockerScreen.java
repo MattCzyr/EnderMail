@@ -1,6 +1,7 @@
 package com.chaosthedude.endermail.gui;
 
 import com.chaosthedude.endermail.EnderMail;
+import com.chaosthedude.endermail.blocks.LockerBlock;
 import com.chaosthedude.endermail.gui.container.LockerContainer;
 import com.chaosthedude.endermail.network.ConfigureLockerPacket;
 import com.chaosthedude.endermail.util.RenderUtils;
@@ -129,6 +130,7 @@ public class LockerScreen extends ContainerScreen<LockerContainer> implements IH
 		children.clear();
 		idTextField = new TextFieldWidget(font, (width - xSize) / 2 + 75, (height - ySize) / 2 + 20, 80, 18, "");
 		idTextField.setText(containerLocker.getLockerID() != null ? containerLocker.getLockerID() : "");
+		idTextField.setMaxStringLength(LockerBlock.MAX_ID_LENGTH);
 		children.add(idTextField);
 	}
 

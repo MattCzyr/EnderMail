@@ -38,6 +38,7 @@ public class LockerBlock extends ContainerBlock {
 	public static final String NAME = "locker";
 	
 	public static final int INVENTORY_SIZE = 3;
+	public static final int MAX_ID_LENGTH = 12;
 
 	public LockerBlock() {
 		super(Properties.create(Material.IRON).hardnessAndResistance(2.0F).sound(SoundType.METAL));

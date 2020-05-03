@@ -57,16 +57,22 @@ public class LockerWorldData extends WorldSavedData implements Supplier<LockerWo
 	}
 	
 	public String createLocker(String lockerID, BlockPos pos) {
-		while (lockers.containsKey(lockerID)) {
-			lockerID += "-";
+		int suffixIndex = 2;
+		String fixedLockerID = lockerID;
+		while (lockers.containsKey(fixedLockerID) && fixedLockerID.length() < 12) {
+			fixedLockerID = lockerID + suffixIndex;
+			suffixIndex++;
 		}
-		lockers.put(lockerID, pos);
+		if (fixedLockerID.length() >= 12) {
+			return "";
+		}
+		lockers.put(fixedLockerID, pos);
 		markDirty();
 		System.out.println("After adding:");
 		for (String id : lockers.keySet()) {
 			System.out.println(id + ", " + lockers.get(id));
 		}
-		return lockerID;
+		return fixedLockerID;
 	}
 	
 	public void removeLocker(String lockerID) {
