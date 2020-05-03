@@ -1,5 +1,8 @@
 package com.chaosthedude.endermail.entity;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 import com.chaosthedude.endermail.blocks.PackageBlock;
@@ -252,12 +255,12 @@ public class EnderMailmanEntity extends MonsterEntity {
 		return null;
 	}
 
-	private int findValidDeliveryHeight(BlockPos pos) {
+	private int findValidDeliveryHeight(BlockPos pos, int maxHeightDifference) {
 		if (pos != null) {
 			int startY = pos.getY() <= 0 ? world.getSeaLevel() : pos.getY();
 			int upY = startY;
 			int downY = startY;
-			while (!(canPlacePackage(world, new BlockPos(pos.getX(), upY, pos.getZ())) || canPlacePackage(world, new BlockPos(pos.getX(), downY, pos.getZ()))) && (upY < 255 || downY > 1)) {
+			while (!(canPlacePackage(world, new BlockPos(pos.getX(), upY, pos.getZ())) || canPlacePackage(world, new BlockPos(pos.getX(), downY, pos.getZ()))) && (upY < 255 || downY > 1) && upY - startY < maxHeightDifference && startY - downY < maxHeightDifference) {
 				upY++;
 				downY--;
 			}
@@ -289,7 +292,7 @@ public class EnderMailmanEntity extends MonsterEntity {
 				setDeliveryPos(validLocker);
 				return;
 			}
-			int deliveryY = findValidDeliveryHeight(pos);
+			int deliveryY = findValidDeliveryHeight(pos, 255);
 			setDeliveryPos(new BlockPos(pos.getX(), deliveryY, pos.getZ()));
 		}
 	}
@@ -445,6 +448,7 @@ public class EnderMailmanEntity extends MonsterEntity {
 		@Override
 		public void tick() {
 			if (enderMailman.ticksExisted - enderMailman.getTimePickedUp() >= 100) {
+				boolean delivered = false;
 				if (enderMailman.shouldDeliverOnGround()) {
 					enderMailman.teleportToDeliveryPos();
 					enderMailman.world.setBlockState(enderMailman.getDeliveryPos(), EnderMailBlocks.PACKAGE.getRandomlyRotatedStampedState(), 3);
@@ -453,6 +457,7 @@ public class EnderMailmanEntity extends MonsterEntity {
 						enderMailman.getPackageController().setState(enderMailman.packageController, ControllerState.DELIVERED);
 						enderMailman.getPackageController().setDeliveryPos(enderMailman.packageController, enderMailman.getDeliveryPos());
 					}
+					delivered = true;
 				} else if (enderMailman.shouldDeliverToLocker()) {
 					TileEntity te = enderMailman.world.getTileEntity(enderMailman.getDeliveryPos());
 					if (te != null && te instanceof LockerTileEntity) {
@@ -465,23 +470,30 @@ public class EnderMailmanEntity extends MonsterEntity {
 								enderMailman.getPackageController().setState(enderMailman.packageController, ControllerState.DELIVERED_TO_LOCKER);
 								enderMailman.getPackageController().setDeliveryPos(enderMailman.packageController, enderMailman.getDeliveryPos());
 							}
+							delivered = true;
 						} else {
-							Direction[] directions = { Direction.NORTH, Direction.EAST, Direction.WEST, Direction.SOUTH };
-							Direction randomDirection = directions[new Random().nextInt(4)];
-							BlockPos newDeliveryPos = enderMailman.getDeliveryPos().offset(randomDirection);
-							int y = enderMailman.findValidDeliveryHeight(newDeliveryPos);
-							if (y > 0) {
-								newDeliveryPos = new BlockPos(newDeliveryPos.getX(), y, newDeliveryPos.getZ());
-								enderMailman.world.setBlockState(newDeliveryPos, EnderMailBlocks.PACKAGE.getRandomlyRotatedStampedState(), 3);
-								enderMailman.world.setTileEntity(newDeliveryPos, new PackageTileEntity(enderMailman.getContents()));
-								if (enderMailman.getPackageController() != null) {
-									enderMailman.getPackageController().setState(enderMailman.packageController, ControllerState.DELIVERED);
-									enderMailman.getPackageController().setDeliveryPos(enderMailman.packageController, newDeliveryPos);
+							int y = -1;
+							List<Direction> directions = new ArrayList<Direction>(Arrays.asList(Direction.NORTH, Direction.EAST, Direction.WEST, Direction.SOUTH));
+							while (y < 0 && !directions.isEmpty()) {
+								Direction randomDirection = directions.get(new Random().nextInt(directions.size()));
+								directions.remove(randomDirection);
+								BlockPos newDeliveryPos = enderMailman.getDeliveryPos().offset(randomDirection);
+								y = enderMailman.findValidDeliveryHeight(newDeliveryPos, 8);
+								if (y > 0) {
+									newDeliveryPos = new BlockPos(newDeliveryPos.getX(), y, newDeliveryPos.getZ());
+									enderMailman.world.setBlockState(newDeliveryPos, EnderMailBlocks.PACKAGE.getRandomlyRotatedStampedState(), 3);
+									enderMailman.world.setTileEntity(newDeliveryPos, new PackageTileEntity(enderMailman.getContents()));
+									if (enderMailman.getPackageController() != null) {
+										enderMailman.getPackageController().setState(enderMailman.packageController, ControllerState.DELIVERED);
+										enderMailman.getPackageController().setDeliveryPos(enderMailman.packageController, newDeliveryPos);
+									}
+									delivered = true;
 								}
 							}
 						}
 					}
-				} else {
+				}
+				if (!delivered) {
 					enderMailman.teleportToStartingPos();
 					enderMailman.world.setBlockState(enderMailman.getStartingPos(), EnderMailBlocks.PACKAGE.getRandomlyRotatedStampedState(), 3);
 					enderMailman.world.setTileEntity(enderMailman.getStartingPos(), new PackageTileEntity(enderMailman.getContents()));
