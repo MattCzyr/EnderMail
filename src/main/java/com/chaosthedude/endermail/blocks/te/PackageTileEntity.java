@@ -42,7 +42,7 @@ public class PackageTileEntity extends TileEntity implements IInventory, INamedC
 	}
 
 	public PackageTileEntity(NonNullList<ItemStack> contents) {
-		super(EnderMailBlocks.PACKAGE_TE_TYPE);
+		this();
 		this.contents = contents;
 	}
 

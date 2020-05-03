@@ -33,7 +33,7 @@ public class LockerTileEntity extends TileEntity implements IInventory, INamedCo
 	}
 
 	public LockerTileEntity(NonNullList<ItemStack> contents) {
-		super(EnderMailBlocks.LOCKER_TE_TYPE);
+		this();
 		this.contents = contents;
 	}
 

@@ -68,19 +68,11 @@ public class LockerWorldData extends WorldSavedData implements Supplier<LockerWo
 		}
 		lockers.put(fixedLockerID, pos);
 		markDirty();
-		System.out.println("After adding:");
-		for (String id : lockers.keySet()) {
-			System.out.println(id + ", " + lockers.get(id));
-		}
 		return fixedLockerID;
 	}
 	
 	public void removeLocker(String lockerID) {
 		lockers.remove(lockerID);
-		System.out.println("After removing:");
-		for (String id : lockers.keySet()) {
-			System.out.println(id + ", " + lockers.get(id));
-		}
 		markDirty();
 	}
 	
