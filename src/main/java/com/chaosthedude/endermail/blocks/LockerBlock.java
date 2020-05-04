@@ -54,7 +54,10 @@ public class LockerBlock extends ContainerBlock {
 	
 	@Override
 	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result) {
-		if (!world.isRemote() && !player.isCrouching()) {
+		if (world.isRemote()) {
+			return ActionResultType.SUCCESS;
+		}
+		if (!player.isCrouching()) {
 			TileEntity te = world.getTileEntity(pos);
 			if (te != null && te instanceof LockerTileEntity) {
 				LockerTileEntity lockerTe = (LockerTileEntity) te;
