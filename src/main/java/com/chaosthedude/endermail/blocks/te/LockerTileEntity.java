@@ -99,12 +99,16 @@ public class LockerTileEntity extends TileEntity implements IInventory, INamedCo
 
 	@Override
 	public ItemStack decrStackSize(int index, int count) {
-		return ItemStackHelper.getAndSplit(contents, index, count);
+		ItemStack result = ItemStackHelper.getAndSplit(contents, index, count);
+		LockerBlock.setFilled(!isEmpty(), world, pos);
+		return result;
 	}
 
 	@Override
 	public ItemStack removeStackFromSlot(int index) {
-		return ItemStackHelper.getAndRemove(contents, index);
+		ItemStack result = ItemStackHelper.getAndRemove(contents, index);
+		LockerBlock.setFilled(!isEmpty(), world, pos);
+		return result;
 	}
 
 	@Override
@@ -136,6 +140,7 @@ public class LockerTileEntity extends TileEntity implements IInventory, INamedCo
 	@Override
 	public void clear() {
 		contents.clear();
+		LockerBlock.setFilled(!isEmpty(), world, pos);
 	}
 
 	@Override
