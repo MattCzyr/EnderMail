@@ -453,7 +453,6 @@ public class EnderMailmanEntity extends MonsterEntity {
 		public void tick() {
 			if (enderMailman.ticksExisted - enderMailman.getTimePickedUp() >= 100) {
 				boolean delivered = false;
-				BlockPos deliveredToPos = null;
 				if (enderMailman.shouldDeliverOnGround()) {
 					enderMailman.teleportToDeliveryPos();
 					enderMailman.world.setBlockState(enderMailman.getDeliveryPos(), EnderMailBlocks.PACKAGE.getRandomlyRotatedStampedState(), 3);
@@ -499,7 +498,7 @@ public class EnderMailmanEntity extends MonsterEntity {
 										enderMailman.getPackageController().setDeliveryPos(enderMailman.packageController, newDeliveryPos);
 									}
 									if (ConfigHandler.GENERAL.logDeliveries.get()) {
-										EnderMail.logger.info("Delivered package to " + newDeliveryPos + ", " + newDeliveryPos + ", " + newDeliveryPos + " near locker " + lockerTe.getLockerID());
+										EnderMail.logger.info("Delivered package to " + newDeliveryPos.getX() + ", " + newDeliveryPos.getY() + ", " + newDeliveryPos.getZ() + " near locker " + lockerTe.getLockerID());
 									}
 									delivered = true;
 								}

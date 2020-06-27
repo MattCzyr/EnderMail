@@ -31,12 +31,12 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 public class LockerBlock extends ContainerBlock {
-	
+
 	public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
 	public static final BooleanProperty FILLED = BooleanProperty.create("filled");
-	
+
 	public static final String NAME = "locker";
-	
+
 	public static final int INVENTORY_SIZE = 3;
 	public static final int MAX_ID_LENGTH = 12;
 
@@ -44,14 +44,14 @@ public class LockerBlock extends ContainerBlock {
 		super(Properties.create(Material.IRON).hardnessAndResistance(2.0F).sound(SoundType.METAL));
 		setDefaultState(getDefaultState().with(FACING, Direction.NORTH).with(FILLED, false));
 	}
-	
+
 	@Override
 	protected void fillStateContainer(Builder<Block, BlockState> builder) {
 		super.fillStateContainer(builder);
 		builder.add(FACING);
 		builder.add(FILLED);
 	}
-	
+
 	@Override
 	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result) {
 		if (world.isRemote()) {
@@ -67,7 +67,7 @@ public class LockerBlock extends ContainerBlock {
 		}
 		return ActionResultType.PASS;
 	}
-	
+
 	@Override
 	public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
 		if (stack.hasDisplayName()) {
@@ -78,7 +78,7 @@ public class LockerBlock extends ContainerBlock {
 			}
 		}
 	}
-	
+
 	@Override
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
 		return this.getDefaultState().with(FACING, context.getPlacementHorizontalFacing().getOpposite());
@@ -98,12 +98,12 @@ public class LockerBlock extends ContainerBlock {
 	public BlockState mirror(BlockState state, Mirror mirror) {
 		return state.rotate(mirror.toRotation((Direction) state.get(FACING)));
 	}
-	
+
 	@Override
 	public TileEntity createNewTileEntity(IBlockReader world) {
 		return new LockerTileEntity();
 	}
-	
+
 	public static void setFilled(boolean filled, World world, BlockPos pos) {
 		BlockState state = world.getBlockState(pos);
 		if (state.getBlock() == EnderMailBlocks.LOCKER) {

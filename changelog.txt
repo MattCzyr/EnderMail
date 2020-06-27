@@ -1,32 +1,51 @@
-------------------------------------------
+---------------------------------------------
+ VERSION 1.1.1 - 1.15.2, 1.12.2
+---------------------------------------------
+ 1.5.2, 1.12.2:
+  - Changed package and packing tape recipes to use tags for some items
+  - Slightly changed locker texture
+
+---------------------------------------------
+ VERSION 1.1.0 - 1.15.2, 1.12.2
+---------------------------------------------
+ 1.15.2, 1.12.2:
+  - Added a Locker block with unique, configurable IDs that packages can be delivered to
+  - Added a field to the stamp GUI to specify a locker ID to deliver to
+  - Added config fields to specify the radius around lockers in which packages will be delivered to that locker
+  - Added a config field to enable logging of package deliveries in the console
+ 1.15.2:
+  - Fixed a bug that caused Ender mailmen to despawn in peaceful mode
+
+
+---------------------------------------------
  VERSION 1.0.3 - 1.15.2, 1.14.4, 1.12.2
-------------------------------------------
-- 1.15.2, 1.14.4:
+---------------------------------------------
+ 1.15.2, 1.14.4:
   - Fixed a bug that prevented packages from being opened on servers
-- 1.12.2:
+ 1.12.2:
   - Fixed a bug that caused stamped packages to appear unstamped on servers
 
 
-------------------------------------------
+---------------------------------------------
  VERSION 1.0.2 - 1.15.2, 1.14.4, 1.12.2
-------------------------------------------
-- 1.15.2, 1.14.4, 1.12.2:
+---------------------------------------------
+ 1.15.2, 1.14.4, 1.12.2:
   - Fixed a crash that occurred infrequently when moving a package controller around the inventory while a delivery was in progress
 
 
-------------------------------------------
+---------------------------------------------
  VERSION 1.0.1 - 1.12.2
-------------------------------------------
-- 1.12.2:
+---------------------------------------------
+ 1.12.2:
   - Fixed a bug in the stamp GUI that allowed negative coordinates to be entered only if all previous text fields were filled
 
 
-------------------------------------------
+---------------------------------------------
  VERSION 1.0.0 - 1.15.2, 1.14.4, 1.12.2
-------------------------------------------
-- 1.15.2:
+---------------------------------------------
+ 1.15.2:
   - Initial release for 1.15.2 (Forge 31.1.37)
-- 1.14.4:
+ 1.14.4:
   - Initial release for 1.14.4 (Forge 28.2.3)
-- 1.12.2:
+ 1.12.2:
   - Initial release for 1.12.2 (Forge 14.23.5.2847)
