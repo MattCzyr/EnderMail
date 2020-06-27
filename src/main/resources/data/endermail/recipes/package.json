@@ -2,7 +2,7 @@
   "type": "crafting_shapeless",
   "ingredients": [
     {
-      "item": "minecraft:chest"
+      "tag": "forge:chests/wooden"
     },
     {
       "item": "endermail:packing_tape"
