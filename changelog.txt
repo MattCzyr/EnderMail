@@ -1,9 +1,11 @@
 ---------------------------------------------
- VERSION 1.1.1 - 1.15.2, 1.12.2
+ VERSION 1.1.1 - 1.16.1, 1.15.2, 1.12.2
 ---------------------------------------------
- 1.5.2, 1.12.2:
+ 1.16.1, 1.15.2, 1.12.2:
+  - Initial release for 1.16.1 (Forge 32.0.63)
   - Changed package and packing tape recipes to use tags for some items
-  - Slightly changed locker texture
+  - Updated locker texture
+
 
 ---------------------------------------------
  VERSION 1.1.0 - 1.15.2, 1.12.2
