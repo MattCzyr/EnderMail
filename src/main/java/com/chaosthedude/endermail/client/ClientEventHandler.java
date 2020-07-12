@@ -6,6 +6,7 @@ import com.chaosthedude.endermail.registry.EnderMailItems;
 import com.chaosthedude.endermail.util.ControllerState;
 import com.chaosthedude.endermail.util.ItemUtils;
 import com.chaosthedude.endermail.util.RenderUtils;
+import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.ChatScreen;
@@ -27,37 +28,38 @@ public class ClientEventHandler {
 	public void onRenderTick(RenderTickEvent event) {
 		if (event.phase == Phase.END && mc.player != null && !mc.gameSettings.hideGUI && !mc.gameSettings.showDebugInfo
 				&& (mc.currentScreen == null || (ConfigHandler.CLIENT.displayWithChatOpen.get() && mc.currentScreen instanceof ChatScreen))) {
+			final MatrixStack matrixStack = new MatrixStack();
 			final PlayerEntity player = mc.player;
 			final ItemStack stack = ItemUtils.getHeldItem(player, EnderMailItems.PACKAGE_CONTROLLER);
 			if (stack != null && stack.getItem() instanceof PackageControllerItem) {
 				final PackageControllerItem packageController = (PackageControllerItem) stack.getItem();
 				if (packageController.getState(stack) == ControllerState.DELIVERING) {
-					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.endermail.status"), 5, 0, 0xFFFFFF, 0);
-					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.endermail.delivering"), 5, 0, 0xAAAAAA, 1);
+					RenderUtils.drawConfiguredStringOnHUD(matrixStack, I18n.format("string.endermail.status"), 5, 0, 0xFFFFFF, 0);
+					RenderUtils.drawConfiguredStringOnHUD(matrixStack, I18n.format("string.endermail.delivering"), 5, 0, 0xAAAAAA, 1);
 				} else if (packageController.getState(stack) == ControllerState.DELIVERED) {
-					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.endermail.status"), 5, 0, 0xFFFFFF, 0);
-					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.endermail.delivered"), 5, 0, 0xAAAAAA, 1);
+					RenderUtils.drawConfiguredStringOnHUD(matrixStack, I18n.format("string.endermail.status"), 5, 0, 0xFFFFFF, 0);
+					RenderUtils.drawConfiguredStringOnHUD(matrixStack, I18n.format("string.endermail.delivered"), 5, 0, 0xAAAAAA, 1);
 
-					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.endermail.coordinates"), 5, 0, 0xFFFFFF, 3);
-					RenderUtils.drawConfiguredStringOnHUD(packageController.getDeliveryPos(stack).getX() + " " + packageController.getDeliveryPos(stack).getY() + " " + packageController.getDeliveryPos(stack).getZ(), 5, 0, 0xAAAAAA, 4);
+					RenderUtils.drawConfiguredStringOnHUD(matrixStack, I18n.format("string.endermail.coordinates"), 5, 0, 0xFFFFFF, 3);
+					RenderUtils.drawConfiguredStringOnHUD(matrixStack, packageController.getDeliveryPos(stack).getX() + " " + packageController.getDeliveryPos(stack).getY() + " " + packageController.getDeliveryPos(stack).getZ(), 5, 0, 0xAAAAAA, 4);
 				} else if (packageController.getState(stack) == ControllerState.DELIVERED_TO_LOCKER) {
-					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.endermail.status"), 5, 0, 0xFFFFFF, 0);
-					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.endermail.deliveredToLocker"), 5, 0, 0xAAAAAA, 1);
+					RenderUtils.drawConfiguredStringOnHUD(matrixStack, I18n.format("string.endermail.status"), 5, 0, 0xFFFFFF, 0);
+					RenderUtils.drawConfiguredStringOnHUD(matrixStack, I18n.format("string.endermail.deliveredToLocker"), 5, 0, 0xAAAAAA, 1);
 
-					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.endermail.coordinates"), 5, 0, 0xFFFFFF, 3);
-					RenderUtils.drawConfiguredStringOnHUD(packageController.getDeliveryPos(stack).getX() + " " + packageController.getDeliveryPos(stack).getY() + " " + packageController.getDeliveryPos(stack).getZ(), 5, 0, 0xAAAAAA, 4);
+					RenderUtils.drawConfiguredStringOnHUD(matrixStack, I18n.format("string.endermail.coordinates"), 5, 0, 0xFFFFFF, 3);
+					RenderUtils.drawConfiguredStringOnHUD(matrixStack, packageController.getDeliveryPos(stack).getX() + " " + packageController.getDeliveryPos(stack).getY() + " " + packageController.getDeliveryPos(stack).getZ(), 5, 0, 0xAAAAAA, 4);
 				} else if (packageController.getState(stack) == ControllerState.UNDELIVERABLE) {
-					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.endermail.status"), 5, 0, 0xFFFFFF, 0);
-					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.endermail.undeliverable"), 5, 0, 0xAAAAAA, 1);
+					RenderUtils.drawConfiguredStringOnHUD(matrixStack, I18n.format("string.endermail.status"), 5, 0, 0xFFFFFF, 0);
+					RenderUtils.drawConfiguredStringOnHUD(matrixStack, I18n.format("string.endermail.undeliverable"), 5, 0, 0xAAAAAA, 1);
 				} else if (packageController.getState(stack) == ControllerState.TOOFAR) {
-					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.endermail.status"), 5, 0, 0xFFFFFF, 0);
-					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.endermail.tooFar"), 5, 0, 0xAAAAAA, 1);
+					RenderUtils.drawConfiguredStringOnHUD(matrixStack, I18n.format("string.endermail.status"), 5, 0, 0xFFFFFF, 0);
+					RenderUtils.drawConfiguredStringOnHUD(matrixStack, I18n.format("string.endermail.tooFar"), 5, 0, 0xAAAAAA, 1);
 
-					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.endermail.deliveryDistance"), 5, 0, 0xFFFFFF, 3);
-					RenderUtils.drawConfiguredStringOnHUD(String.valueOf(packageController.getDeliveryDistance(stack)), 5, 0, 0xAAAAAA, 4);
+					RenderUtils.drawConfiguredStringOnHUD(matrixStack, I18n.format("string.endermail.deliveryDistance"), 5, 0, 0xFFFFFF, 3);
+					RenderUtils.drawConfiguredStringOnHUD(matrixStack, String.valueOf(packageController.getDeliveryDistance(stack)), 5, 0, 0xAAAAAA, 4);
 
-					RenderUtils.drawConfiguredStringOnHUD(I18n.format("string.endermail.maxDistance"), 5, 0, 0xFFFFFF, 6);
-					RenderUtils.drawConfiguredStringOnHUD(String.valueOf(packageController.getMaxDistance(stack)), 5, 0, 0xAAAAAA, 7);
+					RenderUtils.drawConfiguredStringOnHUD(matrixStack, I18n.format("string.endermail.maxDistance"), 5, 0, 0xFFFFFF, 6);
+					RenderUtils.drawConfiguredStringOnHUD(matrixStack, String.valueOf(packageController.getMaxDistance(stack)), 5, 0, 0xAAAAAA, 7);
 				}
 			}
 		}

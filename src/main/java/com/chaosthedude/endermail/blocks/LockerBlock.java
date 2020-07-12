@@ -74,7 +74,7 @@ public class LockerBlock extends ContainerBlock {
 			TileEntity tileentity = world.getTileEntity(pos);
 
 			if (tileentity instanceof LockerTileEntity) {
-				((LockerTileEntity) tileentity).setLockerID(stack.getDisplayName().getFormattedText());
+				((LockerTileEntity) tileentity).setLockerID(stack.getDisplayName().getString());
 			}
 		}
 	}

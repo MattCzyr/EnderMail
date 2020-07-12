@@ -23,12 +23,6 @@ public class PackageControllerItem extends Item {
 
 	public PackageControllerItem() {
 		super(new Properties().group(ItemGroup.TOOLS));
-		addPropertyOverride(new ResourceLocation("state"), new IItemPropertyGetter() {
-			@Override
-			public float call(ItemStack stack, @Nullable World world, @Nullable LivingEntity entity) {
-				return getState(stack).getID();
-			}
-		});
 	}
 
 	@Override

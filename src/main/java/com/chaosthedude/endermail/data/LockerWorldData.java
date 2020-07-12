@@ -88,7 +88,7 @@ public class LockerWorldData extends WorldSavedData implements Supplier<LockerWo
 	@Nullable
 	public static LockerWorldData get(World world) {
 		if (!world.isRemote()) {
-			return get(world.getServer().getWorld(world.getDimension().getType()));
+			return get(world.getServer().getWorld(world.func_234923_W_()));
 		}
 		return null;
 	}

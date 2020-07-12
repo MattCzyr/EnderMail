@@ -5,6 +5,7 @@ import com.chaosthedude.endermail.gui.container.PackageContainer;
 import com.chaosthedude.endermail.registry.EnderMailBlocks;
 import com.chaosthedude.endermail.registry.EnderMailItems;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
@@ -63,8 +64,8 @@ public class PackageTileEntity extends TileEntity implements IInventory, INamedC
 	}
 
 	@Override
-	public void read(CompoundNBT compound) {
-		super.read(compound);
+	public void func_230337_a_(BlockState state, CompoundNBT compound) {
+	     super.func_230337_a_(state, compound);
 		contents = NonNullList.<ItemStack>withSize(getSizeInventory(), ItemStack.EMPTY);
 		ItemStackHelper.loadAllItems(compound, contents);
 
@@ -78,7 +79,7 @@ public class PackageTileEntity extends TileEntity implements IInventory, INamedC
 		hasLockerID = compound.getBoolean("HasLockerID");
 
 		if (compound.contains("CustomName", 8)) {
-			customName = ITextComponent.Serializer.fromJson(compound.getString("CustomName"));
+			customName = ITextComponent.Serializer.func_240643_a_(compound.getString("CustomName"));
 		}
 	}
 

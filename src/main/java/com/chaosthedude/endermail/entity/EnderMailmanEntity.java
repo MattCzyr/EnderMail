@@ -19,7 +19,8 @@ import com.chaosthedude.endermail.util.ControllerState;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.goal.HurtByTargetGoal;
 import net.minecraft.entity.ai.goal.LookAtGoal;
@@ -89,13 +90,9 @@ public class EnderMailmanEntity extends MonsterEntity {
 		goalSelector.addGoal(12, new EnderMailmanEntity.DieGoal(this));
 		goalSelector.addGoal(1, new HurtByTargetGoal(this));
 	}
-
-	@Override
-	protected void registerAttributes() {
-		super.registerAttributes();
-		getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(40.0D);
-		getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.30000001192092896D);
-		getAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(64.0D);
+	
+	public static AttributeModifierMap.MutableAttribute createAttributes() {
+		return MonsterEntity.func_234295_eP_().func_233815_a_(Attributes.field_233818_a_, 40.0D).func_233815_a_(Attributes.field_233821_d_, (double)0.3F).func_233815_a_(Attributes.field_233823_f_, 7.0D).func_233815_a_(Attributes.field_233819_b_, 64.0D);
 	}
 
 	@Override
@@ -145,7 +142,7 @@ public class EnderMailmanEntity extends MonsterEntity {
 
 		if (world.isDaytime()) {
 			float f = getBrightness();
-			if (f > 0.5F && world.canBlockSeeSky(new BlockPos(this)) && rand.nextFloat() * 30.0F < (f - 0.4F) * 2.0F) {
+			if (f > 0.5F && world.canBlockSeeSky(func_233580_cy_()) && rand.nextFloat() * 30.0F < (f - 0.4F) * 2.0F) {
 				teleportRandomly();
 			}
 		}
@@ -414,7 +411,7 @@ public class EnderMailmanEntity extends MonsterEntity {
 	}
 
 	public boolean isAtStartingPos() {
-		return getPosition() == startingPos;
+		return func_233580_cy_() == startingPos;
 	}
 
 	public void setStartingPos(BlockPos pos) {

@@ -1,6 +1,7 @@
 package com.chaosthedude.endermail.util;
 
 import com.chaosthedude.endermail.config.ConfigHandler;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 
@@ -18,26 +19,26 @@ public class RenderUtils {
 	private static final Minecraft mc = Minecraft.getInstance();
 	private static final FontRenderer fontRenderer = mc.fontRenderer;
 
-	public static void drawStringLeft(String string, FontRenderer fontRenderer, int x, int y, int color) {
-		fontRenderer.drawStringWithShadow(string, x, y, color);
+	public static void drawStringLeft(MatrixStack matrixStack, String string, FontRenderer fontRenderer, int x, int y, int color) {
+		fontRenderer.func_238405_a_(matrixStack, string, x, y, color);
 	}
 
-	public static void drawStringRight(String string, FontRenderer fontRenderer, int x, int y, int color) {
-		fontRenderer.drawStringWithShadow(string, x - fontRenderer.getStringWidth(string), y, color);
+	public static void drawStringRight(MatrixStack matrixStack, String string, FontRenderer fontRenderer, int x, int y, int color) {
+		fontRenderer.func_238405_a_(matrixStack, string, x - fontRenderer.getStringWidth(string), y, color);
 	}
 
-	public static void drawConfiguredStringOnHUD(String string, int xOffset, int yOffset, int color, int relativeLineOffset) {
+	public static void drawConfiguredStringOnHUD(MatrixStack matrixStack, String string, int xOffset, int yOffset, int color, int relativeLineOffset) {
 		final int lineOffset = ConfigHandler.CLIENT.lineOffset.get() + relativeLineOffset;
 		yOffset += lineOffset * 9;
 		if (ConfigHandler.CLIENT.overlaySide.get() == OverlaySide.LEFT) {
-			drawStringLeft(string, fontRenderer, xOffset + 2, yOffset + 2, color);
+			drawStringLeft(matrixStack, string, fontRenderer, xOffset + 2, yOffset + 2, color);
 		} else {
-			drawStringRight(string, fontRenderer, mc.getMainWindow().getScaledWidth() - xOffset - 2, yOffset + 2, color);
+			drawStringRight(matrixStack, string, fontRenderer, mc.getMainWindow().getScaledWidth() - xOffset - 2, yOffset + 2, color);
 		}
 	}
 
-	public static void drawCenteredStringWithoutShadow(String string, int x, int y, int color) {
-		fontRenderer.drawString(string, (float) (x - fontRenderer.getStringWidth(string) / 2), (float) y, color);
+	public static void drawCenteredStringWithoutShadow(MatrixStack matrixStack, String string, int x, int y, int color) {
+		fontRenderer.func_238421_b_(matrixStack, string, (float) (x - fontRenderer.getStringWidth(string) / 2), (float) y, color);
 	}
 
 	public static void drawTexturedModalRect(int x, int y, int textureX, int textureY, int width, int height) {

@@ -44,6 +44,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -79,12 +80,14 @@ public class PackageBlock extends ContainerBlock {
 		if (player.isSpectator()) {
 			return ActionResultType.SUCCESS;
 		}
+		boolean holdingStamp = ItemUtils.isHolding(player, EnderMailItems.STAMP);
+		boolean holdingPackageController = ItemUtils.isHolding(player, EnderMailItems.PACKAGE_CONTROLLER);
 		if (world.isRemote() && !isStamped(state) && player.getHeldItem(hand).getItem() == EnderMailItems.STAMP) {
 			ScreenWrapper.openStampScreen(world, player, pos);
 			return ActionResultType.SUCCESS;
+		} else if (world.isRemote() && ((!isStamped(state) && !player.isSneaking()) || (isStamped(state) && (player.isCrouching() || (player.getHeldItem(hand) == ItemStack.EMPTY && !holdingStamp && !holdingPackageController))))) {
+			return ActionResultType.SUCCESS;
 		} else if (!world.isRemote()) {
-			boolean holdingStamp = ItemUtils.isHolding(player, EnderMailItems.STAMP);
-			boolean holdingPackageController = ItemUtils.isHolding(player, EnderMailItems.PACKAGE_CONTROLLER);
 			if (isStamped(state) && player.getHeldItem(hand).getItem() == EnderMailItems.PACKAGE_CONTROLLER) {
 				ItemStack stack = ItemUtils.getHeldItem(player, EnderMailItems.PACKAGE_CONTROLLER);
 				PackageControllerItem packageController = (PackageControllerItem) stack.getItem();
@@ -104,7 +107,7 @@ public class PackageBlock extends ContainerBlock {
 					}
 				}
 				return ActionResultType.SUCCESS;
-			} else if (isStamped(state) && (player.isCrouching() || (player.getHeldItem(hand) == null && !holdingStamp && !holdingPackageController))) {
+			} else if (isStamped(state) && (player.isCrouching() || (player.getHeldItem(hand) == ItemStack.EMPTY && !holdingStamp && !holdingPackageController))) {
 				setState(false, world, pos);
 				return ActionResultType.SUCCESS;
 			} else if (!isStamped(state) && !player.isCrouching() && !holdingStamp) {
@@ -183,7 +186,7 @@ public class PackageBlock extends ContainerBlock {
 	@Override
 	public void addInformation(ItemStack stack, IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flag) {
 		super.addInformation(stack, world, tooltip, flag);
-		if (Screen.hasShiftDown()) {
+		if (Screen.func_231173_s_()) {
 			CompoundNBT temp = stack.getTag();
 			if (temp != null && temp.contains("BlockEntityTag", 10)) {
 				CompoundNBT tag = temp.getCompound("BlockEntityTag");
@@ -192,15 +195,15 @@ public class PackageBlock extends ContainerBlock {
 					ItemStackHelper.loadAllItems(tag, content);
 					for (ItemStack contentStack : content) {
 						if (!contentStack.isEmpty()) {
-							ITextComponent textComponent = contentStack.getDisplayName().deepCopy();
-							textComponent.appendText(" x").appendText(String.valueOf(contentStack.getCount())).applyTextStyle(TextFormatting.GRAY);
+							IFormattableTextComponent textComponent = contentStack.getDisplayName().func_230532_e_();
+							textComponent.func_240702_b_(" x").func_240702_b_(String.valueOf(contentStack.getCount())).func_240699_a_(TextFormatting.GRAY);
 							tooltip.add(textComponent);
 						}
 					}
 				}
 			}
 		} else {
-			tooltip.add(new StringTextComponent(I18n.format("string.endermail.holdShift")).applyTextStyles(TextFormatting.ITALIC, TextFormatting.GRAY));
+			tooltip.add(new StringTextComponent(I18n.format("string.endermail.holdShift")).func_240701_a_(TextFormatting.ITALIC, TextFormatting.GRAY));
 		}
 	}
 

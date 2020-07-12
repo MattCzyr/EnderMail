@@ -6,14 +6,23 @@ import org.apache.logging.log4j.Logger;
 import com.chaosthedude.endermail.client.ClientEventHandler;
 import com.chaosthedude.endermail.client.render.EnderMailmanRenderFactory;
 import com.chaosthedude.endermail.config.ConfigHandler;
+import com.chaosthedude.endermail.entity.EnderMailmanEntity;
 import com.chaosthedude.endermail.gui.LockerScreen;
 import com.chaosthedude.endermail.gui.PackageScreen;
+import com.chaosthedude.endermail.items.PackageControllerItem;
 import com.chaosthedude.endermail.network.ConfigureLockerPacket;
 import com.chaosthedude.endermail.network.StampPackagePacket;
 import com.chaosthedude.endermail.registry.EnderMailContainers;
 import com.chaosthedude.endermail.registry.EnderMailEntities;
+import com.chaosthedude.endermail.registry.EnderMailItems;
 
 import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
+import net.minecraft.item.IItemPropertyGetter;
+import net.minecraft.item.ItemModelsProperties;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -31,7 +40,7 @@ public class EnderMail {
 
 	public static final String MODID = "endermail";
 	public static final String NAME = "Ender Mail";
-	public static final String VERSION = "1.1.1";
+	public static final String VERSION = "1.1.2";
 
 	public static final Logger logger = LogManager.getLogger(MODID);
 
@@ -55,6 +64,8 @@ public class EnderMail {
 		network = NetworkRegistry.newSimpleChannel(new ResourceLocation(EnderMail.MODID, EnderMail.MODID), () -> "1.0", s -> true, s -> true);
 		network.registerMessage(1, StampPackagePacket.class, StampPackagePacket::toBytes, StampPackagePacket::new, StampPackagePacket::handle);
 		network.registerMessage(2, ConfigureLockerPacket.class, ConfigureLockerPacket::toBytes, ConfigureLockerPacket::new, ConfigureLockerPacket::handle);
+		
+		GlobalEntityTypeAttributes.put(EnderMailEntities.ENDER_MAILMAN_TYPE, EnderMailmanEntity.createAttributes().func_233813_a_());
 	}
 	
 	public void clientInit(FMLClientSetupEvent event) {
@@ -62,6 +73,17 @@ public class EnderMail {
  		ScreenManager.registerFactory(EnderMailContainers.PACKAGE_CONTAINER, PackageScreen::new);
  		ScreenManager.registerFactory(EnderMailContainers.LOCKER_CONTAINER, LockerScreen::new);
  		RenderingRegistry.registerEntityRenderingHandler(EnderMailEntities.ENDER_MAILMAN_TYPE, new EnderMailmanRenderFactory());
+ 		
+ 		ItemModelsProperties.func_239418_a_(EnderMailItems.PACKAGE_CONTROLLER, new ResourceLocation("state"), new IItemPropertyGetter() {
+			@Override
+			public float call(ItemStack stack, ClientWorld world, LivingEntity entity) {
+				if (stack.getItem() == EnderMailItems.PACKAGE_CONTROLLER) {
+					PackageControllerItem packageController = (PackageControllerItem) stack.getItem();
+					return packageController.getState(stack).getID();
+				}
+				return 0F;
+			}
+		});
  	}
 
 }
