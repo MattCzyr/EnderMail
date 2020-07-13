@@ -24,7 +24,10 @@ import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.ItemModelsProperties;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
@@ -52,7 +55,9 @@ public class EnderMail {
 		instance = this;
 
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::preInit);
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientInit);
+		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+			FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientInit);
+		});
 		
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigHandler.GENERAL_SPEC);
 		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ConfigHandler.CLIENT_SPEC);
@@ -68,6 +73,7 @@ public class EnderMail {
 		GlobalEntityTypeAttributes.put(EnderMailEntities.ENDER_MAILMAN_TYPE, EnderMailmanEntity.createAttributes().func_233813_a_());
 	}
 	
+	@OnlyIn(Dist.CLIENT)
 	public void clientInit(FMLClientSetupEvent event) {
  		MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
  		ScreenManager.registerFactory(EnderMailContainers.PACKAGE_CONTAINER, PackageScreen::new);
