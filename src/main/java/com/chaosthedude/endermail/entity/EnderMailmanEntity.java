@@ -348,7 +348,7 @@ public class EnderMailmanEntity extends MonsterEntity {
 	}
 	
 	public boolean hasPackageController() {
-		return packageController != null && packageController != ItemStack.EMPTY;
+		return packageController != null && !packageController.isEmpty();
 	}
 
 	public boolean isCarryingPackage() {
@@ -550,7 +550,7 @@ public class EnderMailmanEntity extends MonsterEntity {
 				enderMailman.setContents(tileEntityPackage.getContents());
 				enderMailman.setCarryingPackage(true);
 				enderMailman.world.setBlockState(enderMailman.startingPos, Blocks.AIR.getDefaultState());
-				if (enderMailman.getPackageController() != null) {
+				if (enderMailman.hasPackageController()) {
 					enderMailman.getPackageControllerItem().setState(enderMailman.packageController, ControllerState.DELIVERING);
 				}
 				enderMailman.updateTimePickedUp();
