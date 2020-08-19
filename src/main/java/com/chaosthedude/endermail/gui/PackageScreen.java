@@ -37,8 +37,8 @@ public class PackageScreen extends ContainerScreen<PackageContainer> implements 
 
 	@Override
 	protected void func_230451_b_(MatrixStack matrixStack, int mouseX, int mouseY) {
-		field_230712_o_.func_238422_b_(matrixStack, containerPackage.getDisplayName(), 8, 6, 4210752);
-		field_230712_o_.func_238422_b_(matrixStack, playerInventory.getDisplayName(), 8, ySize - 96 + 2, 4210752);
+		field_230712_o_.func_243248_b(matrixStack, containerPackage.getDisplayName(), 8, 6, 4210752);
+		field_230712_o_.func_243248_b(matrixStack, playerInventory.getDisplayName(), 8, ySize - 96 + 2, 4210752);
 	}
 
 	@Override
