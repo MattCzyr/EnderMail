@@ -39,7 +39,7 @@ public class StampTextField extends TextFieldWidget {
 		if (getVisible()) {
 			if (pseudoEnableBackgroundDrawing) {
 				final int color = (int) (255.0F * 0.25f);
-				RenderUtils.drawRect(field_230690_l_, field_230691_m_, field_230690_l_ + func_230998_h_(), field_230691_m_ + getHeight(), color / 2 << 24);
+				RenderUtils.drawRect(field_230690_l_, field_230691_m_, field_230690_l_ + func_230998_h_(), field_230691_m_ + func_238483_d_(), color / 2 << 24);
 			}
 			boolean showLabel = !func_230999_j_() && getText().isEmpty();
             int i = showLabel ? labelColor : (pseudoIsEnabled ? pseudoEnabledColor : pseudoDisabledColor);
@@ -50,7 +50,7 @@ public class StampTextField extends TextFieldWidget {
 			boolean flag = j >= 0 && j <= s.length();
 			boolean flag1 = func_230999_j_() && pseudoCursorCounter / 6 % 2 == 0 && flag;
 			int l = pseudoEnableBackgroundDrawing ? field_230690_l_ + 4 : field_230690_l_;
-			int i1 = pseudoEnableBackgroundDrawing ? field_230691_m_ + (getHeight() - 8) / 2 : field_230691_m_;
+			int i1 = pseudoEnableBackgroundDrawing ? field_230691_m_ + (func_238483_d_() - 8) / 2 : field_230691_m_;
 			int j1 = l;
 
 			if (k > s.length()) {
