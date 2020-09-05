@@ -1,0 +1,34 @@
+{
+    "_comment": "Ender Mail Language File",
+    "_comment": "Russian - Russian Federation",
+
+    "_comment": "БЛОКИ",
+    "block.endermail.package": "Посылка",
+    "block.endermail.locker": "Ячейка",
+
+    "_comment": "ПРЕДМЕТЫ",
+    "item.endermail.package_controller": "Контроллер посылки",
+    "item.endermail.packing_tape": "Скотч",
+    "item.endermail.stamp": "Марка",
+
+    "_comment": "СТРОКИ",
+    "string.endermail.cancel": "Отмена",
+    "string.endermail.close": "Закрыть",
+    "string.endermail.confirm": "Утвердить",
+    "string.endermail.coordinates": "Координаты",
+    "string.endermail.deliver": "Доставить",
+    "string.endermail.delivered": "Доставлено",
+    "string.endermail.deliveredToLocker": "Отправлено в ячейке",
+    "string.endermail.delivering": "Доставление",
+    "string.endermail.deliveryDistance": "Расстояние доставки",
+    "string.endermail.deliveryLocation": "Место доставки",
+    "string.endermail.error": "Произошла ошибка, переведено сообществом модовестник",
+    "string.endermail.holdShift": "Удерживайте Shift для содержимого",
+    "string.endermail.lockerID": "ID ячейки",
+    "string.endermail.id": "ID",
+    "string.endermail.maxDistance": "Макс. расстояние",
+    "string.endermail.setID": "Установить ID",
+    "string.endermail.status": "Статус",
+    "string.endermail.tooFar": "Слишком далеко, чтобы доставить",
+    "string.endermail.undeliverable": "Невозможно доставить"
+}
