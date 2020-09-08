@@ -22,7 +22,7 @@
     "string.endermail.delivering": "Доставление",
     "string.endermail.deliveryDistance": "Расстояние доставки",
     "string.endermail.deliveryLocation": "Место доставки",
-    "string.endermail.error": "Произошла ошибка, переведено сообществом модовестник",
+    "string.endermail.error": "Произошла ошибка",
     "string.endermail.holdShift": "Удерживайте Shift для содержимого",
     "string.endermail.lockerID": "ID ячейки",
     "string.endermail.id": "ID",
