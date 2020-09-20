@@ -1,6 +1,6 @@
 {
     "_comment": "Ender Mail Language File",
-    "_comment": "English - UNITED STATES",
+    "_comment": "Chinese(Simplified) - China Mainland",
 
     "_comment": "BLOCKS",
     "block.endermail.package": "包裹",
@@ -9,7 +9,7 @@
     "_comment": "ITEMS",
     "item.endermail.package_controller": "包裹控制器",
     "item.endermail.packing_tape": "包装胶带",
-    "item.endermail.stamp": "邮件",
+    "item.endermail.stamp": "邮票",
 
     "_comment": "STRINGS",
     "string.endermail.cancel": "取消",
