@@ -1,0 +1,33 @@
+{
+    "_comment": "Ender Mail Language File",
+    "_comment": "Français - France",
+
+    "_comment": "BLOCS",
+    "block.endermail.package": "Colis",
+    "block.endermail.locker": "Casier",
+
+    "_comment": "OBJETS",
+    "item.endermail.package_controller": "Contrôleur de colis",
+    "item.endermail.packing_tape": "Ruban adhésif",
+    "item.endermail.stamp": "Timbre",
+
+    "_comment": "CHAÎNES",
+    "string.endermail.cancel": "Annuler",
+    "string.endermail.close": "Fermer",
+    "string.endermail.confirm": "Confirmer",
+    "string.endermail.coordinates": "Coordonées",
+    "string.endermail.delivered": "Livré",
+    "string.endermail.deliveredToLocker": "Livré dans le casier",
+    "string.endermail.delivering": "Livraison",
+    "string.endermail.deliveryDistance": "Distance de livraison",
+    "string.endermail.deliveryLocation": "Lieu de livraison",
+    "string.endermail.error": "Une erreur est survenue",
+    "string.endermail.holdShift": "Maintenez la touche Maj pour voir le contenu",
+    "string.endermail.lockerID": "ID du casier",
+    "string.endermail.id": "ID",
+    "string.endermail.maxDistance": "Distance maximale",
+    "string.endermail.setID": "Choisisez ID",
+    "string.endermail.status": "Statut",
+    "string.endermail.tooFar": "Trop loin pour livrer",
+    "string.endermail.undeliverable": "Non livrable"
+}
