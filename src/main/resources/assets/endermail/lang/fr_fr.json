@@ -16,6 +16,7 @@
     "string.endermail.close": "Fermer",
     "string.endermail.confirm": "Confirmer",
     "string.endermail.coordinates": "Coordonées",
+	"string.endermail.deliver": "Livrer",
     "string.endermail.delivered": "Livré",
     "string.endermail.deliveredToLocker": "Livré dans le casier",
     "string.endermail.delivering": "Livraison",
