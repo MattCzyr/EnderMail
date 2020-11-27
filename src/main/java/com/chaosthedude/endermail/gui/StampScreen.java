@@ -45,63 +45,63 @@ public class StampScreen extends Screen {
 	}
 
 	@Override
-	public void func_231160_c_() {
+	public void init() {
 		setupTextFields();
 		setupButtons();
-		field_230706_i_.keyboardListener.enableRepeatEvents(true);
+		minecraft.keyboardListener.enableRepeatEvents(true);
 	}
 
 	@Override
-	public void func_230430_a_(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		int xSize = 178;
 		int ySize = 222;
 		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-		field_230706_i_.getTextureManager().bindTexture(TEXTURE);
-		int i = (field_230708_k_ - xSize) / 2;
-		int j = (field_230709_l_ - ySize) / 2;
+		minecraft.getTextureManager().bindTexture(TEXTURE);
+		int i = (width - xSize) / 2;
+		int j = (height - ySize) / 2;
 		RenderUtils.drawTexturedModalRect(i, j, 0, 0, xSize, ySize);
 		if (errored) {
-			RenderUtils.drawCenteredStringWithoutShadow(matrixStack, I18n.format("string.endermail.error"), field_230708_k_ / 2, field_230709_l_ - 65, 0xAAAAAA);
+			RenderUtils.drawCenteredStringWithoutShadow(matrixStack, I18n.format("string.endermail.error"), width / 2, height - 65, 0xAAAAAA);
 		}
 		
-		RenderUtils.drawCenteredStringWithoutShadow(matrixStack, I18n.format("string.endermail.deliveryLocation"), field_230708_k_ / 2, field_230709_l_ / 2 - 42, 0xAAAAAA);
-		RenderUtils.drawCenteredStringWithoutShadow(matrixStack, "X", (field_230708_k_ / 2) - 45, field_230709_l_ / 2 - 5, 0xAAAAAA);
-		RenderUtils.drawCenteredStringWithoutShadow(matrixStack, "Y", (field_230708_k_ / 2) + 0, field_230709_l_ / 2 - 5, 0xAAAAAA);
-		RenderUtils.drawCenteredStringWithoutShadow(matrixStack, "Z", (field_230708_k_ / 2) + 45, field_230709_l_ / 2 - 5, 0xAAAAAA);
+		RenderUtils.drawCenteredStringWithoutShadow(matrixStack, I18n.format("string.endermail.deliveryLocation"), width / 2, height / 2 - 42, 0xAAAAAA);
+		RenderUtils.drawCenteredStringWithoutShadow(matrixStack, "X", (width / 2) - 45, height / 2 - 5, 0xAAAAAA);
+		RenderUtils.drawCenteredStringWithoutShadow(matrixStack, "Y", (width / 2) + 0, height / 2 - 5, 0xAAAAAA);
+		RenderUtils.drawCenteredStringWithoutShadow(matrixStack, "Z", (width / 2) + 45, height / 2 - 5, 0xAAAAAA);
 		
-		RenderUtils.drawCenteredStringWithoutShadow(matrixStack, I18n.format("string.endermail.lockerID"), field_230708_k_ / 2, field_230709_l_ / 2 + 13, 0xAAAAAA);
+		RenderUtils.drawCenteredStringWithoutShadow(matrixStack, I18n.format("string.endermail.lockerID"), width / 2, height / 2 + 13, 0xAAAAAA);
 		
-		lockerIDTextField.func_230430_a_(matrixStack, mouseX, mouseY, partialTicks);
+		lockerIDTextField.render(matrixStack, mouseX, mouseY, partialTicks);
 		
-		xTextField.func_230430_a_(matrixStack, mouseX, mouseY, partialTicks);
-		yTextField.func_230430_a_(matrixStack, mouseX, mouseY, partialTicks);
-		zTextField.func_230430_a_(matrixStack, mouseX, mouseY, partialTicks);
+		xTextField.render(matrixStack, mouseX, mouseY, partialTicks);
+		yTextField.render(matrixStack, mouseX, mouseY, partialTicks);
+		zTextField.render(matrixStack, mouseX, mouseY, partialTicks);
 
-		super.func_230430_a_(matrixStack, mouseX, mouseY, partialTicks);
+		super.render(matrixStack, mouseX, mouseY, partialTicks);
 	}
 	
 	@Override
-	public void func_231023_e_() {
-		super.func_231023_e_();
+	public void tick() {
+		super.tick();
 		lockerIDTextField.tick();
 		xTextField.tick();
 		yTextField.tick();
 		zTextField.tick();
-		confirmButton.field_230693_o_ = (!lockerIDTextField.getText().isEmpty() && xTextField.getText().isEmpty() && yTextField.getText().isEmpty() && zTextField.getText().isEmpty()) || (isNumeric(xTextField.getText()) && (yTextField.getText().isEmpty() || isNumeric(yTextField.getText())) && isNumeric(zTextField.getText()));
+		confirmButton.active = (!lockerIDTextField.getText().isEmpty() && xTextField.getText().isEmpty() && yTextField.getText().isEmpty() && zTextField.getText().isEmpty()) || (isNumeric(xTextField.getText()) && (yTextField.getText().isEmpty() || isNumeric(yTextField.getText())) && isNumeric(zTextField.getText()));
 	}
 	
 	@Override
-	public void func_231175_as__() {
-		super.func_231175_as__();
-		field_230706_i_.keyboardListener.enableRepeatEvents(false);
+	public void onClose() {
+		super.onClose();
+		minecraft.keyboardListener.enableRepeatEvents(false);
 	}
 
 	private void setupButtons() {
-		field_230710_m_.clear();
-		cancelButton = func_230480_a_(new Button(20, field_230709_l_ - 40, 80, 20, new StringTextComponent(I18n.format("string.endermail.cancel")), (onPress) -> {
-			field_230706_i_.displayGuiScreen(null);
+		buttons.clear();
+		cancelButton = addButton(new Button(20, height - 40, 80, 20, new StringTextComponent(I18n.format("string.endermail.cancel")), (onPress) -> {
+			minecraft.displayGuiScreen(null);
 		}));
-		confirmButton = func_230480_a_(new Button(field_230708_k_ - 100, field_230709_l_ - 40, 80, 20, new StringTextComponent(I18n.format("string.endermail.confirm")), (onPress) -> {
+		confirmButton = addButton(new Button(width - 100, height - 40, 80, 20, new StringTextComponent(I18n.format("string.endermail.confirm")), (onPress) -> {
 			try {
 				String lockerID = lockerIDTextField.getText();
 				int x = -1;
@@ -117,30 +117,30 @@ public class StampScreen extends Screen {
 				BlockPos deliveryPos = new BlockPos(x, y, z);
 
 				EnderMail.network.sendToServer(new StampPackagePacket(packagePos, deliveryPos, lockerID));
-				field_230706_i_.displayGuiScreen(null);
+				minecraft.displayGuiScreen(null);
 			} catch (NumberFormatException e) {
 				errored = true;
 			}
 		}));
-		confirmButton.field_230693_o_ = false;
+		confirmButton.active = false;
 	}
 
 	private void setupTextFields() {
-		field_230705_e_.clear();
+		children.clear();
 		
-		xTextField = new StampTextField(field_230712_o_, (field_230708_k_ / 2) - 65, field_230709_l_ / 2 - 30, 40, 20, new StringTextComponent(""));
-		yTextField = new StampTextField(field_230712_o_, (field_230708_k_ / 2) - 20, field_230709_l_ / 2 - 30, 40, 20, new StringTextComponent(""));
-		zTextField = new StampTextField(field_230712_o_, (field_230708_k_ / 2) + 25, field_230709_l_ / 2 - 30, 40, 20, new StringTextComponent(""));
+		xTextField = new StampTextField(font, (width / 2) - 65, height / 2 - 30, 40, 20, new StringTextComponent(""));
+		yTextField = new StampTextField(font, (width / 2) - 20, height / 2 - 30, 40, 20, new StringTextComponent(""));
+		zTextField = new StampTextField(font, (width / 2) + 25, height / 2 - 30, 40, 20, new StringTextComponent(""));
 		
-		lockerIDTextField = new StampTextField(field_230712_o_, (field_230708_k_ / 2) - 65, (field_230709_l_ / 2) + 25, 130, 20, new StringTextComponent(""));
+		lockerIDTextField = new StampTextField(font, (width / 2) - 65, (height / 2) + 25, 130, 20, new StringTextComponent(""));
 	
 		setFocusedDefault(xTextField);
 		xTextField.setFocused2(true);
 		
-		field_230705_e_.add(xTextField);
-		field_230705_e_.add(yTextField);
-		field_230705_e_.add(zTextField);
-		field_230705_e_.add(lockerIDTextField);
+		children.add(xTextField);
+		children.add(yTextField);
+		children.add(zTextField);
+		children.add(lockerIDTextField);
 	}
 
 	public static boolean isNumeric(String s) {

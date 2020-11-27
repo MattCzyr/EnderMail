@@ -92,7 +92,7 @@ public class EnderMailmanEntity extends MonsterEntity {
 	}
 	
 	public static AttributeModifierMap.MutableAttribute createAttributes() {
-		return MonsterEntity.func_234295_eP_().func_233815_a_(Attributes.field_233818_a_, 40.0D).func_233815_a_(Attributes.field_233821_d_, (double)0.3F).func_233815_a_(Attributes.field_233823_f_, 7.0D).func_233815_a_(Attributes.field_233819_b_, 64.0D);
+		return MonsterEntity.func_234295_eP_().createMutableAttribute(Attributes.MAX_HEALTH, 40.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, (double) 0.3F).createMutableAttribute(Attributes.ATTACK_DAMAGE, 7.0D).createMutableAttribute(Attributes.FOLLOW_RANGE, 64.0D);
 	}
 
 	@Override
@@ -142,7 +142,7 @@ public class EnderMailmanEntity extends MonsterEntity {
 
 		if (world.isDaytime()) {
 			float f = getBrightness();
-			if (f > 0.5F && world.canBlockSeeSky(func_233580_cy_()) && rand.nextFloat() * 30.0F < (f - 0.4F) * 2.0F) {
+			if (f > 0.5F && world.canBlockSeeSky(getPosition()) && rand.nextFloat() * 30.0F < (f - 0.4F) * 2.0F) {
 				teleportRandomly();
 			}
 		}
@@ -419,7 +419,7 @@ public class EnderMailmanEntity extends MonsterEntity {
 	}
 
 	public boolean isAtStartingPos() {
-		return func_233580_cy_() == startingPos;
+		return getPosition() == startingPos;
 	}
 
 	public void setStartingPos(BlockPos pos) {

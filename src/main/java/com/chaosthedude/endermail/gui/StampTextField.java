@@ -35,22 +35,22 @@ public class StampTextField extends TextFieldWidget {
 	}
 
 	@Override
-	public void func_230431_b_(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
 		if (getVisible()) {
 			if (pseudoEnableBackgroundDrawing) {
 				final int color = (int) (255.0F * 0.25f);
-				RenderUtils.drawRect(field_230690_l_, field_230691_m_, field_230690_l_ + func_230998_h_(), field_230691_m_ + func_238483_d_(), color / 2 << 24);
+				RenderUtils.drawRect(x, y, x + width, y + height, color / 2 << 24);
 			}
-			boolean showLabel = !func_230999_j_() && getText().isEmpty();
+			boolean showLabel = !isFocused() && getText().isEmpty();
             int i = showLabel ? labelColor : (pseudoIsEnabled ? pseudoEnabledColor : pseudoDisabledColor);
 			int j = getCursorPosition() - pseudoLineScrollOffset;
 			int k = pseudoSelectionEnd - pseudoLineScrollOffset;
 			String text = showLabel ? label.getString() : getText();
-			String s = fontRenderer.func_238413_a_(text.substring(pseudoLineScrollOffset), func_230998_h_(), false);
+			String s = fontRenderer.func_238413_a_(text.substring(pseudoLineScrollOffset), width, false);
 			boolean flag = j >= 0 && j <= s.length();
-			boolean flag1 = func_230999_j_() && pseudoCursorCounter / 6 % 2 == 0 && flag;
-			int l = pseudoEnableBackgroundDrawing ? field_230690_l_ + 4 : field_230690_l_;
-			int i1 = pseudoEnableBackgroundDrawing ? field_230691_m_ + (func_238483_d_() - 8) / 2 : field_230691_m_;
+			boolean flag1 = isFocused() && pseudoCursorCounter / 6 % 2 == 0 && flag;
+			int l = pseudoEnableBackgroundDrawing ? x + 4 : x;
+			int i1 = pseudoEnableBackgroundDrawing ? y + (height - 8) / 2 : y;
 			int j1 = l;
 
 			if (k > s.length()) {
@@ -59,28 +59,28 @@ public class StampTextField extends TextFieldWidget {
 
 			if (!s.isEmpty()) {
 				String s1 = flag ? s.substring(0, j) : s;
-				j1 = fontRenderer.func_238421_b_(matrixStack, s1, (float) l, (float) i1, i);
+				j1 = fontRenderer.drawString(matrixStack, s1, (float) l, (float) i1, i);
 			}
 
 			boolean flag2 = getCursorPosition() < getText().length() || getText().length() >= pseudoMaxStringLength;
 			int k1 = j1;
 
 			if (!flag) {
-				k1 = j > 0 ? l + func_230998_h_() : l;
+				k1 = j > 0 ? l + width : l;
 			} else if (flag2) {
 				k1 = j1 - 1;
 				--j1;
 			}
 
 			if (!s.isEmpty() && flag && j < s.length()) {
-				j1 = fontRenderer.func_238421_b_(matrixStack, s.substring(j), (float) j1, (float) i1, i);
+				j1 = fontRenderer.drawString(matrixStack, s.substring(j), (float) j1, (float) i1, i);
 			}
 
 			if (flag1) {
 				if (flag2) {
 					RenderUtils.drawRect(k1, i1 - 1, k1 + 1, i1 + 1 + fontRenderer.FONT_HEIGHT, -3092272);
 				} else {
-					fontRenderer.func_238421_b_(matrixStack, "_", (float) k1, (float) i1, i);
+					fontRenderer.drawString(matrixStack, "_", (float) k1, (float) i1, i);
 				}
 			}
 
@@ -110,11 +110,11 @@ public class StampTextField extends TextFieldWidget {
 	}
 
 	@Override
-	public void func_230996_d_(boolean isFocused) {
-		if (isFocused && !func_230999_j_()) {
+	public void setFocused(boolean isFocused) {
+		if (isFocused && !isFocused()) {
 			pseudoCursorCounter = 0;
 		}
-		super.func_230996_d_(isFocused);
+		super.setFocused(isFocused);
 	}
 	
 	@Override
@@ -183,12 +183,12 @@ public class StampTextField extends TextFieldWidget {
 			endY = j;
 		}
 
-		if (endX > field_230690_l_ + func_230998_h_()) {
-			endX = field_230690_l_ + func_230998_h_();
+		if (endX > x + width) {
+			endX = x + width;
 		}
 
-		if (startX > field_230690_l_ + func_230998_h_()) {
-			startX = field_230690_l_ + func_230998_h_();
+		if (startX > x + width) {
+			startX = x + width;
 		}
 
 		Tessellator tessellator = Tessellator.getInstance();

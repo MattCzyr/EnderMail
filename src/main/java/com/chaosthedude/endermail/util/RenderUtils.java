@@ -20,11 +20,11 @@ public class RenderUtils {
 	private static final FontRenderer fontRenderer = mc.fontRenderer;
 
 	public static void drawStringLeft(MatrixStack matrixStack, String string, FontRenderer fontRenderer, int x, int y, int color) {
-		fontRenderer.func_238405_a_(matrixStack, string, x, y, color);
+		fontRenderer.drawStringWithShadow(matrixStack, string, x, y, color);
 	}
 
 	public static void drawStringRight(MatrixStack matrixStack, String string, FontRenderer fontRenderer, int x, int y, int color) {
-		fontRenderer.func_238405_a_(matrixStack, string, x - fontRenderer.getStringWidth(string), y, color);
+		fontRenderer.drawStringWithShadow(matrixStack, string, x - fontRenderer.getStringWidth(string), y, color);
 	}
 
 	public static void drawConfiguredStringOnHUD(MatrixStack matrixStack, String string, int xOffset, int yOffset, int color, int relativeLineOffset) {
@@ -38,7 +38,7 @@ public class RenderUtils {
 	}
 
 	public static void drawCenteredStringWithoutShadow(MatrixStack matrixStack, String string, int x, int y, int color) {
-		fontRenderer.func_238421_b_(matrixStack, string, (float) (x - fontRenderer.getStringWidth(string) / 2), (float) y, color);
+		fontRenderer.drawString(matrixStack, string, (float) (x - fontRenderer.getStringWidth(string) / 2), (float) y, color);
 	}
 
 	public static void drawTexturedModalRect(int x, int y, int textureX, int textureY, int width, int height) {

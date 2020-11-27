@@ -186,7 +186,7 @@ public class PackageBlock extends ContainerBlock {
 	@Override
 	public void addInformation(ItemStack stack, IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flag) {
 		super.addInformation(stack, world, tooltip, flag);
-		if (Screen.func_231173_s_()) {
+		if (Screen.hasShiftDown()) {
 			CompoundNBT temp = stack.getTag();
 			if (temp != null && temp.contains("BlockEntityTag", 10)) {
 				CompoundNBT tag = temp.getCompound("BlockEntityTag");
@@ -195,15 +195,15 @@ public class PackageBlock extends ContainerBlock {
 					ItemStackHelper.loadAllItems(tag, content);
 					for (ItemStack contentStack : content) {
 						if (!contentStack.isEmpty()) {
-							IFormattableTextComponent textComponent = contentStack.getDisplayName().func_230532_e_();
-							textComponent.func_240702_b_(" x").func_240702_b_(String.valueOf(contentStack.getCount())).func_240699_a_(TextFormatting.GRAY);
+							IFormattableTextComponent textComponent = contentStack.getDisplayName().copyRaw();
+							textComponent.appendString(" x").appendString(String.valueOf(contentStack.getCount())).mergeStyle(TextFormatting.GRAY);
 							tooltip.add(textComponent);
 						}
 					}
 				}
 			}
 		} else {
-			tooltip.add(new StringTextComponent(I18n.format("string.endermail.holdShift")).func_240701_a_(TextFormatting.ITALIC, TextFormatting.GRAY));
+			tooltip.add(new StringTextComponent(I18n.format("string.endermail.holdShift")).mergeStyle(TextFormatting.ITALIC, TextFormatting.GRAY));
 		}
 	}
 

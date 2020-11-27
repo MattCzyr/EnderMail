@@ -70,7 +70,7 @@ public class EnderMail {
 		network.registerMessage(1, StampPackagePacket.class, StampPackagePacket::toBytes, StampPackagePacket::new, StampPackagePacket::handle);
 		network.registerMessage(2, ConfigureLockerPacket.class, ConfigureLockerPacket::toBytes, ConfigureLockerPacket::new, ConfigureLockerPacket::handle);
 		
-		GlobalEntityTypeAttributes.put(EnderMailEntities.ENDER_MAILMAN_TYPE, EnderMailmanEntity.createAttributes().func_233813_a_());
+		GlobalEntityTypeAttributes.put(EnderMailEntities.ENDER_MAILMAN_TYPE, EnderMailmanEntity.createAttributes().create());
 	}
 	
 	@OnlyIn(Dist.CLIENT)
@@ -80,7 +80,7 @@ public class EnderMail {
  		ScreenManager.registerFactory(EnderMailContainers.LOCKER_CONTAINER, LockerScreen::new);
  		RenderingRegistry.registerEntityRenderingHandler(EnderMailEntities.ENDER_MAILMAN_TYPE, new EnderMailmanRenderFactory());
  		
- 		ItemModelsProperties.func_239418_a_(EnderMailItems.PACKAGE_CONTROLLER, new ResourceLocation("state"), new IItemPropertyGetter() {
+ 		ItemModelsProperties.registerProperty(EnderMailItems.PACKAGE_CONTROLLER, new ResourceLocation("state"), new IItemPropertyGetter() {
 			@Override
 			public float call(ItemStack stack, ClientWorld world, LivingEntity entity) {
 				if (stack.getItem() == EnderMailItems.PACKAGE_CONTROLLER) {
