@@ -83,6 +83,7 @@ public class LockerScreen extends ContainerScreen<LockerContainer> implements IH
 	public boolean keyPressed(int par1, int par2, int par3) {
 		if (par1 == 256) {
 			onClose();
+			closeScreen();
 			return true;
 		} else if (par1 == 258) {
 			boolean flag = !hasShiftDown();
@@ -96,6 +97,7 @@ public class LockerScreen extends ContainerScreen<LockerContainer> implements IH
 		InputMappings.Input mouseKey = InputMappings.getInputByCode(par1, par2);
 		if (!idTextField.isFocused() && minecraft.gameSettings.keyBindInventory.isActiveAndMatches(mouseKey)) {
 			onClose();
+			closeScreen();
             return true;
          }
 		if (itemStackMoved(par1, par2))
