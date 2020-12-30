@@ -1,6 +1,7 @@
 package com.chaosthedude.endermail.gui.container;
 
 import com.chaosthedude.endermail.blocks.PackageBlock;
+import com.chaosthedude.endermail.config.ConfigHandler;
 import com.chaosthedude.endermail.registry.EnderMailContainers;
 import com.chaosthedude.endermail.registry.EnderMailItems;
 
@@ -34,7 +35,7 @@ public class PackageContainer extends Container implements INameable {
 			addSlot(new Slot(packageInventory, j, 44 + j * 18, 20) {
 				@Override
 				public boolean isItemValid(ItemStack stack) {
-					return stack.getItem() != EnderMailItems.PACKAGE;
+					return !ConfigHandler.GENERAL.packageContentsBlacklist.get().contains(stack.getItem().getRegistryName().toString());
 				}
 			});
 		}
