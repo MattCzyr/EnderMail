@@ -26,6 +26,7 @@
     "string.endermail.holdShift": "Maintenez la touche Maj pour voir le contenu",
     "string.endermail.lockerID": "ID du casier",
     "string.endermail.id": "ID",
+    "string.endermail.invalidLockerID": "ID du casier non valide",
     "string.endermail.maxDistance": "Distance maximale",
     "string.endermail.setID": "Choisisez ID",
     "string.endermail.status": "Statut",

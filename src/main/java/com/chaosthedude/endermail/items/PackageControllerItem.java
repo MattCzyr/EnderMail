@@ -58,6 +58,12 @@ public class PackageControllerItem extends Item {
 			stack.getTag().putInt("MaxDistance", distance);
 		}
 	}
+	
+	public void setLockerID(ItemStack stack, String id) {
+		if (ItemUtils.verifyNBT(stack)) {
+			stack.getTag().putString("LockerID", id);
+		}
+	}
 
 	public ControllerState getState(ItemStack stack) {
 		if (ItemUtils.verifyNBT(stack)) {
@@ -89,6 +95,13 @@ public class PackageControllerItem extends Item {
 		}
 
 		return -1;
+	}
+	
+	public String getLockerID(ItemStack stack) {
+		if (ItemUtils.verifyNBT(stack)) {
+			return stack.getTag().getString("LockerID");
+		}
+		return "";
 	}
 
 }

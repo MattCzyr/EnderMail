@@ -116,7 +116,7 @@ public class StampScreen extends Screen {
 				}
 				BlockPos deliveryPos = new BlockPos(x, y, z);
 
-				EnderMail.network.sendToServer(new StampPackagePacket(packagePos, deliveryPos, lockerID));
+				EnderMail.network.sendToServer(new StampPackagePacket(packagePos, deliveryPos, lockerID, !xTextField.getText().isEmpty() && !zTextField.getText().isEmpty()));
 				minecraft.displayGuiScreen(null);
 			} catch (NumberFormatException e) {
 				errored = true;

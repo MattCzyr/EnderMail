@@ -5,6 +5,7 @@ import java.util.Random;
 
 import com.chaosthedude.endermail.blocks.te.PackageTileEntity;
 import com.chaosthedude.endermail.config.ConfigHandler;
+import com.chaosthedude.endermail.data.LockerWorldData;
 import com.chaosthedude.endermail.entity.EnderMailmanEntity;
 import com.chaosthedude.endermail.gui.ScreenWrapper;
 import com.chaosthedude.endermail.items.PackageControllerItem;
@@ -96,7 +97,10 @@ public class PackageBlock extends ContainerBlock {
 				if (deliveryPos != null) {
 					packageController.setDeliveryPos(stack, deliveryPos);
 					int distanceToDelivery = (int) Math.sqrt(pos.distanceSq(deliveryPos));
-					if (ConfigHandler.GENERAL.maxDeliveryDistance.get() > -1 && distanceToDelivery > ConfigHandler.GENERAL.maxDeliveryDistance.get()) {
+					if (lockerID != null && !LockerWorldData.get(world).lockerExists(lockerID) && !hasDeliveryLocation(world, pos)) {
+						packageController.setState(stack, ControllerState.INVALID_LOCKER);
+						packageController.setLockerID(stack, lockerID);
+					} else if (ConfigHandler.GENERAL.maxDeliveryDistance.get() > -1 && distanceToDelivery > ConfigHandler.GENERAL.maxDeliveryDistance.get()) {
 						packageController.setState(stack, ControllerState.TOOFAR);
 						packageController.setDeliveryDistance(stack, distanceToDelivery);
 						packageController.setMaxDistance(stack, ConfigHandler.GENERAL.maxDeliveryDistance.get());
@@ -245,12 +249,12 @@ public class PackageBlock extends ContainerBlock {
 		return state.get(STAMPED).booleanValue();
 	}
 
-	public static void stampPackage(World world, BlockPos packagePos, BlockPos deliveryPos, String lockerID) {
+	public static void stampPackage(World world, BlockPos packagePos, BlockPos deliveryPos, String lockerID, boolean hasDeliveryPos) {
 		setState(true, world, packagePos);
 		TileEntity te = world.getTileEntity(packagePos);
 		if (te != null && te instanceof PackageTileEntity) {
 			PackageTileEntity tePackage = (PackageTileEntity) te;
-			tePackage.setDeliveryPos(deliveryPos);
+			tePackage.setDeliveryPos(deliveryPos, hasDeliveryPos);
 			tePackage.setLockerID(lockerID);
 		}
 	}
@@ -271,6 +275,15 @@ public class PackageBlock extends ContainerBlock {
 			return tePackage.getLockerID();
 		}
 		return null;
+	}
+	
+	public static boolean hasDeliveryLocation(World world, BlockPos pos) {
+		TileEntity te = world.getTileEntity(pos);
+		if (te != null && te instanceof PackageTileEntity) {
+			PackageTileEntity tePackage = (PackageTileEntity) te;
+			return tePackage.hasDeliveryLocation();
+		}
+		return false;
 	}
 
 	public static void setState(boolean stamped, World world, BlockPos pos) {

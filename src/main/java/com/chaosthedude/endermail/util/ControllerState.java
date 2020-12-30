@@ -7,7 +7,8 @@ public enum ControllerState {
 	DELIVERED(2),
 	DELIVERED_TO_LOCKER(3),
 	UNDELIVERABLE(4),
-	TOOFAR(5);
+	TOOFAR(5),
+	INVALID_LOCKER(6);
 
 	private int id;
 
