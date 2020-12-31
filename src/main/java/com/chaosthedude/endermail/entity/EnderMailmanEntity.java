@@ -480,7 +480,9 @@ public class EnderMailmanEntity extends MonsterEntity {
 						if (putInLocker) {
 							if (enderMailman.hasPackageController()) {
 								enderMailman.getPackageControllerItem().setState(enderMailman.packageController, ControllerState.DELIVERED_TO_LOCKER);
+								enderMailman.getPackageControllerItem().setLockerID(enderMailman.packageController, lockerTe.getLockerID());
 								enderMailman.getPackageControllerItem().setDeliveryPos(enderMailman.packageController, enderMailman.getDeliveryPos());
+								enderMailman.getPackageControllerItem().setShowLockerLocation(enderMailman.packageController, !ConfigHandler.GENERAL.hideLockerLocation.get());
 							}
 							if (ConfigHandler.GENERAL.logDeliveries.get()) {
 								EnderMail.logger.info("Delivered package to locker " + lockerTe.getLockerID() + " at " + enderMailman.getDeliveryPos().getX() + ", " + enderMailman.getDeliveryPos().getY() + ", " + enderMailman.getDeliveryPos().getZ());

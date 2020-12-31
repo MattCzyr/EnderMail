@@ -64,6 +64,12 @@ public class PackageControllerItem extends Item {
 			stack.getTag().putString("LockerID", id);
 		}
 	}
+	
+	public void setShowLockerLocation(ItemStack stack, boolean show) {
+		if (ItemUtils.verifyNBT(stack)) {
+			stack.getTag().putBoolean("ShowLockerLocation", show);
+		}
+	}
 
 	public ControllerState getState(ItemStack stack) {
 		if (ItemUtils.verifyNBT(stack)) {
@@ -102,6 +108,13 @@ public class PackageControllerItem extends Item {
 			return stack.getTag().getString("LockerID");
 		}
 		return "";
+	}
+	
+	public boolean shouldShowLockerLocation(ItemStack stack) {
+		if (ItemUtils.verifyNBT(stack)) {
+			return stack.getTag().getBoolean("ShowLockerLocation");
+		}
+		return false;
 	}
 
 }

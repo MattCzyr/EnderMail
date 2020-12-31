@@ -20,6 +20,7 @@ public class ConfigHandler {
 	public static final ForgeConfigSpec CLIENT_SPEC = CLIENT_BUILDER.build();
 
 	public static class General {
+		public final ForgeConfigSpec.BooleanValue hideLockerLocation;
 		public final ForgeConfigSpec.IntValue maxDeliveryDistance;
 		public final ForgeConfigSpec.IntValue lockerDeliveryRadius;
 		public final ForgeConfigSpec.BooleanValue lockerDeliveryRadiusIgnoresY;
@@ -29,6 +30,9 @@ public class ConfigHandler {
 		General(ForgeConfigSpec.Builder builder) {
 			String desc;
 			builder.push("General");
+			
+			desc = "Determines whether a locker\'s location will be hidden to the package sender.";
+			hideLockerLocation = builder.comment(desc).define("hideLockerLocation", false);
 
 			desc = "The maximum distance that packages can be delivered over. Set to -1 for no distance limit.";
 			maxDeliveryDistance = builder.comment(desc).defineInRange("maxDeliveryDistance", -1, -1, 1000000);
