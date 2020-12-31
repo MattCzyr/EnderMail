@@ -1,8 +1,19 @@
 ---------------------------------------------
+ VERSION 1.2.0 - 1.16.4
+---------------------------------------------
+ 1.16.4:
+  - Display error message on package controller after attempting to deliver a package to a nonexistent locker ID
+  - Prevent locker IDs longer than the maximum 12 characters from being input on a stamp
+  - Added a config field to determine which items are not allowed to be placed in packages
+  - Added a config field that can be enabled to hide locker locations from package senders
+  - Ender mailmen now teleport into the void after completing a delivery rather than immediately dying
+
+
+---------------------------------------------
  VERSION 1.1.7 - 1.16.4
 ---------------------------------------------
  1.16.4:
-  - Fix bug in which locker GUI was not able to be closed
+  - Fixed bug in which locker GUI was not able to be closed
 
 
 ---------------------------------------------
@@ -11,6 +22,7 @@
  1.16.4:
   - Initial release for 1.16.4 (Forge 35.1.4)
   - Added French translations
+
 
 ---------------------------------------------
  VERSION 1.1.5 - 1.16.3
