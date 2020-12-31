@@ -104,7 +104,7 @@ public class EnderMailmanEntity extends MonsterEntity {
 			}
 
 			if (ticksExisted - timeDelivered > 100) {
-				kill();
+				diePeacefully();
 			}
 		}
 
@@ -298,7 +298,8 @@ public class EnderMailmanEntity extends MonsterEntity {
 		}
 	}
 
-	public void kill() {
+	public void diePeacefully() {
+		teleportTo(getPosX(), -10, getPosZ());
 		attackEntityFrom(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
 	}
 
@@ -577,7 +578,7 @@ public class EnderMailmanEntity extends MonsterEntity {
 		@Override
 		public void tick() {
 			if (enderMailman.ticksExisted - enderMailman.getTimeDelivered() >= 100) {
-				enderMailman.kill();
+				enderMailman.diePeacefully();
 			}
 		}
 	}
