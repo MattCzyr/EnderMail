@@ -1,0 +1,35 @@
+{
+    "_comment": "Ender Mail Language File",
+    "_comment": "Italian - ITALY",
+
+    "_comment": "BLOCCHI",
+    "block.endermail.package": "Pacco",
+    "block.endermail.locker": "Armadietto per la posta",
+
+    "_comment": "OGGETTI",
+    "item.endermail.package_controller": "Il controller del pacco",
+    "item.endermail.packing_tape": "Nastro da imballaggio",
+    "item.endermail.stamp": "Francobollo",
+
+    "_comment": "STRINGHE",
+    "string.endermail.cancel": "Cancella",
+    "string.endermail.close": "Chiudi",
+    "string.endermail.confirm": "Conferma",
+    "string.endermail.coordinates": "Coordinate",
+    "string.endermail.deliver": "Fattorino",
+    "string.endermail.delivered": "Spedito",
+    "string.endermail.deliveredToLocker": "Spetito all'armadietto",
+    "string.endermail.delivering": "Consegna",
+    "string.endermail.deliveryDistance": "Distanza di consegna",
+    "string.endermail.deliveryLocation": "Luogo della consegna",
+    "string.endermail.error": "An error has occurred",
+    "string.endermail.holdShift": "premi shift per guardare dentro",
+    "string.endermail.lockerID": "Codice identificativo dell'Armadietto",
+    "string.endermail.id": "Codice identificativo",
+    "string.endermail.invalidLockerID": "Codice identificativo dell'Armadietto Invalido",
+    "string.endermail.maxDistance": "Distanza massima",
+    "string.endermail.setID": "Scegli codice identificativo",
+    "string.endermail.status": "Stato",
+    "string.endermail.tooFar": "Troppo lontano per essere consegnato",
+    "string.endermail.undeliverable": "Non consegnabile"
+}
