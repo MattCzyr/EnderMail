@@ -1,6 +1,8 @@
 ---------------------------------------------
- VERSION 1.2.0 - 1.16.4
+ VERSION 1.2.0 - 1.16.5, 1.16.4
 ---------------------------------------------
+ 1.16.5:
+  - Initial release for 1.16.5 (Forge 36.0.14)
  1.16.4:
   - Display error message on package controller after attempting to deliver a package to a nonexistent locker ID
   - Prevent locker IDs longer than the maximum 12 characters from being input on a stamp
