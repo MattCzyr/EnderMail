@@ -26,6 +26,7 @@
     "string.endermail.holdShift": "Удерживайте Shift для содержимого",
     "string.endermail.lockerID": "ID ячейки",
     "string.endermail.id": "ID",
+    "string.endermail.invalidLockerID": "Неверный идентификатор шкафчика",
     "string.endermail.maxDistance": "Макс. расстояние",
     "string.endermail.setID": "Установить ID",
     "string.endermail.status": "Статус",

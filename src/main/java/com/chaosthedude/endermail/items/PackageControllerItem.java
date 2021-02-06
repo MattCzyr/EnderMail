@@ -58,6 +58,18 @@ public class PackageControllerItem extends Item {
 			stack.getTag().putInt("MaxDistance", distance);
 		}
 	}
+	
+	public void setLockerID(ItemStack stack, String id) {
+		if (ItemUtils.verifyNBT(stack)) {
+			stack.getTag().putString("LockerID", id);
+		}
+	}
+	
+	public void setShowLockerLocation(ItemStack stack, boolean show) {
+		if (ItemUtils.verifyNBT(stack)) {
+			stack.getTag().putBoolean("ShowLockerLocation", show);
+		}
+	}
 
 	public ControllerState getState(ItemStack stack) {
 		if (ItemUtils.verifyNBT(stack)) {
@@ -89,6 +101,20 @@ public class PackageControllerItem extends Item {
 		}
 
 		return -1;
+	}
+	
+	public String getLockerID(ItemStack stack) {
+		if (ItemUtils.verifyNBT(stack)) {
+			return stack.getTag().getString("LockerID");
+		}
+		return "";
+	}
+	
+	public boolean shouldShowLockerLocation(ItemStack stack) {
+		if (ItemUtils.verifyNBT(stack)) {
+			return stack.getTag().getBoolean("ShowLockerLocation");
+		}
+		return false;
 	}
 
 }

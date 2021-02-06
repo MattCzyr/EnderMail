@@ -45,9 +45,14 @@ public class ClientEventHandler {
 				} else if (packageController.getState(stack) == ControllerState.DELIVERED_TO_LOCKER) {
 					RenderUtils.drawConfiguredStringOnHUD(matrixStack, I18n.format("string.endermail.status"), 5, 0, 0xFFFFFF, 0);
 					RenderUtils.drawConfiguredStringOnHUD(matrixStack, I18n.format("string.endermail.deliveredToLocker"), 5, 0, 0xAAAAAA, 1);
+					
+					RenderUtils.drawConfiguredStringOnHUD(matrixStack, I18n.format("string.endermail.lockerID"), 5, 0, 0xFFFFFF, 3);
+					RenderUtils.drawConfiguredStringOnHUD(matrixStack, packageController.getLockerID(stack), 5, 0, 0xAAAAAA, 4);
 
-					RenderUtils.drawConfiguredStringOnHUD(matrixStack, I18n.format("string.endermail.coordinates"), 5, 0, 0xFFFFFF, 3);
-					RenderUtils.drawConfiguredStringOnHUD(matrixStack, packageController.getDeliveryPos(stack).getX() + " " + packageController.getDeliveryPos(stack).getY() + " " + packageController.getDeliveryPos(stack).getZ(), 5, 0, 0xAAAAAA, 4);
+					if (packageController.shouldShowLockerLocation(stack)) {
+						RenderUtils.drawConfiguredStringOnHUD(matrixStack, I18n.format("string.endermail.coordinates"), 5, 0, 0xFFFFFF, 6);
+						RenderUtils.drawConfiguredStringOnHUD(matrixStack, packageController.getDeliveryPos(stack).getX() + " " + packageController.getDeliveryPos(stack).getY() + " " + packageController.getDeliveryPos(stack).getZ(), 5, 0, 0xAAAAAA, 7);
+					}
 				} else if (packageController.getState(stack) == ControllerState.UNDELIVERABLE) {
 					RenderUtils.drawConfiguredStringOnHUD(matrixStack, I18n.format("string.endermail.status"), 5, 0, 0xFFFFFF, 0);
 					RenderUtils.drawConfiguredStringOnHUD(matrixStack, I18n.format("string.endermail.undeliverable"), 5, 0, 0xAAAAAA, 1);
@@ -60,6 +65,12 @@ public class ClientEventHandler {
 
 					RenderUtils.drawConfiguredStringOnHUD(matrixStack, I18n.format("string.endermail.maxDistance"), 5, 0, 0xFFFFFF, 6);
 					RenderUtils.drawConfiguredStringOnHUD(matrixStack, String.valueOf(packageController.getMaxDistance(stack)), 5, 0, 0xAAAAAA, 7);
+				} else if (packageController.getState(stack) == ControllerState.INVALID_LOCKER) {
+					RenderUtils.drawConfiguredStringOnHUD(matrixStack, I18n.format("string.endermail.status"), 5, 0, 0xFFFFFF, 0);
+					RenderUtils.drawConfiguredStringOnHUD(matrixStack, I18n.format("string.endermail.invalidLockerID"), 5, 0, 0xAAAAAA, 1);
+
+					RenderUtils.drawConfiguredStringOnHUD(matrixStack, I18n.format("string.endermail.lockerID"), 5, 0, 0xFFFFFF, 3);
+					RenderUtils.drawConfiguredStringOnHUD(matrixStack, packageController.getLockerID(stack), 5, 0, 0xAAAAAA, 4);
 				}
 			}
 		}

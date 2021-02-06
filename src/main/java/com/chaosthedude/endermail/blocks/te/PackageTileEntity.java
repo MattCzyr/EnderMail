@@ -183,8 +183,8 @@ public class PackageTileEntity extends TileEntity implements IInventory, INamedC
 		return contents;
 	}
 
-	public void setDeliveryPos(BlockPos pos) {
-		hasDeliveryLocation = true;
+	public void setDeliveryPos(BlockPos pos, boolean hasDeliveryLocation) {
+		this.hasDeliveryLocation = hasDeliveryLocation;
 		deliveryX = pos.getX();
 		deliveryY = pos.getY();
 		deliveryZ = pos.getZ();
@@ -203,11 +203,11 @@ public class PackageTileEntity extends TileEntity implements IInventory, INamedC
 	}
 
 	public BlockPos getDeliveryPos() {
-		if (hasDeliveryLocation) {
-			return new BlockPos(deliveryX, deliveryY, deliveryZ);
-		}
-
-		return null;
+		return new BlockPos(deliveryX, deliveryY, deliveryZ);
+	}
+	
+	public boolean hasDeliveryLocation() {
+		return hasDeliveryLocation;
 	}
 
 	public void setCustomName(ITextComponent name) {

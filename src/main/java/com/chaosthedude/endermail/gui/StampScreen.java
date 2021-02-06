@@ -1,6 +1,7 @@
 package com.chaosthedude.endermail.gui;
 
 import com.chaosthedude.endermail.EnderMail;
+import com.chaosthedude.endermail.blocks.LockerBlock;
 import com.chaosthedude.endermail.network.StampPackagePacket;
 import com.chaosthedude.endermail.util.RenderUtils;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -116,7 +117,7 @@ public class StampScreen extends Screen {
 				}
 				BlockPos deliveryPos = new BlockPos(x, y, z);
 
-				EnderMail.network.sendToServer(new StampPackagePacket(packagePos, deliveryPos, lockerID));
+				EnderMail.network.sendToServer(new StampPackagePacket(packagePos, deliveryPos, lockerID, !xTextField.getText().isEmpty() && !zTextField.getText().isEmpty()));
 				minecraft.displayGuiScreen(null);
 			} catch (NumberFormatException e) {
 				errored = true;
@@ -133,6 +134,7 @@ public class StampScreen extends Screen {
 		zTextField = new StampTextField(font, (width / 2) + 25, height / 2 - 30, 40, 20, new StringTextComponent(""));
 		
 		lockerIDTextField = new StampTextField(font, (width / 2) - 65, (height / 2) + 25, 130, 20, new StringTextComponent(""));
+		lockerIDTextField.setMaxStringLength(LockerBlock.MAX_ID_LENGTH);
 	
 		setFocusedDefault(xTextField);
 		xTextField.setFocused2(true);

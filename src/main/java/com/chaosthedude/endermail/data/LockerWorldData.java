@@ -59,7 +59,7 @@ public class LockerWorldData extends WorldSavedData implements Supplier<LockerWo
 	public String createLocker(String lockerID, BlockPos pos) {
 		int suffixIndex = 2;
 		String fixedLockerID = lockerID;
-		while (lockers.containsKey(fixedLockerID) && fixedLockerID.length() < 12) {
+		while (lockerExists(fixedLockerID) && fixedLockerID.length() < 12) {
 			fixedLockerID = lockerID + suffixIndex;
 			suffixIndex++;
 		}
@@ -69,6 +69,10 @@ public class LockerWorldData extends WorldSavedData implements Supplier<LockerWo
 		lockers.put(fixedLockerID, pos);
 		markDirty();
 		return fixedLockerID;
+	}
+	
+	public boolean lockerExists(String lockerID) {
+		return lockers.containsKey(lockerID);
 	}
 	
 	public void removeLocker(String lockerID) {

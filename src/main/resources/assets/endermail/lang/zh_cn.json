@@ -26,6 +26,7 @@
     "string.endermail.holdShift": "按住 Shift 查看内容",
     "string.endermail.lockerID": "储物柜 ID",
     "string.endermail.id": "ID",
+    "string.endermail.invalidLockerID": "储物柜 ID 无效",
     "string.endermail.maxDistance": "最大距离",
     "string.endermail.setID": "设置 ID",
     "string.endermail.status": "状态",

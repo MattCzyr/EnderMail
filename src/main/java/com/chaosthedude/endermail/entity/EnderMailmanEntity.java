@@ -104,7 +104,7 @@ public class EnderMailmanEntity extends MonsterEntity {
 			}
 
 			if (ticksExisted - timeDelivered > 100) {
-				kill();
+				diePeacefully();
 			}
 		}
 
@@ -298,7 +298,8 @@ public class EnderMailmanEntity extends MonsterEntity {
 		}
 	}
 
-	public void kill() {
+	public void diePeacefully() {
+		teleportTo(getPosX(), -10, getPosZ());
 		attackEntityFrom(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
 	}
 
@@ -480,7 +481,9 @@ public class EnderMailmanEntity extends MonsterEntity {
 						if (putInLocker) {
 							if (enderMailman.hasPackageController()) {
 								enderMailman.getPackageControllerItem().setState(enderMailman.packageController, ControllerState.DELIVERED_TO_LOCKER);
+								enderMailman.getPackageControllerItem().setLockerID(enderMailman.packageController, lockerTe.getLockerID());
 								enderMailman.getPackageControllerItem().setDeliveryPos(enderMailman.packageController, enderMailman.getDeliveryPos());
+								enderMailman.getPackageControllerItem().setShowLockerLocation(enderMailman.packageController, !ConfigHandler.GENERAL.hideLockerLocation.get());
 							}
 							if (ConfigHandler.GENERAL.logDeliveries.get()) {
 								EnderMail.logger.info("Delivered package to locker " + lockerTe.getLockerID() + " at " + enderMailman.getDeliveryPos().getX() + ", " + enderMailman.getDeliveryPos().getY() + ", " + enderMailman.getDeliveryPos().getZ());
@@ -575,7 +578,7 @@ public class EnderMailmanEntity extends MonsterEntity {
 		@Override
 		public void tick() {
 			if (enderMailman.ticksExisted - enderMailman.getTimeDelivered() >= 100) {
-				enderMailman.kill();
+				enderMailman.diePeacefully();
 			}
 		}
 	}
