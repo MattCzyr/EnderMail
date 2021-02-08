@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.chaosthedude.endermail.util.OverlaySide;
 
+import com.google.common.base.Predicates;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 public class ConfigHandler {
@@ -47,7 +48,7 @@ public class ConfigHandler {
 			logDeliveries = builder.comment(desc).define("logDeliveries", false);
 			
 			desc = "The list of items that are not allowed to be placed in packages.";
-			packageContentsBlacklist = builder.comment(desc).define("packageContentsBlacklist", Arrays.asList("endermail:package"));
+			packageContentsBlacklist = builder.comment(desc).define("packageContentsBlacklist", Arrays.asList("endermail:package"), Predicates.alwaysTrue());
 
 			builder.pop();
 		}
