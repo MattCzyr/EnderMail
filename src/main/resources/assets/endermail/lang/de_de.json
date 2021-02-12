@@ -7,7 +7,7 @@
     "block.endermail.locker": "Postfach",
 
     "_comment": "ITEMS",
-    "item.endermail.package_controller": "Package Controller",
+    "item.endermail.package_controller": "Paket-Regler",
     "item.endermail.packing_tape": "Packband",
     "item.endermail.stamp": "Briefmarke",
 
