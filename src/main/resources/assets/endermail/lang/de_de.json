@@ -18,7 +18,7 @@
     "string.endermail.coordinates": "Koordinaten",
     "string.endermail.deliver": "Zustellen",
     "string.endermail.delivered": "Zugestellt",
-    "string.endermail.deliveredToLocker": "Zugestellt zum Postfach:",
+    "string.endermail.deliveredToLocker": "Zugestellt zum Postfach",
     "string.endermail.delivering": "In Zustellung",
     "string.endermail.deliveryDistance": "Lieferabstand",
     "string.endermail.deliveryLocation": "Lieferungort",
