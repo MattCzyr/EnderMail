@@ -163,16 +163,16 @@ public class StampScreen extends Screen {
 	}
 
 	public static boolean isNumeric(String s) {
-				if (s == null || s.length() == 0) {
-						return false;
-				}
-				int size = s.length();
-				for (int i = 0; i < size; i++) {
-						if (!Character.isDigit(s.charAt(i)) && !(i == 0 && size > 1 && s.charAt(i) == '-')) {
-								return false;
-						}
-				}
-				return true;
-		}
+        if (s == null || s.length() == 0) {
+            return false;
+        }
+        int size = s.length();
+        for (int i = 0; i < size; i++) {
+            if (!Character.isDigit(s.charAt(i)) && !(i == 0 && size > 1 && s.charAt(i) == '-')) {
+                return false;
+            }
+        }
+        return true;
+    }
 
 }
