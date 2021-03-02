@@ -98,8 +98,8 @@ public class LockerScreen extends ContainerScreen<LockerContainer> implements IH
 		if (!idTextField.isFocused() && minecraft.gameSettings.keyBindInventory.isActiveAndMatches(mouseKey)) {
 			onClose();
 			closeScreen();
-            return true;
-         }
+			return true;
+		}
 		if (itemStackMoved(par1, par2))
 			return true;
 		if (hoveredSlot != null && hoveredSlot.getHasStack()) {

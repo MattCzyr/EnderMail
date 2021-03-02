@@ -42,7 +42,7 @@ public class StampTextField extends TextFieldWidget {
 				RenderUtils.drawRect(x, y, x + width, y + height, color / 2 << 24);
 			}
 			boolean showLabel = !isFocused() && getText().isEmpty();
-            int i = showLabel ? labelColor : (pseudoIsEnabled ? pseudoEnabledColor : pseudoDisabledColor);
+			int i = showLabel ? labelColor : (pseudoIsEnabled ? pseudoEnabledColor : pseudoDisabledColor);
 			int j = getCursorPosition() - pseudoLineScrollOffset;
 			int k = pseudoSelectionEnd - pseudoLineScrollOffset;
 			String text = showLabel ? label.getString() : getText();
@@ -139,27 +139,27 @@ public class StampTextField extends TextFieldWidget {
 	public void setSelectionPos(int position) {
 		super.setSelectionPos(position);
 		int i = getText().length();
-	      pseudoSelectionEnd = MathHelper.clamp(position, 0, i);
-	      if (fontRenderer != null) {
-	         if (pseudoLineScrollOffset > i) {
-	            pseudoLineScrollOffset = i;
-	         }
+		pseudoSelectionEnd = MathHelper.clamp(position, 0, i);
+		if (fontRenderer != null) {
+			if (pseudoLineScrollOffset > i) {
+				pseudoLineScrollOffset = i;
+			}
 
-	         int j = getAdjustedWidth();
-	         String s = fontRenderer.func_238413_a_(getText().substring(this.pseudoLineScrollOffset), j, false);
-	         int k = s.length() + pseudoLineScrollOffset;
-	         if (pseudoSelectionEnd == pseudoLineScrollOffset) {
-	            pseudoLineScrollOffset -= fontRenderer.func_238413_a_(getText(), j, true).length();
-	         }
+			int j = getAdjustedWidth();
+			String s = fontRenderer.func_238413_a_(getText().substring(this.pseudoLineScrollOffset), j, false);
+			int k = s.length() + pseudoLineScrollOffset;
+			if (pseudoSelectionEnd == pseudoLineScrollOffset) {
+				pseudoLineScrollOffset -= fontRenderer.func_238413_a_(getText(), j, true).length();
+			}
 
-	         if (pseudoSelectionEnd > k) {
-	        	 pseudoLineScrollOffset += pseudoSelectionEnd - k;
-	         } else if (pseudoSelectionEnd <= pseudoLineScrollOffset) {
-	        	 pseudoLineScrollOffset -= pseudoLineScrollOffset - pseudoSelectionEnd;
-	         }
+			if (pseudoSelectionEnd > k) {
+				pseudoLineScrollOffset += pseudoSelectionEnd - k;
+			} else if (pseudoSelectionEnd <= pseudoLineScrollOffset) {
+				pseudoLineScrollOffset -= pseudoLineScrollOffset - pseudoSelectionEnd;
+			}
 
-	         pseudoLineScrollOffset = MathHelper.clamp(pseudoLineScrollOffset, 0, i);
-	      }
+			pseudoLineScrollOffset = MathHelper.clamp(pseudoLineScrollOffset, 0, i);
+		}
 	}
 
 	public void setLabel(ITextComponent label) {
