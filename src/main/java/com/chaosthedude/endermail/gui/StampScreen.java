@@ -54,29 +54,46 @@ public class StampScreen extends Screen {
 
 	@Override
 	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-		int xSize = 178;
-		int ySize = 222;
-		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-		minecraft.getTextureManager().bindTexture(TEXTURE);
-		int i = (width - xSize) / 2;
-		int j = (height - ySize) / 2;
-		RenderUtils.drawTexturedModalRect(i, j, 0, 0, xSize, ySize);
-		if (errored) {
-			RenderUtils.drawCenteredStringWithoutShadow(matrixStack, I18n.format("string.endermail.error"), width / 2, height - 65, 0xAAAAAA);
+		if (ConfigHandler.GENERAL.disableDeliveryLocation.get()) {
+			int xSize = 178;
+			int ySize = 180;
+			GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+			minecraft.getTextureManager().bindTexture(TEXTURE);
+			int i = (width - xSize) / 2;
+			int j = (height - ySize) / 2;
+			RenderUtils.drawTexturedModalRect(i, j, 0, 0, xSize, ySize);
+			if (errored) {
+				RenderUtils.drawCenteredStringWithoutShadow(matrixStack, I18n.format("string.endermail.error"), width / 2, height - 65, 0xAAAAAA);
+			}
+			
+			RenderUtils.drawCenteredStringWithoutShadow(matrixStack, I18n.format("string.endermail.lockerID"), width / 2, height / 2 + 13, 0xAAAAAA);
+			
+			lockerIDTextField.render(matrixStack, mouseX, mouseY, partialTicks);
+		} else {
+			int xSize = 178;
+			int ySize = 222;
+			GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+			minecraft.getTextureManager().bindTexture(TEXTURE);
+			int i = (width - xSize) / 2;
+			int j = (height - ySize) / 2;
+			RenderUtils.drawTexturedModalRect(i, j, 0, 0, xSize, ySize);
+			if (errored) {
+				RenderUtils.drawCenteredStringWithoutShadow(matrixStack, I18n.format("string.endermail.error"), width / 2, height - 65, 0xAAAAAA);
+			}
+			
+			RenderUtils.drawCenteredStringWithoutShadow(matrixStack, I18n.format("string.endermail.deliveryLocation"), width / 2, height / 2 - 42, 0xAAAAAA);
+			RenderUtils.drawCenteredStringWithoutShadow(matrixStack, "X", (width / 2) - 45, height / 2 - 5, 0xAAAAAA);
+			RenderUtils.drawCenteredStringWithoutShadow(matrixStack, "Y", (width / 2) + 0, height / 2 - 5, 0xAAAAAA);
+			RenderUtils.drawCenteredStringWithoutShadow(matrixStack, "Z", (width / 2) + 45, height / 2 - 5, 0xAAAAAA);
+			
+			RenderUtils.drawCenteredStringWithoutShadow(matrixStack, I18n.format("string.endermail.lockerID"), width / 2, height / 2 + 13, 0xAAAAAA);
+			
+			lockerIDTextField.render(matrixStack, mouseX, mouseY, partialTicks);
+			
+			xTextField.render(matrixStack, mouseX, mouseY, partialTicks);
+			yTextField.render(matrixStack, mouseX, mouseY, partialTicks);
+			zTextField.render(matrixStack, mouseX, mouseY, partialTicks);
 		}
-		
-		RenderUtils.drawCenteredStringWithoutShadow(matrixStack, I18n.format("string.endermail.deliveryLocation"), width / 2, height / 2 - 42, 0xAAAAAA);
-		RenderUtils.drawCenteredStringWithoutShadow(matrixStack, "X", (width / 2) - 45, height / 2 - 5, 0xAAAAAA);
-		RenderUtils.drawCenteredStringWithoutShadow(matrixStack, "Y", (width / 2) + 0, height / 2 - 5, 0xAAAAAA);
-		RenderUtils.drawCenteredStringWithoutShadow(matrixStack, "Z", (width / 2) + 45, height / 2 - 5, 0xAAAAAA);
-		
-		RenderUtils.drawCenteredStringWithoutShadow(matrixStack, I18n.format("string.endermail.lockerID"), width / 2, height / 2 + 13, 0xAAAAAA);
-		
-		lockerIDTextField.render(matrixStack, mouseX, mouseY, partialTicks);
-		
-		xTextField.render(matrixStack, mouseX, mouseY, partialTicks);
-		yTextField.render(matrixStack, mouseX, mouseY, partialTicks);
-		zTextField.render(matrixStack, mouseX, mouseY, partialTicks);
 
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
 	}
@@ -146,16 +163,16 @@ public class StampScreen extends Screen {
 	}
 
 	public static boolean isNumeric(String s) {
-        if (s == null || s.length() == 0) {
-            return false;
-        }
-        int size = s.length();
-        for (int i = 0; i < size; i++) {
-            if (!Character.isDigit(s.charAt(i)) && !(i == 0 && size > 1 && s.charAt(i) == '-')) {
-                return false;
-            }
-        }
-        return true;
-    }
+				if (s == null || s.length() == 0) {
+						return false;
+				}
+				int size = s.length();
+				for (int i = 0; i < size; i++) {
+						if (!Character.isDigit(s.charAt(i)) && !(i == 0 && size > 1 && s.charAt(i) == '-')) {
+								return false;
+						}
+				}
+				return true;
+		}
 
 }
