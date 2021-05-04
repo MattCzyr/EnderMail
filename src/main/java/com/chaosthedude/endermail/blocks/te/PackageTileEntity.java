@@ -65,7 +65,7 @@ public class PackageTileEntity extends TileEntity implements IInventory, INamedC
 
 	@Override
 	public void read(BlockState state, CompoundNBT compound) {
-	     super.read(state, compound);
+		super.read(state, compound);
 		contents = NonNullList.<ItemStack>withSize(getSizeInventory(), ItemStack.EMPTY);
 		ItemStackHelper.loadAllItems(compound, contents);
 
