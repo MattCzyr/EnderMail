@@ -198,5 +198,9 @@ public class LockerTileEntity extends TileEntity implements IInventory, INamedCo
 	public String getLockerID() {
 		return lockerID;
 	}
+	
+	public boolean hasLockerID() {
+		return lockerID != null && !lockerID.isEmpty();
+	}
 
 }

@@ -2,6 +2,7 @@ package com.chaosthedude.endermail.blocks;
 
 import com.chaosthedude.endermail.blocks.te.LockerTileEntity;
 import com.chaosthedude.endermail.registry.EnderMailBlocks;
+import com.chaosthedude.endermail.registry.EnderMailItems;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
@@ -13,6 +14,8 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
@@ -53,7 +56,8 @@ public class LockerBlock extends ContainerBlock {
 	}
 
 	@Override
-	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result) {
+	public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player,
+			Hand hand, BlockRayTraceResult result) {
 		if (world.isRemote()) {
 			return ActionResultType.SUCCESS;
 		}
@@ -61,7 +65,8 @@ public class LockerBlock extends ContainerBlock {
 			TileEntity te = world.getTileEntity(pos);
 			if (te != null && te instanceof LockerTileEntity) {
 				LockerTileEntity lockerTe = (LockerTileEntity) te;
-				NetworkHooks.openGui((ServerPlayerEntity) player, lockerTe, buf -> buf.writeBlockPos(pos).writeString(lockerTe.getLockerID()));
+				NetworkHooks.openGui((ServerPlayerEntity) player, lockerTe,
+						buf -> buf.writeBlockPos(pos).writeString(lockerTe.getLockerID()));
 			}
 			return ActionResultType.SUCCESS;
 		}
@@ -76,6 +81,19 @@ public class LockerBlock extends ContainerBlock {
 			if (tileentity instanceof LockerTileEntity) {
 				((LockerTileEntity) tileentity).setLockerID(stack.getDisplayName().getString());
 			}
+		}
+	}
+
+	@Override
+	public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
+		if (!state.isIn(newState.getBlock())) {
+			TileEntity tile = world.getTileEntity(pos);
+			if (tile instanceof IInventory) {
+				InventoryHelper.dropInventoryItems(world, pos, (IInventory) tile);
+				world.updateComparatorOutputLevel(pos, this);
+			}
+			spawnAsEntity(world, pos, new ItemStack(EnderMailItems.LOCKER));
+			super.onReplaced(state, world, pos, newState, isMoving);
 		}
 	}
 
@@ -109,7 +127,9 @@ public class LockerBlock extends ContainerBlock {
 		if (state.getBlock() == EnderMailBlocks.LOCKER) {
 			if ((state.get(FILLED) && !filled) || (!state.get(FILLED) && filled)) {
 				TileEntity tileentity = world.getTileEntity(pos);
-				world.setBlockState(pos, EnderMailBlocks.LOCKER.getDefaultState().with(FACING, state.get(FACING)).with(FILLED, filled), 3);
+				world.setBlockState(pos,
+						EnderMailBlocks.LOCKER.getDefaultState().with(FACING, state.get(FACING)).with(FILLED, filled),
+						3);
 				if (tileentity != null) {
 					tileentity.validate();
 					world.setTileEntity(pos, tileentity);
