@@ -1,0 +1,35 @@
+{
+    "_comment": "Ender Mail Language File",
+    "_comment": "Polski",
+
+    "_comment": "BLOCKS",
+    "block.endermail.package": "Paczka",
+    "block.endermail.locker": "Skrzynka pocztowa",
+
+    "_comment": "ITEMS",
+    "item.endermail.package_controller": "Kontroler paczek",
+    "item.endermail.packing_tape": "Taśma pakowa",
+    "item.endermail.stamp": "Znaczek",
+
+    "_comment": "STRINGS",
+    "string.endermail.cancel": "Anuluj",
+    "string.endermail.close": "Zamknij",
+    "string.endermail.confirm": "Potwierdź",
+    "string.endermail.coordinates": "Koordynaty",
+    "string.endermail.deliver": "Dostarcz",
+    "string.endermail.delivered": "Dostarczona",
+    "string.endermail.deliveredToLocker": "Dostarczona do skrzynki",
+    "string.endermail.delivering": "W dostawie",
+    "string.endermail.deliveryDistance": "Zasięg dostawy",
+    "string.endermail.deliveryLocation": "Miejsce dostawy",
+    "string.endermail.error": "Wystąpił błąd",
+    "string.endermail.holdShift": "Przytrzymaj Shift żeby zobaczyć zawartość",
+    "string.endermail.lockerID": "ID Skrzynki",
+    "string.endermail.id": "ID",
+    "string.endermail.invalidLockerID": "Niewłaściwe ID skrzynki",
+    "string.endermail.maxDistance": "Maksymalny zasięg",
+    "string.endermail.setID": "Ustaw ID",
+    "string.endermail.status": "Status",
+    "string.endermail.tooFar": "Zbyt daleko aby dostarczyć",
+    "string.endermail.undeliverable": "Nie da się dostarczyć"
+}
