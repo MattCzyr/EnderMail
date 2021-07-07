@@ -25,6 +25,7 @@ public class ConfigHandler {
 		public final ForgeConfigSpec.IntValue maxDeliveryDistance;
 		public final ForgeConfigSpec.IntValue lockerDeliveryRadius;
 		public final ForgeConfigSpec.BooleanValue lockerDeliveryRadiusIgnoresY;
+		public final ForgeConfigSpec.BooleanValue lockerDeliveryRadiusIgnoresXZ;
 		public final ForgeConfigSpec.BooleanValue logDeliveries;
 		public final ForgeConfigSpec.ConfigValue<List<String>> packageContentsBlacklist;
 
@@ -43,6 +44,9 @@ public class ConfigHandler {
 			
 			desc = "Determines whether a locker\'s delivery radius will ignore a package\'s delivery location\'s Y-coordinate.";
 			lockerDeliveryRadiusIgnoresY = builder.comment(desc).define("lockerDeliveryRadiusIgnoresY", true);
+			
+			desc = "Determines whether a locker\'s delivery radius will ignore a package\'s delivery location\'s XZ-coordinates.";
+			lockerDeliveryRadiusIgnoresXZ = builder.comment(desc).define("lockerDeliveryRadiusIgnoresXZ", false);
 			
 			desc = "Determines whether package deliveries will be logged in the console.";
 			logDeliveries = builder.comment(desc).define("logDeliveries", false);

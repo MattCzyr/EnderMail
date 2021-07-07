@@ -242,10 +242,18 @@ public class EnderMailmanEntity extends MonsterEntity {
 			for (String lockerID : data.getLockers().keySet()) {
 				BlockPos lockerPos = data.getLockers().get(lockerID);
 				if (ConfigHandler.GENERAL.lockerDeliveryRadiusIgnoresY.get()) {
+					if(ConfigHandler.GENERAL.lockerDeliveryRadiusIgnoresXZ.get()) {
+						return lockerPos;
+					}
 					int deltaX = pos.getX() - lockerPos.getX();
 					int deltaZ = pos.getZ() - lockerPos.getZ();
 					int distanceSq = (deltaX * deltaX) + (deltaZ * deltaZ);
 					if (distanceSq < ConfigHandler.GENERAL.lockerDeliveryRadius.get() * ConfigHandler.GENERAL.lockerDeliveryRadius.get()) {
+						return lockerPos;
+					}
+				} else if(ConfigHandler.GENERAL.lockerDeliveryRadiusIgnoresXZ.get()) {
+					int deltaY = Math.abs(pos.getY() - lockerPos.getY());
+					if(deltaY < ConfigHandler.GENERAL.lockerDeliveryRadius.get()) {
 						return lockerPos;
 					}
 				} else {
