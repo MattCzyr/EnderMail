@@ -1,4 +1,15 @@
 ---------------------------------------------
+ VERSION 1.2.1 - 1.16.5
+---------------------------------------------
+ 1.16.5:
+  - Fixed bug in which lockers did not drop anything when broken
+  - Fixed bug that caused packageContentsBlacklist config field to reset occasionally when starting the game
+  - Added Italian translations
+  - Added German translations
+  - Added Polish translations
+
+
+---------------------------------------------
  VERSION 1.2.0 - 1.16.5, 1.16.4
 ---------------------------------------------
  1.16.5:

@@ -1,12 +1,11 @@
 package com.chaosthedude.endermail.config;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import com.chaosthedude.endermail.util.OverlaySide;
-
 import com.google.common.base.Predicates;
+
 import net.minecraftforge.common.ForgeConfigSpec;
 
 public class ConfigHandler {
