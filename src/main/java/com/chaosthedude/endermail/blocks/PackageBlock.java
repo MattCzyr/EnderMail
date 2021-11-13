@@ -287,13 +287,8 @@ public class PackageBlock extends ContainerBlock {
 	}
 
 	public static void setState(boolean stamped, World world, BlockPos pos) {
-		BlockState iblockstate = world.getBlockState(pos);
-		TileEntity tileentity = world.getTileEntity(pos);
-		world.setBlockState(pos, EnderMailBlocks.PACKAGE.getDefaultState().with(FACING, iblockstate.get(FACING)).with(STAMPED, stamped), 3);
-		if (tileentity != null) {
-			tileentity.validate();
-			world.setTileEntity(pos, tileentity);
-		}
+		BlockState state = world.getBlockState(pos);
+		world.setBlockState(pos, state.with(STAMPED, stamped), 3);
 	}
 
 }

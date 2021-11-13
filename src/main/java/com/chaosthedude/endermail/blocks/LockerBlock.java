@@ -125,15 +125,8 @@ public class LockerBlock extends ContainerBlock {
 	public static void setFilled(boolean filled, World world, BlockPos pos) {
 		BlockState state = world.getBlockState(pos);
 		if (state.getBlock() == EnderMailBlocks.LOCKER) {
-			if ((state.get(FILLED) && !filled) || (!state.get(FILLED) && filled)) {
-				TileEntity tileentity = world.getTileEntity(pos);
-				world.setBlockState(pos,
-						EnderMailBlocks.LOCKER.getDefaultState().with(FACING, state.get(FACING)).with(FILLED, filled),
-						3);
-				if (tileentity != null) {
-					tileentity.validate();
-					world.setTileEntity(pos, tileentity);
-				}
+			if (state.get(FILLED) != filled) {
+				world.setBlockState(pos, state.with(FILLED, filled), 3);
 			}
 		}
 	}
