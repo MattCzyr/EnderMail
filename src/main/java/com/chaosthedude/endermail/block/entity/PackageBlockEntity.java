@@ -72,8 +72,8 @@ public class PackageBlockEntity extends BaseContainerBlockEntity {
 	}
 
 	@Override
-	public CompoundTag save(CompoundTag tag) {
-		super.save(tag);
+	public void saveAdditional(CompoundTag tag) {
+		super.saveAdditional(tag);
 		ContainerHelper.saveAllItems(tag, contents);
 
 		tag.putInt("DeliveryX", deliveryX);
@@ -84,8 +84,6 @@ public class PackageBlockEntity extends BaseContainerBlockEntity {
 
 		tag.putBoolean("HasDeliveryLocation", hasDeliveryLocation);
 		tag.putBoolean("HasLockerID", hasLockerID);
-
-		return tag;
 	}
 
 	public CompoundTag writeItems(CompoundTag tag) {

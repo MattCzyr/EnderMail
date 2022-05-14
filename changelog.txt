@@ -1,20 +1,4 @@
 ---------------------------------------------
- VERSION 1.2.3 - 1.17.1
----------------------------------------------
- 1.17.1:
-  - Initial release for 1.17.1
-  - Added Korean translations
-  - Fixed bug that caused multiple config backups to be saved
-
-
----------------------------------------------
- VERSION 1.2.2 - 1.16.5
----------------------------------------------
- 1.16.5:
-  - Fixed incompatibility with RoadRunner and potentially other performance-enhancing mods
-
-
----------------------------------------------
  VERSION 1.2.1 - 1.16.5
 ---------------------------------------------
  1.16.5:
@@ -29,7 +13,7 @@
  VERSION 1.2.0 - 1.16.5, 1.16.4
 ---------------------------------------------
  1.16.5:
-  - Initial release for 1.16.5
+  - Initial release for 1.16.5 (Forge 36.0.14)
  1.16.4:
   - Display error message on package controller after attempting to deliver a package to a nonexistent locker ID
   - Prevent locker IDs longer than the maximum 12 characters from being input on a stamp
@@ -49,7 +33,7 @@
  VERSION 1.1.6 - 1.16.4
 ---------------------------------------------
  1.16.4:
-  - Initial release for 1.16.4
+  - Initial release for 1.16.4 (Forge 35.1.4)
   - Added French translations
 
 
@@ -57,7 +41,7 @@
  VERSION 1.1.5 - 1.16.3
 ---------------------------------------------
  1.16.3:
-  - Initial release for 1.16.3
+  - Initial release for 1.16.3 (Forge 34.0.18)
   - Added Russian translations
   - Fixed incorrect Chinese translation
 
@@ -73,7 +57,7 @@
  VERSION 1.1.3 - 1.16.2, 1.16.1, 1.12.2
 ---------------------------------------------
  1.16.2:
-  - Initial release for 1.16.2
+  - Initial release for 1.16.2 (Forge 32.0.7)
  1.16.1:
   - Added Chinese translations
   - Fixed crash that occurred when moving a package controller between inventories during a delivery
@@ -90,7 +74,7 @@
  VERSION 1.1.1 - 1.16.1, 1.15.2, 1.12.2
 ---------------------------------------------
  1.16.1, 1.15.2, 1.12.2:
-  - Initial release for 1.16.1
+  - Initial release for 1.16.1 (Forge 32.0.63)
   - Changed package and packing tape recipes to use tags for some items
   - Updated locker texture
 
@@ -134,8 +118,8 @@
  VERSION 1.0.0 - 1.15.2, 1.14.4, 1.12.2
 ---------------------------------------------
  1.15.2:
-  - Initial release for 1.15.2
+  - Initial release for 1.15.2 (Forge 31.1.37)
  1.14.4:
-  - Initial release for 1.14.4
+  - Initial release for 1.14.4 (Forge 28.2.3)
  1.12.2:
-  - Initial release for 1.12.2
+  - Initial release for 1.12.2 (Forge 14.23.5.2847)

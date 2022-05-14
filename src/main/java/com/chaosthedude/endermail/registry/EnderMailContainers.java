@@ -5,7 +5,7 @@ import com.chaosthedude.endermail.gui.container.LockerMenu;
 import com.chaosthedude.endermail.gui.container.PackageMenu;
 
 import net.minecraft.world.inventory.MenuType;
-import net.minecraftforge.common.extensions.IForgeContainerType;
+import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -24,7 +24,7 @@ public class EnderMailContainers {
 	@SubscribeEvent
 	public static void onContainerTypeRegistry(final RegistryEvent.Register<MenuType<?>> event) {
 		event.getRegistry().registerAll(
-				IForgeContainerType.create(LockerMenu::new).setRegistryName(LockerMenu.NAME),
+				IForgeMenuType.create(LockerMenu::new).setRegistryName(LockerMenu.NAME),
 				new MenuType<>(PackageMenu::new).setRegistryName(PackageMenu.NAME)
 		);
 	}

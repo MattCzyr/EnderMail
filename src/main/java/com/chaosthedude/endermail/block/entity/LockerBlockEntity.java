@@ -63,11 +63,10 @@ public class LockerBlockEntity extends BaseContainerBlockEntity {
 	}
 
 	@Override
-	public CompoundTag save(CompoundTag tag) {
-		super.save(tag);
+	public void saveAdditional(CompoundTag tag) {
+		super.saveAdditional(tag);
 		ContainerHelper.saveAllItems(tag, contents);
 		tag.putString("LockerID", lockerID);
-		return tag;
 	}
 
 	public CompoundTag writeItems(CompoundTag compound) {
