@@ -1,0 +1,35 @@
+{
+     "_comment": "Ender Mail Language File",
+     "_comment": "한글 - 대한민국",
+
+     "_comment": "블록",
+     "block.endermail.package": "소포",
+     "block.endermail.locker": "사물함",
+
+     "_comment": "아이템",
+     "item.endermail.package_controller": "소포 컨트롤러",
+     "item.endermail.packing_tape": "포장 테이프",
+     "item.endermail.stamp": "도장",
+
+     "_comment": "문자열",
+     "string.endermail.cancel": "취소",
+     "string.endermail.close": "닫기",
+     "string.endermail.confirm": "확인",
+     "string.endermail.coordinates": "좌표",
+     "string.endermail.deliver": "배달",
+     "string.endermail.delivered": "배달됨",
+     "string.endermail.deliveredToLocker": "사물함에 배달됨",
+     "string.endermail.delivering": "배달 중",
+     "string.endermail.deliveryDistance": "배달 거리",
+     "string.endermail.deliveryLocation": "배달 위치",
+     "string.endermail.error": "에러가 발생했습니다.",
+     "string.endermail.holdShift": "내용물을 얻으려면 쉬프트를 누르세요.",
+     "string.endermail.lockerID": "사물함 ID",
+     "string.endermail.id": "ID",
+     "string.endermail.invalidLockerID": "유효하지 않은 사물함 ID",
+     "string.endermail.maxDistance": "최대 거리",
+     "string.endermail.setID": "ID 설정",
+     "string.endermail.status": "상태",
+     "string.endermail.tooFar": "배달하기에는 너무 멉니다.",
+     "string.endermail.undeliverable": "배달 불가"
+ }

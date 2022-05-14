@@ -11,7 +11,6 @@ import com.chaosthedude.endermail.data.LockerWorldData;
 import com.chaosthedude.endermail.entity.EnderMailmanEntity;
 import com.chaosthedude.endermail.gui.ScreenWrapper;
 import com.chaosthedude.endermail.item.PackageControllerItem;
-import com.chaosthedude.endermail.registry.EnderMailBlocks;
 import com.chaosthedude.endermail.registry.EnderMailEntities;
 import com.chaosthedude.endermail.registry.EnderMailItems;
 import com.chaosthedude.endermail.util.ControllerState;
@@ -28,7 +27,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.stats.Stats;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -39,7 +37,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
@@ -290,13 +287,9 @@ public class PackageBlock extends BaseEntityBlock {
 		return false;
 	}
 
-	public static void setState(boolean stamped, Level world, BlockPos pos) {
-		BlockState iblockstate = world.getBlockState(pos);
-		BlockEntity tileentity = world.getBlockEntity(pos);
-		world.setBlock(pos, EnderMailBlocks.PACKAGE.defaultBlockState().setValue(FACING, iblockstate.getValue(FACING)).setValue(STAMPED, stamped), 3);
-		if (tileentity != null) {
-			world.setBlockEntity(tileentity);
-		}
+	public static void setState(boolean stamped, Level level, BlockPos pos) {
+		BlockState state = level.getBlockState(pos);
+ 		level.setBlock(pos, state.setValue(STAMPED, stamped), 3);
 	}
 
 }

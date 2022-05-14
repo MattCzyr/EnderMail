@@ -122,12 +122,8 @@ public class LockerBlock extends BaseEntityBlock {
 	public static void setFilled(boolean filled, Level level, BlockPos pos) {
 		BlockState state = level.getBlockState(pos);
 		if (state.getBlock() == EnderMailBlocks.LOCKER) {
-			if ((state.getValue(FILLED) && !filled) || (!state.getValue(FILLED) && filled)) {
-				BlockEntity tileentity = level.getBlockEntity(pos);
-				level.setBlock(pos, EnderMailBlocks.LOCKER.defaultBlockState().setValue(FACING, state.getValue(FACING)).setValue(FILLED, filled), 3);
-				if (tileentity != null) {
-					level.setBlockEntity(tileentity);
-				}
+			if (state.getValue(FILLED) != filled) {
+				level.setBlock(pos, state.setValue(FILLED, filled), 3);
 			}
 		}
 	}
