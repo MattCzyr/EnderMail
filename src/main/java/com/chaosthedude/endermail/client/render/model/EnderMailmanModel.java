@@ -1,151 +1,113 @@
 package com.chaosthedude.endermail.client.render.model;
 
+import com.chaosthedude.endermail.EnderMail;
 import com.chaosthedude.endermail.entity.EnderMailmanEntity;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 
-import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class EnderMailmanModel extends BipedModel<EnderMailmanEntity> {
+public class EnderMailmanModel extends HumanoidModel<EnderMailmanEntity> {
 
-	public ModelRenderer brim;
-	public ModelRenderer hat;
+	public static final ModelLayerLocation LOCATION = new ModelLayerLocation(new ResourceLocation(EnderMail.MODID, EnderMailmanEntity.NAME), "main");
 
-	public boolean isCarrying;
+	public boolean carrying;
 
-	public EnderMailmanModel(float scale) {
-		super(0.0F, -14.0F, 64, 64);
-		float f = -14.0F;
-		bipedHeadwear = new ModelRenderer(this, 0, 16);
-		bipedHeadwear.addBox(-4.0F, -8.0F, -4.0F, 8, 8, 8, scale - 0.5F);
-		bipedHeadwear.setRotationPoint(0.0F, -14.0F, 0.0F);
+	public EnderMailmanModel(ModelPart part) {
+		super(part);
+	}
 
-		bipedBody = new ModelRenderer(this, 32, 16);
-		bipedBody.addBox(-4.0F, 0.0F, -2.0F, 8, 12, 4, scale);
-		bipedBody.setRotationPoint(0.0F, -14.0F, 0.0F);
-
-		bipedRightArm = new ModelRenderer(this, 56, 0);
-		bipedRightArm.addBox(-1.0F, -2.0F, -1.0F, 2, 30, 2, scale);
-		bipedRightArm.setRotationPoint(-3.0F, -12.0F, 0.0F);
-
-		bipedLeftArm = new ModelRenderer(this, 56, 0);
-		bipedLeftArm.mirror = true;
-		bipedLeftArm.addBox(-1.0F, -2.0F, -1.0F, 2, 30, 2, scale);
-		bipedLeftArm.setRotationPoint(5.0F, -12.0F, 0.0F);
-
-		bipedRightLeg = new ModelRenderer(this, 56, 0);
-		bipedRightLeg.addBox(-1.0F, 0.0F, -1.0F, 2, 30, 2, scale);
-		bipedRightLeg.setRotationPoint(-2.0F, -2.0F, 0.0F);
-
-		bipedLeftLeg = new ModelRenderer(this, 56, 0);
-		bipedLeftLeg.mirror = true;
-		bipedLeftLeg.addBox(-1.0F, 0.0F, -1.0F, 2, 30, 2, scale);
-		bipedLeftLeg.setRotationPoint(2.0F, -2.0F, 0.0F);
-
-		brim = new ModelRenderer(this, 0, 49);
-		brim.addBox(-5.0F, -9.0F, -9.0F, 10, 1, 14);
-		brim.setRotationPoint(0.0F, -14.0F, 0.0F);
-
-		hat = new ModelRenderer(this, 0, 38);
-		hat.addBox(-4.0F, -12.0F, -4.0F, 8, 3, 8);
-		hat.setRotationPoint(0.0F, -14.0F, 0.0F);
+	public static LayerDefinition createBodyLayer() {
+		MeshDefinition mesh = HumanoidModel.createMesh(CubeDeformation.NONE, -14.0F);
+		PartDefinition part = mesh.getRoot();
+		part.addOrReplaceChild("head", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F), PartPose.offset(0.0F, 0.0F, 0.0F));
+		part.addOrReplaceChild("hat", CubeListBuilder.create().texOffs(0, 38).addBox(-4.0F, -12.0F, -4.0F, 8.0F, 3.0F, 8.0F).texOffs(0, 49).addBox(-5.0F, -9.0F, -9.0F, 10.0F, 1.0F, 14.0F), PartPose.offset(0.0F, -14.0F, 0.0F));
+		part.addOrReplaceChild("body", CubeListBuilder.create().texOffs(32, 16).addBox(-4.0F, 0.0F, -2.0F, 8.0F, 12.0F, 4.0F), PartPose.offset(0.0F, -14.0F, 0.0F));
+		part.addOrReplaceChild("right_arm", CubeListBuilder.create().texOffs(56, 0).addBox(-1.0F, -2.0F, -1.0F, 2.0F, 30.0F, 2.0F), PartPose.offset(-5.0F, -12.0F, 0.0F));
+		part.addOrReplaceChild("left_arm", CubeListBuilder.create().texOffs(56, 0).mirror().addBox(-1.0F, -2.0F, -1.0F, 2.0F, 30.0F, 2.0F), PartPose.offset(5.0F, -12.0F, 0.0F));
+		part.addOrReplaceChild("right_leg", CubeListBuilder.create().texOffs(56, 0).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 30.0F, 2.0F), PartPose.offset(-2.0F, -5.0F, 0.0F));
+		part.addOrReplaceChild("left_leg", CubeListBuilder.create().texOffs(56, 0).mirror().addBox(-1.0F, 0.0F, -1.0F, 2.0F, 30.0F, 2.0F), PartPose.offset(2.0F, -5.0F, 0.0F));
+		return LayerDefinition.create(mesh, 64, 64);
 	}
 
 	@Override
-	public void setRotationAngles(EnderMailmanEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		super.setRotationAngles(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-		this.bipedHead.showModel = true;
-		float f = -14.0F;
-		bipedBody.rotateAngleX = 0.0F;
-		bipedBody.rotationPointY = -14.0F;
-		bipedBody.rotationPointZ = -0.0F;
-		bipedRightLeg.rotateAngleX -= 0.0F;
-		bipedLeftLeg.rotateAngleX -= 0.0F;
-		bipedRightArm.rotateAngleX = (float) ((double) this.bipedRightArm.rotateAngleX * 0.5D);
-		bipedLeftArm.rotateAngleX = (float) ((double) this.bipedLeftArm.rotateAngleX * 0.5D);
-		bipedRightLeg.rotateAngleX = (float) ((double) this.bipedRightLeg.rotateAngleX * 0.5D);
-		bipedLeftLeg.rotateAngleX = (float) ((double) this.bipedLeftLeg.rotateAngleX * 0.5D);
-		float f1 = 0.4F;
-		if (bipedRightArm.rotateAngleX > 0.4F) {
-			bipedRightArm.rotateAngleX = 0.4F;
+	public void setupAnim(EnderMailmanEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+		super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+		head.visible = true;
+		hat.visible = true;
+		body.xRot = 0.0F;
+		body.y = -14.0F;
+		body.z = -0.0F;
+		rightLeg.xRot -= 0.0F;
+		leftLeg.xRot -= 0.0F;
+		rightArm.xRot = (float) ((double) rightArm.xRot * 0.5D);
+		leftArm.xRot = (float) ((double) leftArm.xRot * 0.5D);
+		rightLeg.xRot = (float) ((double) rightLeg.xRot * 0.5D);
+		leftLeg.xRot = (float) ((double) leftLeg.xRot * 0.5D);
+		if (rightArm.xRot > 0.4F) {
+			rightArm.xRot = 0.4F;
 		}
 
-		if (bipedLeftArm.rotateAngleX > 0.4F) {
-			bipedLeftArm.rotateAngleX = 0.4F;
+		if (leftArm.xRot > 0.4F) {
+			leftArm.xRot = 0.4F;
 		}
 
-		if (bipedRightArm.rotateAngleX < -0.4F) {
-			bipedRightArm.rotateAngleX = -0.4F;
+		if (rightArm.xRot < -0.4F) {
+			rightArm.xRot = -0.4F;
 		}
 
-		if (bipedLeftArm.rotateAngleX < -0.4F) {
-			bipedLeftArm.rotateAngleX = -0.4F;
+		if (leftArm.xRot < -0.4F) {
+			leftArm.xRot = -0.4F;
 		}
 
-		if (bipedRightLeg.rotateAngleX > 0.4F) {
-			bipedRightLeg.rotateAngleX = 0.4F;
+		if (rightLeg.xRot > 0.4F) {
+			rightLeg.xRot = 0.4F;
 		}
 
-		if (bipedLeftLeg.rotateAngleX > 0.4F) {
-			bipedLeftLeg.rotateAngleX = 0.4F;
+		if (leftLeg.xRot > 0.4F) {
+			leftLeg.xRot = 0.4F;
 		}
 
-		if (bipedRightLeg.rotateAngleX < -0.4F) {
-			bipedRightLeg.rotateAngleX = -0.4F;
+		if (rightLeg.xRot < -0.4F) {
+			rightLeg.xRot = -0.4F;
 		}
 
-		if (bipedLeftLeg.rotateAngleX < -0.4F) {
-			bipedLeftLeg.rotateAngleX = -0.4F;
+		if (leftLeg.xRot < -0.4F) {
+			leftLeg.xRot = -0.4F;
 		}
 
-		if (isCarrying) {
-			bipedRightArm.rotateAngleX = -0.5F;
-			bipedLeftArm.rotateAngleX = -0.5F;
-			bipedRightArm.rotateAngleZ = 0.05F;
-			bipedLeftArm.rotateAngleZ = -0.05F;
+		if (carrying) {
+			rightArm.xRot = -0.5F;
+			leftArm.xRot = -0.5F;
+			rightArm.zRot = 0.05F;
+			leftArm.zRot = -0.05F;
 		}
 
-		bipedRightArm.rotationPointZ = 0.0F;
-		bipedLeftArm.rotationPointZ = 0.0F;
-		bipedRightLeg.rotationPointZ = 0.0F;
-		bipedLeftLeg.rotationPointZ = 0.0F;
-		bipedRightLeg.rotationPointY = -5.0F;
-		bipedLeftLeg.rotationPointY = -5.0F;
-		bipedHead.rotationPointZ = -0.0F;
-		bipedHead.rotationPointY = -13.0F;
-		bipedHeadwear.rotationPointX = this.bipedHead.rotationPointX;
-		bipedHeadwear.rotationPointY = this.bipedHead.rotationPointY;
-		bipedHeadwear.rotationPointZ = this.bipedHead.rotationPointZ;
-		bipedHeadwear.rotateAngleX = this.bipedHead.rotateAngleX;
-		bipedHeadwear.rotateAngleY = this.bipedHead.rotateAngleY;
-		bipedHeadwear.rotateAngleZ = this.bipedHead.rotateAngleZ;
+		rightLeg.z = 0.0F;
+		leftLeg.z = 0.0F;
+		rightLeg.y = -5.0F;
+		leftLeg.y = -5.0F;
+		head.z = -0.0F;
+		head.y = -13.0F;
+		hat.x = head.x;
+		hat.y = head.y;
+		hat.z = head.z;
+		hat.xRot = head.xRot;
+		hat.yRot = head.yRot;
+		hat.zRot = head.zRot;
 
-		float f3 = -14.0F;
-		bipedRightArm.setRotationPoint(-5.0F, -12.0F, 0.0F);
-		bipedLeftArm.setRotationPoint(5.0F, -12.0F, 0.0F);
-		brim.rotationPointX = bipedHead.rotationPointX;
-		brim.rotationPointY = bipedHead.rotationPointY;
-		brim.rotationPointZ = bipedHead.rotationPointZ;
-		brim.rotateAngleX = bipedHead.rotateAngleX;
-		brim.rotateAngleY = bipedHead.rotateAngleY;
-		brim.rotateAngleZ = bipedHead.rotateAngleZ;
-		hat.rotationPointX = bipedHead.rotationPointX;
-		hat.rotationPointY = bipedHead.rotationPointY;
-		hat.rotationPointZ = bipedHead.rotationPointZ;
-		hat.rotateAngleX = bipedHead.rotateAngleX;
-		hat.rotateAngleY = bipedHead.rotateAngleY;
-		hat.rotateAngleZ = bipedHead.rotateAngleZ;
-	}
-
-	@Override
-	public void render(MatrixStack matrixStack, IVertexBuilder buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		super.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-		brim.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-		hat.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+		rightArm.setPos(-5.0F, -12.0F, 0.0F);
+		leftArm.setPos(5.0F, -12.0F, 0.0F);
 	}
 
 }

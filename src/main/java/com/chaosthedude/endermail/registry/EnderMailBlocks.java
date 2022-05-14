@@ -1,13 +1,13 @@
 package com.chaosthedude.endermail.registry;
 
 import com.chaosthedude.endermail.EnderMail;
-import com.chaosthedude.endermail.blocks.LockerBlock;
-import com.chaosthedude.endermail.blocks.PackageBlock;
-import com.chaosthedude.endermail.blocks.te.LockerTileEntity;
-import com.chaosthedude.endermail.blocks.te.PackageTileEntity;
+import com.chaosthedude.endermail.block.LockerBlock;
+import com.chaosthedude.endermail.block.PackageBlock;
+import com.chaosthedude.endermail.block.entity.LockerBlockEntity;
+import com.chaosthedude.endermail.block.entity.PackageBlockEntity;
 
-import net.minecraft.block.Block;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -20,14 +20,14 @@ public class EnderMailBlocks {
 	@ObjectHolder(PackageBlock.NAME)
 	public static final PackageBlock PACKAGE = null;
 
-	@ObjectHolder(PackageTileEntity.NAME)
-	public static final TileEntityType<?> PACKAGE_TE_TYPE = null;
+	@ObjectHolder(PackageBlockEntity.NAME)
+	public static final BlockEntityType<?> PACKAGE_TE_TYPE = null;
 	
 	@ObjectHolder(LockerBlock.NAME)
 	public static final LockerBlock LOCKER = null;
 	
-	@ObjectHolder(LockerTileEntity.NAME)
-	public static final TileEntityType<?> LOCKER_TE_TYPE = null;
+	@ObjectHolder(LockerBlockEntity.NAME)
+	public static final BlockEntityType<?> LOCKER_TE_TYPE = null;
 
 	@SubscribeEvent
 	public static void registerBlocks(final RegistryEvent.Register<Block> event) {
@@ -38,10 +38,10 @@ public class EnderMailBlocks {
 	}
 
 	@SubscribeEvent
-	public static void registerTileEntities(final RegistryEvent.Register<TileEntityType<?>> event) {
+	public static void registerTileEntities(final RegistryEvent.Register<BlockEntityType<?>> event) {
 		event.getRegistry().registerAll(
-				TileEntityType.Builder.create(PackageTileEntity::new, EnderMailBlocks.PACKAGE).build(null).setRegistryName(PackageTileEntity.NAME),
-				TileEntityType.Builder.create(LockerTileEntity::new, EnderMailBlocks.LOCKER).build(null).setRegistryName(LockerTileEntity.NAME)
+				BlockEntityType.Builder.of(PackageBlockEntity::new, EnderMailBlocks.PACKAGE).build(null).setRegistryName(PackageBlockEntity.NAME),
+				BlockEntityType.Builder.of(LockerBlockEntity::new, EnderMailBlocks.LOCKER).build(null).setRegistryName(LockerBlockEntity.NAME)
 		);
 	}
 

@@ -1,14 +1,14 @@
 package com.chaosthedude.endermail.registry;
 
 import com.chaosthedude.endermail.EnderMail;
-import com.chaosthedude.endermail.blocks.LockerBlock;
-import com.chaosthedude.endermail.blocks.PackageBlock;
-import com.chaosthedude.endermail.items.PackageControllerItem;
+import com.chaosthedude.endermail.block.LockerBlock;
+import com.chaosthedude.endermail.block.PackageBlock;
+import com.chaosthedude.endermail.item.PackageControllerItem;
 
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.Item.Properties;
-import net.minecraft.item.ItemGroup;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Item.Properties;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -36,11 +36,11 @@ public class EnderMailItems {
 	@SubscribeEvent
 	public static void registerBlocks(final RegistryEvent.Register<Item> event) {
 		event.getRegistry().registerAll(
-				new BlockItem(EnderMailBlocks.PACKAGE, new Properties().group(ItemGroup.DECORATIONS)).setRegistryName(PackageBlock.NAME),
-				new BlockItem(EnderMailBlocks.LOCKER, new Properties().group(ItemGroup.DECORATIONS)).setRegistryName(LockerBlock.NAME),
+				new BlockItem(EnderMailBlocks.PACKAGE, new Properties().tab(CreativeModeTab.TAB_DECORATIONS)).setRegistryName(PackageBlock.NAME),
+				new BlockItem(EnderMailBlocks.LOCKER, new Properties().tab(CreativeModeTab.TAB_DECORATIONS)).setRegistryName(LockerBlock.NAME),
 				new PackageControllerItem().setRegistryName("package_controller"),
-				new Item(new Properties().group(ItemGroup.MISC)).setRegistryName("packing_tape"),
-				new Item(new Properties().group(ItemGroup.MISC)).setRegistryName("stamp"));
+				new Item(new Properties().tab(CreativeModeTab.TAB_MISC)).setRegistryName("packing_tape"),
+				new Item(new Properties().tab(CreativeModeTab.TAB_MISC)).setRegistryName("stamp"));
 	}
 
 }

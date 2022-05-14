@@ -1,10 +1,10 @@
 package com.chaosthedude.endermail.registry;
 
 import com.chaosthedude.endermail.EnderMail;
-import com.chaosthedude.endermail.gui.container.LockerContainer;
-import com.chaosthedude.endermail.gui.container.PackageContainer;
+import com.chaosthedude.endermail.gui.container.LockerMenu;
+import com.chaosthedude.endermail.gui.container.PackageMenu;
 
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -15,18 +15,17 @@ import net.minecraftforge.registries.ObjectHolder;
 @ObjectHolder(EnderMail.MODID)
 public class EnderMailContainers {
 
-	@ObjectHolder(PackageContainer.NAME)
-	public static final ContainerType<PackageContainer> PACKAGE_CONTAINER = null;
+	@ObjectHolder(PackageMenu.NAME)
+	public static final MenuType<PackageMenu> PACKAGE_CONTAINER = null;
 	
-	@ObjectHolder(LockerContainer.NAME)
-	public static final ContainerType<LockerContainer> LOCKER_CONTAINER = null;
+	@ObjectHolder(LockerMenu.NAME)
+	public static final MenuType<LockerMenu> LOCKER_CONTAINER = null;
 
 	@SubscribeEvent
-	public static void onContainerTypeRegistry(final RegistryEvent.Register<ContainerType<?>> event) {
+	public static void onContainerTypeRegistry(final RegistryEvent.Register<MenuType<?>> event) {
 		event.getRegistry().registerAll(
-				IForgeContainerType.create(LockerContainer::new).setRegistryName(LockerContainer.NAME),
-				new ContainerType<>(PackageContainer::new).setRegistryName(PackageContainer.NAME)
-				//new ContainerType<>(LockerContainer::new).setRegistryName(LockerContainer.NAME)
+				IForgeContainerType.create(LockerMenu::new).setRegistryName(LockerMenu.NAME),
+				new MenuType<>(PackageMenu::new).setRegistryName(PackageMenu.NAME)
 		);
 	}
 

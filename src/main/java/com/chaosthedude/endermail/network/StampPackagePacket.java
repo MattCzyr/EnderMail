@@ -2,15 +2,15 @@ package com.chaosthedude.endermail.network;
 
 import java.util.function.Supplier;
 
-import com.chaosthedude.endermail.blocks.LockerBlock;
-import com.chaosthedude.endermail.blocks.PackageBlock;
+import com.chaosthedude.endermail.block.LockerBlock;
+import com.chaosthedude.endermail.block.PackageBlock;
 import com.chaosthedude.endermail.registry.EnderMailItems;
 import com.chaosthedude.endermail.util.ItemUtils;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 public class StampPackagePacket {
 
@@ -43,7 +43,7 @@ public class StampPackagePacket {
 		this.hasDeliveryPos = hasDeliveryPos;
 	}
 
-	public StampPackagePacket(PacketBuffer buf) {
+	public StampPackagePacket(FriendlyByteBuf buf) {
 		packageX = buf.readInt();
 		packageY = buf.readInt();
 		packageZ = buf.readInt();
@@ -52,12 +52,12 @@ public class StampPackagePacket {
 		deliveryY = buf.readInt();
 		deliveryZ = buf.readInt();
 		
-		lockerID = buf.readString(LockerBlock.MAX_ID_LENGTH);
+		lockerID = buf.readUtf(LockerBlock.MAX_ID_LENGTH);
 		
 		hasDeliveryPos = buf.readBoolean();
 	}
 
-	public void toBytes(PacketBuffer buf) {
+	public void toBytes(FriendlyByteBuf buf) {
 		buf.writeInt(packageX);
 		buf.writeInt(packageY);
 		buf.writeInt(packageZ);
@@ -66,14 +66,14 @@ public class StampPackagePacket {
 		buf.writeInt(deliveryY);
 		buf.writeInt(deliveryZ);
 		
-		buf.writeString(lockerID);
+		buf.writeUtf(lockerID);
 		
 		buf.writeBoolean(hasDeliveryPos);
 	}
 
 	public void handle(Supplier<NetworkEvent.Context> ctx) {
 		ctx.get().enqueueWork(() -> {
-			PackageBlock.stampPackage(ctx.get().getSender().world, new BlockPos(packageX, packageY, packageZ), new BlockPos(deliveryX, deliveryY, deliveryZ), lockerID, hasDeliveryPos);
+			PackageBlock.stampPackage(ctx.get().getSender().getLevel(), new BlockPos(packageX, packageY, packageZ), new BlockPos(deliveryX, deliveryY, deliveryZ), lockerID, hasDeliveryPos);
 			ItemStack stampStack = ItemUtils.getHeldItem(ctx.get().getSender(), EnderMailItems.STAMP);
 			if (stampStack != null && !ctx.get().getSender().isCreative()) {
 				stampStack.setCount(stampStack.getCount() - 1);

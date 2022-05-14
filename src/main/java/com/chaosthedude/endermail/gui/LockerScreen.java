@@ -1,47 +1,43 @@
 package com.chaosthedude.endermail.gui;
 
 import com.chaosthedude.endermail.EnderMail;
-import com.chaosthedude.endermail.blocks.LockerBlock;
-import com.chaosthedude.endermail.gui.container.LockerContainer;
+import com.chaosthedude.endermail.block.LockerBlock;
+import com.chaosthedude.endermail.gui.container.LockerMenu;
 import com.chaosthedude.endermail.network.ConfigureLockerPacket;
-import com.chaosthedude.endermail.util.RenderUtils;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.gui.IHasContainer;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.util.InputMappings;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ClickType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class LockerScreen extends ContainerScreen<LockerContainer> implements IHasContainer<LockerContainer> {
+public class LockerScreen extends AbstractContainerScreen<LockerMenu> {
 
-	private static final ResourceLocation TEXTURE = new ResourceLocation("endermail:textures/gui/locker.png");
+	private static final ResourceLocation TEXTURE = new ResourceLocation(EnderMail.MODID, "textures/gui/locker.png");
 
-	private final LockerContainer containerLocker;
-	private final PlayerInventory playerInventory;
-
-	private TextFieldWidget idTextField;
+	private EditBox idTextField;
 
 	private BlockPos lockerPos;
 	private String lockerID;
 
-	public LockerScreen(LockerContainer containerLocker, PlayerInventory playerInventory, ITextComponent title) {
+	public LockerScreen(LockerMenu containerLocker, Inventory playerInventory, Component title) {
 		super(containerLocker, playerInventory, title);
-		this.playerInventory = playerInventory;
-		this.containerLocker = containerLocker;
-		this.lockerPos = containerLocker.getLockerPos();
-		this.lockerID = containerLocker.getLockerID();
-		ySize = 133;
+		lockerPos = containerLocker.getLockerPos();
+		lockerID = containerLocker.getLockerID();
+		imageHeight = 133;
+		inventoryLabelY = imageHeight - 94;
 	}
 
 	@Override
@@ -51,30 +47,24 @@ public class LockerScreen extends ContainerScreen<LockerContainer> implements IH
 	}
 
 	@Override
-	public void tick() {
-		super.tick();
+	public void containerTick() {
+		super.containerTick();
 		idTextField.tick();
 	}
 
 	@Override
-	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-		renderBackground(matrixStack);
-		super.render(matrixStack, mouseX, mouseY, partialTicks);
-		idTextField.render(matrixStack, mouseX, mouseY, partialTicks);
-		renderHoveredTooltip(matrixStack, mouseX, mouseY);
-	}
-
-	@Override
-	protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
-		font.func_243248_b(matrixStack, new TranslationTextComponent("block.endermail.locker"), 8, 6, 4210752);
-		font.func_243248_b(matrixStack, new TranslationTextComponent("string.endermail.id"), 75, 6, 4210752);
-		font.func_243248_b(matrixStack, playerInventory.getDisplayName(), 8, ySize - 96 + 2, 4210752);
+	public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+		renderBackground(poseStack);
+		super.render(poseStack, mouseX, mouseY, partialTicks);
+		idTextField.render(poseStack, mouseX, mouseY, partialTicks);
+		font.draw(poseStack, new TranslatableComponent("string.endermail.id"), 75, titleLabelY, 4210752);
+		renderTooltip(poseStack, mouseX, mouseY);
 	}
 
 	@Override
 	public void onClose() {
-		if (!idTextField.getText().isEmpty() && !idTextField.getText().equals(lockerID)) {
-			EnderMail.network.sendToServer(new ConfigureLockerPacket(lockerPos, idTextField.getText()));
+		if (!idTextField.getValue().isEmpty() && !idTextField.getValue().equals(lockerID)) {
+			EnderMail.network.sendToServer(new ConfigureLockerPacket(lockerPos, idTextField.getValue()));
 		}
 		super.onClose();
 	}
@@ -83,7 +73,6 @@ public class LockerScreen extends ContainerScreen<LockerContainer> implements IH
 	public boolean keyPressed(int par1, int par2, int par3) {
 		if (par1 == 256) {
 			onClose();
-			closeScreen();
 			return true;
 		} else if (par1 == 258) {
 			boolean flag = !hasShiftDown();
@@ -91,46 +80,54 @@ public class LockerScreen extends ContainerScreen<LockerContainer> implements IH
 				changeFocus(flag);
 			}
 			return true;
-		} else if (getListener() != null && getListener().keyPressed(par1, par2, par3)) {
+		} else if (getFocused() != null && getFocused().keyPressed(par1, par2, par3)) {
 			return true;
 		}
-		InputMappings.Input mouseKey = InputMappings.getInputByCode(par1, par2);
-		if (!idTextField.isFocused() && minecraft.gameSettings.keyBindInventory.isActiveAndMatches(mouseKey)) {
+		InputConstants.Key mouseKey = InputConstants.getKey(par1, par2);
+		if (!idTextField.isFocused() && minecraft.options.keyInventory.isActiveAndMatches(mouseKey)) {
 			onClose();
-			closeScreen();
 			return true;
-		}
-		if (itemStackMoved(par1, par2))
-			return true;
-		if (hoveredSlot != null && hoveredSlot.getHasStack()) {
-			if (minecraft.gameSettings.keyBindPickBlock.isActiveAndMatches(mouseKey)) {
-				handleMouseClick(hoveredSlot, hoveredSlot.slotNumber, 0, ClickType.CLONE);
-				return true;
-			} else if (minecraft.gameSettings.keyBindDrop.isActiveAndMatches(mouseKey)) {
-				handleMouseClick(hoveredSlot, this.hoveredSlot.slotNumber, hasControlDown() ? 1 : 0, ClickType.THROW);
-				return true;
+		} else {
+			boolean handled = checkHotbarKeyPressed(par1, par2);
+			if (hoveredSlot != null && hoveredSlot.hasItem()) {
+				if (minecraft.options.keyPickItem.isActiveAndMatches(mouseKey)) {
+					slotClicked(hoveredSlot, hoveredSlot.index, 0, ClickType.CLONE);
+					handled = true;
+				} else if (minecraft.options.keyDrop.isActiveAndMatches(mouseKey)) {
+					slotClicked(hoveredSlot, hoveredSlot.index, hasControlDown() ? 1 : 0, ClickType.THROW);
+					handled = true;
+				}
+			} else if (minecraft.options.keyDrop.isActiveAndMatches(mouseKey)) {
+				handled = true;
 			}
-		} else if (minecraft.gameSettings.keyBindDrop.isActiveAndMatches(mouseKey)) {
-			return true;
+
+			return handled;
 		}
-		return false;
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
-		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-		minecraft.getTextureManager().bindTexture(TEXTURE);
-		int i = (width - xSize) / 2;
-		int j = (height - ySize) / 2;
-		RenderUtils.drawTexturedModalRect(i, j, 0, 0, xSize, ySize);
+	protected void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY) {
+		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+		RenderSystem.setShaderTexture(0, TEXTURE);
+		int i = (width - imageWidth) / 2;
+		int j = (height - imageHeight) / 2;
+		blit(poseStack, i, j, 0, 0, imageWidth, imageHeight);
+	}
+
+	@Override
+	public void resize(Minecraft mc, int par2, int par3) {
+		String s = idTextField.getValue();
+		init(mc, par2, par3);
+		idTextField.setValue(s);
 	}
 
 	private void setupTextFields() {
-		children.clear();
-		idTextField = new TextFieldWidget(font, (width - xSize) / 2 + 75, (height - ySize) / 2 + 20, 80, 18, new StringTextComponent(""));
-		idTextField.setText(containerLocker.getLockerID() != null ? containerLocker.getLockerID() : "");
-		idTextField.setMaxStringLength(LockerBlock.MAX_ID_LENGTH);
-		children.add(idTextField);
+		clearWidgets();
+		idTextField = new EditBox(font, (width - imageWidth) / 2 + 75, (height - imageHeight) / 2 + 20, 80, 18, new TextComponent(""));
+		idTextField.setMaxLength(LockerBlock.MAX_ID_LENGTH);
+		idTextField.setValue(lockerID);
+		addWidget(idTextField);
 	}
 
 }

@@ -6,51 +6,54 @@ import java.util.List;
 import java.util.Random;
 
 import com.chaosthedude.endermail.EnderMail;
-import com.chaosthedude.endermail.blocks.PackageBlock;
-import com.chaosthedude.endermail.blocks.te.LockerTileEntity;
-import com.chaosthedude.endermail.blocks.te.PackageTileEntity;
+import com.chaosthedude.endermail.block.PackageBlock;
+import com.chaosthedude.endermail.block.entity.LockerBlockEntity;
+import com.chaosthedude.endermail.block.entity.PackageBlockEntity;
 import com.chaosthedude.endermail.config.ConfigHandler;
 import com.chaosthedude.endermail.data.LockerWorldData;
-import com.chaosthedude.endermail.items.PackageControllerItem;
+import com.chaosthedude.endermail.item.PackageControllerItem;
 import com.chaosthedude.endermail.registry.EnderMailBlocks;
 import com.chaosthedude.endermail.registry.EnderMailItems;
 import com.chaosthedude.endermail.util.ControllerState;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.ai.goal.HurtByTargetGoal;
-import net.minecraft.entity.ai.goal.LookAtGoal;
-import net.minecraft.entity.ai.goal.LookRandomlyGoal;
-import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
-import net.minecraft.entity.monster.MonsterEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.pathfinding.PathNodeType;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Direction;
-import net.minecraft.util.IndirectEntityDamageSource;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.IndirectEntityDamageSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.pathfinder.BlockPathTypes;
 
-public class EnderMailmanEntity extends MonsterEntity {
+public class EnderMailmanEntity extends Monster {
 
 	public static final String NAME = "ender_mailman";
 
-	private static final DataParameter<Boolean> CARRYING_PACKAGE = EntityDataManager.<Boolean>createKey(EnderMailmanEntity.class, DataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> CARRYING_PACKAGE = SynchedEntityData.defineId(EnderMailmanEntity.class, EntityDataSerializers.BOOLEAN);
 	private NonNullList<ItemStack> contents = NonNullList.<ItemStack>withSize(PackageBlock.INVENTORY_SIZE, ItemStack.EMPTY);
 	private int lastCreepySound;
 	private int timePickedUp;
@@ -60,73 +63,72 @@ public class EnderMailmanEntity extends MonsterEntity {
 	private BlockPos deliveryPos;
 	private ItemStack packageController;
 
-	public EnderMailmanEntity(EntityType<? extends EnderMailmanEntity> entityType, World world) {
-		super(entityType, world);
-		stepHeight = 1.0F;
-		setPathPriority(PathNodeType.WATER, -1.0F);
+	public EnderMailmanEntity(EntityType<? extends EnderMailmanEntity> entityType, Level level) {
+		super(entityType, level);
+		maxUpStep = 1.0F;
+		setPathfindingMalus(BlockPathTypes.WATER, -1.0F);
 	}
 
-	public EnderMailmanEntity(EntityType<? extends EnderMailmanEntity> entityType, World world, BlockPos startingPos, BlockPos deliveryPos, String lockerID, ItemStack packageController) {
-		super(entityType, world);
+	public EnderMailmanEntity(EntityType<? extends EnderMailmanEntity> entityType, Level level, BlockPos startingPos, BlockPos deliveryPos, String lockerID, ItemStack packageController) {
+		super(entityType, level);
 		this.packageController = packageController;
-		setPosition(startingPos.getX() + getRandomOffset(), startingPos.getY(), startingPos.getZ() + getRandomOffset());
+		setPos(startingPos.getX() + getRandomOffset(), startingPos.getY(), startingPos.getZ() + getRandomOffset());
 		setStartingPos(startingPos);
 		findDeliveryPos(lockerID, deliveryPos);
 	}
 
 	@Override
-	protected void registerData() {
-		super.registerData();
-		dataManager.register(CARRYING_PACKAGE, Boolean.valueOf(false));
+	protected void defineSynchedData() {
+		super.defineSynchedData();
+		entityData.define(CARRYING_PACKAGE, Boolean.valueOf(false));
 	}
 
 	@Override
 	protected void registerGoals() {
-		goalSelector.addGoal(7, new WaterAvoidingRandomWalkingGoal(this, 1.0D, 0.0F));
-		goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
-		goalSelector.addGoal(8, new LookRandomlyGoal(this));
-		goalSelector.addGoal(10, new EnderMailmanEntity.DeliverGoal(this));
-		goalSelector.addGoal(11, new EnderMailmanEntity.TakePackageGoal(this));
-		goalSelector.addGoal(12, new EnderMailmanEntity.DieGoal(this));
-		goalSelector.addGoal(1, new HurtByTargetGoal(this));
+		goalSelector.addGoal(1, new WaterAvoidingRandomStrollGoal(this, 1.0D, 0.0F));
+		goalSelector.addGoal(2, new EnderMailmanEntity.DeliverGoal(this));
+		goalSelector.addGoal(3, new EnderMailmanEntity.TakePackageGoal(this));
+		goalSelector.addGoal(4, new EnderMailmanEntity.DieGoal(this));
+		goalSelector.addGoal(5, new LookAtPlayerGoal(this, Player.class, 8.0F));
+		goalSelector.addGoal(6, new RandomLookAroundGoal(this));
+		goalSelector.addGoal(7, new HurtByTargetGoal(this));
 	}
-	
-	public static AttributeModifierMap.MutableAttribute createAttributes() {
-		return MonsterEntity.func_234295_eP_().createMutableAttribute(Attributes.MAX_HEALTH, 40.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, (double) 0.3F).createMutableAttribute(Attributes.ATTACK_DAMAGE, 7.0D).createMutableAttribute(Attributes.FOLLOW_RANGE, 64.0D);
+
+	public static AttributeSupplier.Builder createAttributes() {
+		return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH, 40.0D).add(Attributes.MOVEMENT_SPEED, (double) 0.3F).add(Attributes.ATTACK_DAMAGE, 7.0D).add(Attributes.FOLLOW_RANGE, 64.0D);
 	}
 
 	@Override
-	public void livingTick() {
-		if (world.isRemote) {
+	public void tick() {
+		if (level.isClientSide()) {
 			for (int i = 0; i < 2; ++i) {
-				world.addParticle(ParticleTypes.PORTAL, getPosX() + (rand.nextDouble() - 0.5D) * (double) getWidth(), getPosY() + rand.nextDouble() * (double) getHeight() - 0.25D,
-						getPosZ() + (rand.nextDouble() - 0.5D) * (double) getWidth(), (rand.nextDouble() - 0.5D) * 2.0D, -rand.nextDouble(), (rand.nextDouble() - 0.5D) * 2.0D);
+				level.addParticle(ParticleTypes.PORTAL, getRandomX(0.5D), getRandomY() - 0.25D, getRandomZ(0.5D), (random.nextDouble() - 0.5D) * 2.0D, -random.nextDouble(), (random.nextDouble() - 0.5D) * 2.0D);
 			}
 
-			if (ticksExisted - timeDelivered > 100) {
+			if (tickCount - timeDelivered > 100) {
 				diePeacefully();
 			}
 		}
 
-		isJumping = false;
-		super.livingTick();
+		jumping = false;
+		super.tick();
 	}
 
 	@Override
-	public boolean attackEntityFrom(DamageSource source, float amount) {
+	public boolean hurt(DamageSource source, float amount) {
 		if (isInvulnerableTo(source)) {
 			return false;
 		} else if (source instanceof IndirectEntityDamageSource) {
 			for (int i = 0; i < 64; ++i) {
-				if (teleportRandomly()) {
+				if (this.teleportRandomly()) {
 					return true;
 				}
 			}
 
 			return false;
 		} else {
-			boolean flag = super.attackEntityFrom(source, amount);
-			if (source.isUnblockable() && rand.nextInt(10) != 0) {
+			boolean flag = super.hurt(source, amount);
+			if (!level.isClientSide() && !(source.getEntity() instanceof LivingEntity) && this.random.nextInt(10) != 0) {
 				teleportRandomly();
 			}
 
@@ -135,122 +137,138 @@ public class EnderMailmanEntity extends MonsterEntity {
 	}
 
 	@Override
-	protected void updateAITasks() {
-		if (isWet()) {
-			attackEntityFrom(DamageSource.DROWN, 1.0F);
+	protected void customServerAiStep() {
+		if (isInWaterRainOrBubble()) {
+			hurt(DamageSource.DROWN, 1.0F);
 		}
 
-		if (world.isDaytime()) {
+		if (level.isDay()) {
 			float f = getBrightness();
-			if (f > 0.5F && world.canBlockSeeSky(getPosition()) && rand.nextFloat() * 30.0F < (f - 0.4F) * 2.0F) {
+			if (f > 0.5F && level.canSeeSky(blockPosition()) && random.nextFloat() * 30.0F < (f - 0.4F) * 2.0F) {
 				teleportRandomly();
 			}
 		}
 
-		super.updateAITasks();
+		super.customServerAiStep();
 	}
 
-	@Override
 	protected SoundEvent getAmbientSound() {
-		return SoundEvents.ENTITY_ENDERMAN_AMBIENT;
+		return SoundEvents.ENDERMAN_AMBIENT;
 	}
 
-	@Override
-	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-		return SoundEvents.ENTITY_ENDERMAN_HURT;
+	protected SoundEvent getHurtSound(DamageSource p_32527_) {
+		return SoundEvents.ENDERMAN_HURT;
 	}
 
-	@Override
 	protected SoundEvent getDeathSound() {
-		return SoundEvents.ENTITY_ENDERMAN_DEATH;
+		return SoundEvents.ENDERMAN_DEATH;
 	}
 
 	@Override
-	public void writeAdditional(CompoundNBT compound) {
-		super.writeAdditional(compound);
-		ItemStackHelper.saveAllItems(compound, contents);
+	public void addAdditionalSaveData(CompoundTag tag) {
+		super.addAdditionalSaveData(tag);
+		ContainerHelper.saveAllItems(tag, contents);
 
-		compound.putInt("StartingX", startingPos.getX());
-		compound.putInt("StartingY", startingPos.getY());
-		compound.putInt("StartingZ", startingPos.getZ());
+		tag.putInt("StartingX", startingPos.getX());
+		tag.putInt("StartingY", startingPos.getY());
+		tag.putInt("StartingZ", startingPos.getZ());
 
-		compound.putInt("DeliveryX", deliveryPos.getX());
-		compound.putInt("DeliveryY", deliveryPos.getY());
-		compound.putInt("DeliveryZ", deliveryPos.getZ());
+		tag.putInt("DeliveryX", deliveryPos.getX());
+		tag.putInt("DeliveryY", deliveryPos.getY());
+		tag.putInt("DeliveryZ", deliveryPos.getZ());
 
-		compound.putBoolean("IsDelivering", isDelivering);
-		compound.putBoolean("IsCarryingPackage", isCarryingPackage());
+		tag.putBoolean("IsDelivering", isDelivering);
+		tag.putBoolean("IsCarryingPackage", isCarryingPackage());
 	}
 
 	@Override
-	public void read(CompoundNBT compound) {
-		super.read(compound);
-		ItemStackHelper.loadAllItems(compound, contents);
+	public void readAdditionalSaveData(CompoundTag tag) {
+		super.readAdditionalSaveData(tag);
+		ContainerHelper.loadAllItems(tag, contents);
 
-		startingPos = new BlockPos(compound.getInt("StartingX"), compound.getInt("StartingY"), compound.getInt("StartingZ"));
-		deliveryPos = new BlockPos(compound.getInt("DeliveryX"), compound.getInt("DeliveryY"), compound.getInt("DeliveryZ"));
+		startingPos = new BlockPos(tag.getInt("StartingX"), tag.getInt("StartingY"), tag.getInt("StartingZ"));
+		deliveryPos = new BlockPos(tag.getInt("DeliveryX"), tag.getInt("DeliveryY"), tag.getInt("DeliveryZ"));
 
-		isDelivering = compound.getBoolean("IsDelivering");
-		dataManager.set(CARRYING_PACKAGE, compound.getBoolean("IsCarryingPackage"));
+		isDelivering = tag.getBoolean("IsDelivering");
+		entityData.set(CARRYING_PACKAGE, tag.getBoolean("IsCarryingPackage"));
 	}
 
 	@Override
-	protected void dropInventory() {
-		super.dropInventory();
+	protected void dropEquipment() {
+		super.dropEquipment();
 		for (ItemStack stack : contents) {
-			entityDropItem(stack, 0.0F);
+			spawnAtLocation(stack);
 		}
 	}
-	
+
 	@Override
-	protected boolean isDespawnPeaceful() {
+	protected boolean shouldDespawnInPeaceful() {
 		return false;
 	}
 
-	private boolean teleportTo(double x, double y, double z) {
-		boolean canTeleport = attemptTeleport(x, y, z, false);
-		if (canTeleport) {
-			world.playSound((PlayerEntity) null, prevPosX, prevPosY, prevPosZ, SoundEvents.ENTITY_ENDERMAN_TELEPORT, getSoundCategory(), 1.0F, 1.0F);
-			playSound(SoundEvents.ENTITY_ENDERMAN_TELEPORT, 1.0F, 1.0F);
+	private boolean teleport(double x, double y, double z) {
+		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(x, y, z);
+		while (pos.getY() > level.getMinBuildHeight() && !level.getBlockState(pos).getMaterial().blocksMotion()) {
+			pos.move(Direction.DOWN);
 		}
 
-		return canTeleport;
+		BlockState state = level.getBlockState(pos);
+		boolean flag = state.getMaterial().blocksMotion();
+		boolean flag1 = state.getFluidState().is(FluidTags.WATER);
+		if (flag && !flag1) {
+			boolean flag2 = randomTeleport(x, y, z, true);
+			if (flag2 && !isSilent()) {
+				level.playSound((Player) null, xo, yo, zo, SoundEvents.ENDERMAN_TELEPORT, getSoundSource(), 1.0F, 1.0F);
+				playSound(SoundEvents.ENDERMAN_TELEPORT, 1.0F, 1.0F);
+			}
+			return flag2;
+		} else {
+			return false;
+		}
 	}
 
 	protected boolean teleportRandomly() {
-		double x = getPosX() + (rand.nextDouble() - 0.5D) * 64.0D;
-		double y = getPosY() + (double) (rand.nextInt(64) - 32);
-		double z = getPosZ() + (rand.nextDouble() - 0.5D) * 64.0D;
-		return teleportTo(x, y, z);
+		double x = getX() + (random.nextDouble() - 0.5D) * 64.0D;
+		double y = getY() + (double) (random.nextInt(64) - 32);
+		double z = getZ() + (random.nextDouble() - 0.5D) * 64.0D;
+		return teleport(x, y, z);
 	}
 
-	private boolean canPlacePackage(World world, BlockPos pos) {
-		return EnderMailBlocks.PACKAGE.getStampedState().isValidPosition(world, pos) && world.isAirBlock(pos) && Block.hasSolidSideOnTop(world, pos.down());
+	private boolean canPlacePackage(Level level, BlockPos pos) {
+		BlockPos belowPos = pos.below();
+		BlockState belowState = level.getBlockState(belowPos);
+		return level.getBlockState(pos).isAir() && !belowState.isAir() && !belowState.is(Blocks.BEDROCK) && belowState.isCollisionShapeFullBlock(level, belowPos) && EnderMailBlocks.PACKAGE.defaultBlockState().canSurvive(level, pos);
 	}
 
 	private BlockPos findLocker(String lockerID) {
-		LockerWorldData data = LockerWorldData.get(world);
-		if (data != null) {
-			return data.getLockers().get(lockerID);
+		if (level instanceof ServerLevel) {
+			ServerLevel serverLevel = (ServerLevel) level;
+			LockerWorldData data = LockerWorldData.get(serverLevel);
+			if (data != null) {
+				return data.getLockers().get(lockerID);
+			}
 		}
 		return null;
 	}
 
 	private BlockPos findLockerNearPos(BlockPos pos) {
-		LockerWorldData data = LockerWorldData.get(world);
-		if (data != null) {
-			for (String lockerID : data.getLockers().keySet()) {
-				BlockPos lockerPos = data.getLockers().get(lockerID);
-				if (ConfigHandler.GENERAL.lockerDeliveryRadiusIgnoresY.get()) {
-					int deltaX = pos.getX() - lockerPos.getX();
-					int deltaZ = pos.getZ() - lockerPos.getZ();
-					int distanceSq = (deltaX * deltaX) + (deltaZ * deltaZ);
-					if (distanceSq < ConfigHandler.GENERAL.lockerDeliveryRadius.get() * ConfigHandler.GENERAL.lockerDeliveryRadius.get()) {
-						return lockerPos;
-					}
-				} else {
-					if (pos.withinDistance(lockerPos, ConfigHandler.GENERAL.lockerDeliveryRadius.get())) {
-						return lockerPos;
+		if (level instanceof ServerLevel) {
+			ServerLevel serverLevel = (ServerLevel) level;
+			LockerWorldData data = LockerWorldData.get(serverLevel);
+			if (data != null) {
+				for (String lockerID : data.getLockers().keySet()) {
+					BlockPos lockerPos = data.getLockers().get(lockerID);
+					if (ConfigHandler.GENERAL.lockerDeliveryRadiusIgnoresY.get()) {
+						int deltaX = pos.getX() - lockerPos.getX();
+						int deltaZ = pos.getZ() - lockerPos.getZ();
+						int distanceSq = (deltaX * deltaX) + (deltaZ * deltaZ);
+						if (distanceSq < ConfigHandler.GENERAL.lockerDeliveryRadius.get() * ConfigHandler.GENERAL.lockerDeliveryRadius.get()) {
+							return lockerPos;
+						}
+					} else {
+						if (pos.closerThan(lockerPos, ConfigHandler.GENERAL.lockerDeliveryRadius.get())) {
+							return lockerPos;
+						}
 					}
 				}
 			}
@@ -260,19 +278,19 @@ public class EnderMailmanEntity extends MonsterEntity {
 
 	private int findValidDeliveryHeight(BlockPos pos, int maxHeightDifference) {
 		if (pos != null) {
-			int startY = pos.getY() <= 0 ? world.getSeaLevel() : pos.getY();
+			int startY = pos.getY() <= 0 ? level.getSeaLevel() : pos.getY();
 			int upY = startY;
 			int downY = startY;
-			while (!(canPlacePackage(world, new BlockPos(pos.getX(), upY, pos.getZ())) || canPlacePackage(world, new BlockPos(pos.getX(), downY, pos.getZ()))) && (upY < 255 || downY > 1) && upY - startY < maxHeightDifference && startY - downY < maxHeightDifference) {
+			while (!(canPlacePackage(level, new BlockPos(pos.getX(), upY, pos.getZ())) || canPlacePackage(level, new BlockPos(pos.getX(), downY, pos.getZ()))) && (upY < 255 || downY > 1) && upY - startY < maxHeightDifference && startY - downY < maxHeightDifference) {
 				upY++;
 				downY--;
 			}
 			BlockPos upPos = new BlockPos(pos.getX(), upY, pos.getZ());
 			BlockPos downPos = new BlockPos(pos.getX(), downY, pos.getZ());
-			if (upY < 255 && canPlacePackage(world, upPos)) {
+			if (upY < 255 && canPlacePackage(level, upPos)) {
 				return upY;
 			}
-			if (downY > 1 && canPlacePackage(world, downPos)) {
+			if (downY > 1 && canPlacePackage(level, downPos)) {
 				return downY;
 			}
 		}
@@ -299,8 +317,8 @@ public class EnderMailmanEntity extends MonsterEntity {
 	}
 
 	public void diePeacefully() {
-		teleportTo(getPosX(), -10, getPosZ());
-		attackEntityFrom(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
+		teleportTo(getX(), -10, getZ());
+		hurt(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
 	}
 
 	public void setContents(NonNullList<ItemStack> contents) {
@@ -312,7 +330,7 @@ public class EnderMailmanEntity extends MonsterEntity {
 	}
 
 	public double getDistance(double x, double y, double z) {
-		return Math.sqrt(getDistanceSq(x, y, z));
+		return Math.sqrt(distanceToSqr(x, y, z));
 	}
 
 	public double getDistanceToDelivery() {
@@ -339,7 +357,7 @@ public class EnderMailmanEntity extends MonsterEntity {
 	public void setPackageController(ItemStack packageController) {
 		this.packageController = packageController;
 	}
-	
+
 	public ItemStack getPackageController() {
 		return packageController;
 	}
@@ -347,13 +365,13 @@ public class EnderMailmanEntity extends MonsterEntity {
 	public PackageControllerItem getPackageControllerItem() {
 		return (PackageControllerItem) packageController.getItem();
 	}
-	
+
 	public boolean hasPackageController() {
 		return packageController != null && !packageController.isEmpty();
 	}
 
 	public boolean isCarryingPackage() {
-		return dataManager.get(CARRYING_PACKAGE);
+		return entityData.get(CARRYING_PACKAGE);
 	}
 
 	public boolean isDelivering() {
@@ -361,7 +379,7 @@ public class EnderMailmanEntity extends MonsterEntity {
 	}
 
 	public void setCarryingPackage(boolean carrying) {
-		dataManager.set(CARRYING_PACKAGE, carrying);
+		entityData.set(CARRYING_PACKAGE, carrying);
 	}
 
 	public void setDelivering(boolean delivering) {
@@ -369,15 +387,15 @@ public class EnderMailmanEntity extends MonsterEntity {
 	}
 
 	public boolean shouldDeliverOnGround() {
-		return canPlacePackage(world, getDeliveryPos());
+		return canPlacePackage(level, getDeliveryPos());
 	}
 
 	public boolean shouldDeliverToLocker() {
-		return world.getBlockState(deliveryPos).getBlock() == EnderMailBlocks.LOCKER;
+		return level.getBlockState(deliveryPos).getBlock() == EnderMailBlocks.LOCKER;
 	}
 
 	public void updateTimePickedUp() {
-		timePickedUp = ticksExisted;
+		timePickedUp = tickCount;
 	}
 
 	public int getTimePickedUp() {
@@ -385,7 +403,7 @@ public class EnderMailmanEntity extends MonsterEntity {
 	}
 
 	public void updateTimeDelivered() {
-		timeDelivered = ticksExisted;
+		timeDelivered = tickCount;
 	}
 
 	public int getTimeDelivered() {
@@ -393,16 +411,16 @@ public class EnderMailmanEntity extends MonsterEntity {
 	}
 
 	public void playEndermanSound() {
-		if (ticksExisted >= lastCreepySound + 400) {
-			lastCreepySound = ticksExisted;
+		if (tickCount >= lastCreepySound + 400) {
+			lastCreepySound = tickCount;
 			if (!isSilent()) {
-				world.playSound(getPosX(), getPosY() + (double) getEyeHeight(), getPosZ(), SoundEvents.ENTITY_ENDERMAN_STARE, getSoundCategory(), 2.5F, 1.0F, false);
+				level.playLocalSound(this.getX(), this.getEyeY(), this.getZ(), SoundEvents.ENDERMAN_STARE, this.getSoundSource(), 2.5F, 1.0F, false);
 			}
 		}
 	}
 
 	public double getRandomOffset() {
-		return getRNG().nextDouble() * 2 * (getRNG().nextBoolean() ? 1 : -1);
+		return random.nextDouble() * 2 * (random.nextBoolean() ? 1 : -1);
 	}
 
 	public void teleportToDeliveryPos() {
@@ -420,7 +438,7 @@ public class EnderMailmanEntity extends MonsterEntity {
 	}
 
 	public boolean isAtStartingPos() {
-		return getPosition() == startingPos;
+		return blockPosition() == startingPos;
 	}
 
 	public void setStartingPos(BlockPos pos) {
@@ -429,10 +447,10 @@ public class EnderMailmanEntity extends MonsterEntity {
 
 	public ItemStack getPackageStack() {
 		ItemStack stackPackage = new ItemStack(EnderMailItems.PACKAGE);
-		CompoundNBT stackTag = new CompoundNBT();
-		CompoundNBT itemTag = new CompoundNBT();
+		CompoundTag stackTag = new CompoundTag();
+		CompoundTag itemTag = new CompoundTag();
 		if (!contents.isEmpty()) {
-			itemTag = ItemStackHelper.saveAllItems(itemTag, contents);
+			itemTag = ContainerHelper.saveAllItems(itemTag, contents);
 		}
 		if (!itemTag.isEmpty()) {
 			stackTag.put("BlockEntityTag", itemTag);
@@ -451,18 +469,19 @@ public class EnderMailmanEntity extends MonsterEntity {
 		}
 
 		@Override
-		public boolean shouldExecute() {
+		public boolean canUse() {
 			return enderMailman.isDelivering() && enderMailman.isCarryingPackage();
 		}
 
 		@Override
 		public void tick() {
-			if (enderMailman.ticksExisted - enderMailman.getTimePickedUp() >= 100) {
+			if (enderMailman.tickCount - enderMailman.getTimePickedUp() >= 100) {
 				boolean delivered = false;
 				if (enderMailman.shouldDeliverOnGround()) {
 					enderMailman.teleportToDeliveryPos();
-					enderMailman.world.setBlockState(enderMailman.getDeliveryPos(), EnderMailBlocks.PACKAGE.getRandomlyRotatedStampedState(), 3);
-					enderMailman.world.setTileEntity(enderMailman.getDeliveryPos(), new PackageTileEntity(enderMailman.getContents()));
+					BlockState newBlockState = EnderMailBlocks.PACKAGE.getRandomlyRotatedStampedState();
+					enderMailman.level.setBlock(enderMailman.getDeliveryPos(), newBlockState, 3);
+					enderMailman.level.setBlockEntity(new PackageBlockEntity(enderMailman.getContents(), enderMailman.getDeliveryPos(), newBlockState));
 					if (enderMailman.hasPackageController()) {
 						enderMailman.getPackageControllerItem().setState(enderMailman.packageController, ControllerState.DELIVERED);
 						enderMailman.getPackageControllerItem().setDeliveryPos(enderMailman.packageController, enderMailman.getDeliveryPos());
@@ -472,21 +491,21 @@ public class EnderMailmanEntity extends MonsterEntity {
 					}
 					delivered = true;
 				} else if (enderMailman.shouldDeliverToLocker()) {
-					TileEntity te = enderMailman.world.getTileEntity(enderMailman.getDeliveryPos());
-					if (te != null && te instanceof LockerTileEntity) {
+					BlockEntity blockEntity = enderMailman.level.getBlockEntity(enderMailman.getDeliveryPos());
+					if (blockEntity != null && blockEntity instanceof LockerBlockEntity) {
 						enderMailman.teleportToDeliveryPos();
-						LockerTileEntity lockerTe = (LockerTileEntity) te;
+						LockerBlockEntity lockerBlockEntity = (LockerBlockEntity) blockEntity;
 						ItemStack stackPackage = enderMailman.getPackageStack();
-						boolean putInLocker = lockerTe.addPackage(stackPackage);
+						boolean putInLocker = lockerBlockEntity.addPackage(stackPackage);
 						if (putInLocker) {
 							if (enderMailman.hasPackageController()) {
 								enderMailman.getPackageControllerItem().setState(enderMailman.packageController, ControllerState.DELIVERED_TO_LOCKER);
-								enderMailman.getPackageControllerItem().setLockerID(enderMailman.packageController, lockerTe.getLockerID());
+								enderMailman.getPackageControllerItem().setLockerID(enderMailman.packageController, lockerBlockEntity.getLockerID());
 								enderMailman.getPackageControllerItem().setDeliveryPos(enderMailman.packageController, enderMailman.getDeliveryPos());
 								enderMailman.getPackageControllerItem().setShowLockerLocation(enderMailman.packageController, !ConfigHandler.GENERAL.hideLockerLocation.get());
 							}
 							if (ConfigHandler.GENERAL.logDeliveries.get()) {
-								EnderMail.logger.info("Delivered package to locker " + lockerTe.getLockerID() + " at " + enderMailman.getDeliveryPos().getX() + ", " + enderMailman.getDeliveryPos().getY() + ", " + enderMailman.getDeliveryPos().getZ());
+								EnderMail.logger.info("Delivered package to locker " + lockerBlockEntity.getLockerID() + " at " + enderMailman.getDeliveryPos().getX() + ", " + enderMailman.getDeliveryPos().getY() + ", " + enderMailman.getDeliveryPos().getZ());
 							}
 							delivered = true;
 						} else {
@@ -495,18 +514,19 @@ public class EnderMailmanEntity extends MonsterEntity {
 							while (y < 0 && !directions.isEmpty()) {
 								Direction randomDirection = directions.get(new Random().nextInt(directions.size()));
 								directions.remove(randomDirection);
-								BlockPos newDeliveryPos = enderMailman.getDeliveryPos().offset(randomDirection);
+								BlockPos newDeliveryPos = enderMailman.getDeliveryPos().relative(randomDirection);
 								y = enderMailman.findValidDeliveryHeight(newDeliveryPos, 8);
 								if (y > 0) {
 									newDeliveryPos = new BlockPos(newDeliveryPos.getX(), y, newDeliveryPos.getZ());
-									enderMailman.world.setBlockState(newDeliveryPos, EnderMailBlocks.PACKAGE.getRandomlyRotatedStampedState(), 3);
-									enderMailman.world.setTileEntity(newDeliveryPos, new PackageTileEntity(enderMailman.getContents()));
+									BlockState newBlockState = EnderMailBlocks.PACKAGE.getRandomlyRotatedStampedState();
+									enderMailman.level.setBlock(newDeliveryPos, newBlockState, 3);
+									enderMailman.level.setBlockEntity(new PackageBlockEntity(enderMailman.getContents(), newDeliveryPos, newBlockState));
 									if (enderMailman.hasPackageController()) {
 										enderMailman.getPackageControllerItem().setState(enderMailman.packageController, ControllerState.DELIVERED);
 										enderMailman.getPackageControllerItem().setDeliveryPos(enderMailman.packageController, newDeliveryPos);
 									}
 									if (ConfigHandler.GENERAL.logDeliveries.get()) {
-										EnderMail.logger.info("Delivered package to " + newDeliveryPos.getX() + ", " + newDeliveryPos.getY() + ", " + newDeliveryPos.getZ() + " near locker " + lockerTe.getLockerID());
+										EnderMail.logger.info("Delivered package to " + newDeliveryPos.getX() + ", " + newDeliveryPos.getY() + ", " + newDeliveryPos.getZ() + " near locker " + lockerBlockEntity.getLockerID());
 									}
 									delivered = true;
 								}
@@ -516,8 +536,9 @@ public class EnderMailmanEntity extends MonsterEntity {
 				}
 				if (!delivered) {
 					enderMailman.teleportToStartingPos();
-					enderMailman.world.setBlockState(enderMailman.getStartingPos(), EnderMailBlocks.PACKAGE.getRandomlyRotatedStampedState(), 3);
-					enderMailman.world.setTileEntity(enderMailman.getStartingPos(), new PackageTileEntity(enderMailman.getContents()));
+					BlockState newBlockState = EnderMailBlocks.PACKAGE.getRandomlyRotatedStampedState();
+					enderMailman.level.setBlock(enderMailman.getStartingPos(), newBlockState, 3);
+					enderMailman.level.setBlockEntity(new PackageBlockEntity(enderMailman.getContents(), enderMailman.getStartingPos(), newBlockState));
 					if (enderMailman.hasPackageController()) {
 						enderMailman.getPackageControllerItem().setState(enderMailman.packageController, ControllerState.UNDELIVERABLE);
 					}
@@ -527,7 +548,7 @@ public class EnderMailmanEntity extends MonsterEntity {
 				enderMailman.setContents(NonNullList.<ItemStack>withSize(PackageBlock.INVENTORY_SIZE, ItemStack.EMPTY));
 				enderMailman.setCarryingPackage(false);
 				enderMailman.setDelivering(false);
-			} else if ((enderMailman.ticksExisted - enderMailman.getTimePickedUp()) % 20 == 0) {
+			} else if ((enderMailman.tickCount - enderMailman.getTimePickedUp()) % 20 == 0) {
 				enderMailman.teleportRandomly();
 			}
 		}
@@ -541,18 +562,18 @@ public class EnderMailmanEntity extends MonsterEntity {
 		}
 
 		@Override
-		public boolean shouldExecute() {
+		public boolean canUse() {
 			return enderMailman.isDelivering() && !enderMailman.isCarryingPackage();
 		}
 
 		@Override
 		public void tick() {
-			TileEntity tileEntity = enderMailman.world.getTileEntity(enderMailman.startingPos);
-			if (tileEntity != null && tileEntity instanceof PackageTileEntity) {
-				PackageTileEntity tileEntityPackage = (PackageTileEntity) tileEntity;
-				enderMailman.setContents(tileEntityPackage.getContents());
+			BlockEntity blockEntity = enderMailman.level.getBlockEntity(enderMailman.startingPos);
+			if (blockEntity != null && blockEntity instanceof PackageBlockEntity) {
+				PackageBlockEntity packageBlockEntity = (PackageBlockEntity) blockEntity;
+				enderMailman.setContents(packageBlockEntity.getContents());
 				enderMailman.setCarryingPackage(true);
-				enderMailman.world.setBlockState(enderMailman.startingPos, Blocks.AIR.getDefaultState());
+				enderMailman.level.setBlock(enderMailman.startingPos, Blocks.AIR.defaultBlockState(), 3);
 				if (enderMailman.hasPackageController()) {
 					enderMailman.getPackageControllerItem().setState(enderMailman.packageController, ControllerState.DELIVERING);
 				}
@@ -571,13 +592,13 @@ public class EnderMailmanEntity extends MonsterEntity {
 		}
 
 		@Override
-		public boolean shouldExecute() {
+		public boolean canUse() {
 			return !enderMailman.isDelivering();
 		}
 
 		@Override
 		public void tick() {
-			if (enderMailman.ticksExisted - enderMailman.getTimeDelivered() >= 100) {
+			if (enderMailman.tickCount - enderMailman.getTimeDelivered() >= 100) {
 				enderMailman.diePeacefully();
 			}
 		}
