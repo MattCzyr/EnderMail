@@ -70,7 +70,6 @@ public class EnderMail {
 	@OnlyIn(Dist.CLIENT)
 	public void clientInit(FMLClientSetupEvent event) {
  		MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
- 		MinecraftForge.EVENT_BUS.register(new EnderMailRenderers());
  		MenuScreens.register(EnderMailContainers.PACKAGE_CONTAINER, PackageScreen::new);
  		MenuScreens.register(EnderMailContainers.LOCKER_CONTAINER, LockerScreen::new);
  		
