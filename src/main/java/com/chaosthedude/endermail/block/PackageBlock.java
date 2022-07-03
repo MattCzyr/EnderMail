@@ -36,6 +36,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
@@ -126,9 +127,9 @@ public class PackageBlock extends BaseEntityBlock {
 	}
 
 	@Override
-	public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+	public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
 		if (stack.hasCustomHoverName()) {
-			BlockEntity blockEntity = world.getBlockEntity(pos);
+			BlockEntity blockEntity = level.getBlockEntity(pos);
 			if (blockEntity instanceof PackageBlockEntity) {
 				((PackageBlockEntity) blockEntity).setCustomName(stack.getDisplayName());
 			}
@@ -140,7 +141,7 @@ public class PackageBlock extends BaseEntityBlock {
 		BlockEntity blockEntity = level.getBlockEntity(pos);
 		if (blockEntity != null && blockEntity instanceof PackageBlockEntity) {
 			PackageBlockEntity packageBlockEntity = (PackageBlockEntity) blockEntity;
-			if (!level.isClientSide() && !player.isCreative()) {
+			if (!level.isClientSide() && (!player.isCreative() || !packageBlockEntity.isEmpty()) && level.getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS)) {
 				ItemStack stackPackage = new ItemStack(EnderMailItems.PACKAGE.get());
 				CompoundTag stackTag = new CompoundTag();
 				CompoundTag itemTag = packageBlockEntity.writeItems(new CompoundTag());

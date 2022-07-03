@@ -1,19 +1,15 @@
 package com.chaosthedude.endermail.block;
 
 import com.chaosthedude.endermail.block.entity.LockerBlockEntity;
-import com.chaosthedude.endermail.data.LockerData;
 import com.chaosthedude.endermail.registry.EnderMailBlocks;
-import com.chaosthedude.endermail.registry.EnderMailItems;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -60,10 +56,10 @@ public class LockerBlock extends BaseEntityBlock {
 			return InteractionResult.SUCCESS;
 		}
 		if (!player.isCrouching()) {
-			BlockEntity te = level.getBlockEntity(pos);
-			if (te != null && te instanceof LockerBlockEntity) {
-				LockerBlockEntity lockerTe = (LockerBlockEntity) te;
-				NetworkHooks.openGui((ServerPlayer) player, lockerTe, buf -> buf.writeBlockPos(pos).writeUtf(lockerTe.getLockerID()));
+			BlockEntity blockEntity = level.getBlockEntity(pos);
+			if (blockEntity != null && blockEntity instanceof LockerBlockEntity) {
+				LockerBlockEntity lockerBlockEntity = (LockerBlockEntity) blockEntity;
+				NetworkHooks.openGui((ServerPlayer) player, lockerBlockEntity, buf -> buf.writeBlockPos(pos).writeUtf(lockerBlockEntity.getLockerID()));
 			}
 			return InteractionResult.SUCCESS;
 		}
@@ -73,9 +69,9 @@ public class LockerBlock extends BaseEntityBlock {
 	@Override
 	public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
 		if (stack.hasCustomHoverName()) {
-			BlockEntity tileentity = level.getBlockEntity(pos);
-			if (tileentity instanceof LockerBlockEntity) {
-				((LockerBlockEntity) tileentity).setLockerID(stack.getDisplayName().getString());
+			BlockEntity blockEntity = level.getBlockEntity(pos);
+			if (blockEntity instanceof LockerBlockEntity) {
+				((LockerBlockEntity) blockEntity).setLockerID(stack.getDisplayName().getString());
 			}
 		}
 	}
@@ -90,10 +86,7 @@ public class LockerBlock extends BaseEntityBlock {
 				Containers.dropContents(level, pos, lockerBlockEntity);
 				level.updateNeighbourForOutputSignal(pos, this);
 			}
-			ItemEntity itemEntity = new ItemEntity(level, (double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D, new ItemStack(EnderMailItems.LOCKER.get()));
-            itemEntity.setDefaultPickUpDelay();
-            level.addFreshEntity(itemEntity);
-			super.onRemove(state, level, pos, newState, isMoving);
+            super.onRemove(state, level, pos, newState, isMoving);
 		}
 	}
 
