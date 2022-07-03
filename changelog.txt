@@ -1,4 +1,14 @@
 ---------------------------------------------
+ VERSION 1.2.5 - 1.19, 1.18.2
+---------------------------------------------
+ 1.19:
+  - Initial release for 1.19
+ 1.19, 1.18.2:
+  - Fixed bug that prevented packages from being delivered to lockers placed before the server shut down
+  - Updated drop rules for packages and lockers to respect game rules and player's game mode
+
+
+---------------------------------------------
  VERSION 1.2.4 - 1.18.2, 1.17.1
 ---------------------------------------------
  1.18.2, 1.17.1:
