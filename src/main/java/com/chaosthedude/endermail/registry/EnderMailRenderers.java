@@ -15,7 +15,7 @@ public class EnderMailRenderers {
 
 	@SubscribeEvent
 	public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
-		event.registerEntityRenderer(EnderMailEntities.ENDER_MAILMAN_TYPE, (context) -> new EnderMailmanRenderer(context));
+		event.registerEntityRenderer(EnderMailEntities.ENDER_MAILMAN.get(), (context) -> new EnderMailmanRenderer(context));
 	}
 
 	@SubscribeEvent

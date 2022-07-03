@@ -30,7 +30,7 @@ public class HeldPackageLayer extends RenderLayer<EnderMailmanEntity, EnderMailm
 			poseStack.translate(0.25D, 0.1875D, 0.25D);
 			poseStack.scale(-0.5F, -0.5F, 0.5F);
 			poseStack.mulPose(Vector3f.YP.rotationDegrees(90.0F));
-			Minecraft.getInstance().getBlockRenderer().renderSingleBlock(EnderMailBlocks.PACKAGE.getStampedState(), poseStack, buffer, packedLight, OverlayTexture.NO_OVERLAY);
+			Minecraft.getInstance().getBlockRenderer().renderSingleBlock(EnderMailBlocks.PACKAGE.get().getStampedState(), poseStack, buffer, packedLight, OverlayTexture.NO_OVERLAY);
 			poseStack.popPose();
 		}
 	}

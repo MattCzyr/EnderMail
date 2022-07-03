@@ -2,14 +2,13 @@ package com.chaosthedude.endermail.block.entity;
 
 import com.chaosthedude.endermail.block.PackageBlock;
 import com.chaosthedude.endermail.gui.container.PackageMenu;
-import com.chaosthedude.endermail.registry.EnderMailBlocks;
+import com.chaosthedude.endermail.registry.EnderMailBlockEntities;
 import com.chaosthedude.endermail.registry.EnderMailItems;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -31,7 +30,7 @@ public class PackageBlockEntity extends BaseContainerBlockEntity {
 	private boolean hasLockerID;
 
 	public PackageBlockEntity(BlockPos pos, BlockState state) {
-		super(EnderMailBlocks.PACKAGE_TE_TYPE, pos, state);
+		super(EnderMailBlockEntities.PACKAGE.get(), pos, state);
 		deliveryX = -1;
 		deliveryY = -1;
 		deliveryZ = -1;
@@ -143,7 +142,7 @@ public class PackageBlockEntity extends BaseContainerBlockEntity {
 
 	@Override
 	public boolean canPlaceItem(int index, ItemStack stack) {
-		return stack.getItem() != EnderMailItems.PACKAGE;
+		return stack.getItem() != EnderMailItems.PACKAGE.get();
 	}
 	
 	@Override
@@ -194,7 +193,7 @@ public class PackageBlockEntity extends BaseContainerBlockEntity {
 
 	@Override
 	protected Component getDefaultName() {
-		return new TranslatableComponent("block.endermail.package");
+		return Component.translatable("block.endermail.package");
 	}
 
 }

@@ -14,8 +14,6 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
@@ -57,7 +55,7 @@ public class LockerScreen extends AbstractContainerScreen<LockerMenu> {
 		renderBackground(poseStack);
 		super.render(poseStack, mouseX, mouseY, partialTicks);
 		idTextField.render(poseStack, mouseX, mouseY, partialTicks);
-		font.draw(poseStack, new TranslatableComponent("string.endermail.id"), 75, titleLabelY, 4210752);
+		font.draw(poseStack, Component.translatable("string.endermail.id"), 75, titleLabelY, 4210752);
 		renderTooltip(poseStack, mouseX, mouseY);
 	}
 
@@ -124,7 +122,7 @@ public class LockerScreen extends AbstractContainerScreen<LockerMenu> {
 
 	private void setupTextFields() {
 		clearWidgets();
-		idTextField = new EditBox(font, (width - imageWidth) / 2 + 75, (height - imageHeight) / 2 + 20, 80, 18, new TextComponent(""));
+		idTextField = new EditBox(font, (width - imageWidth) / 2 + 75, (height - imageHeight) / 2 + 20, 80, 18, Component.literal(""));
 		idTextField.setMaxLength(LockerBlock.MAX_ID_LENGTH);
 		idTextField.setValue(lockerID);
 		addWidget(idTextField);

@@ -12,7 +12,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -40,7 +40,7 @@ public class StampScreen extends Screen {
 	private boolean errored;
 
 	public StampScreen(Level level, Player player, BlockPos packagePos) {
-		super(new TextComponent(""));
+		super(Component.literal(""));
 		this.level = level;
 		this.player = player;
 		this.packagePos = packagePos;
@@ -100,10 +100,10 @@ public class StampScreen extends Screen {
 
 	private void setupWidgets() {
 		clearWidgets();
-		cancelButton = addRenderableWidget(new Button(20, height - 40, 80, 20, new TextComponent(I18n.get("string.endermail.cancel")), (onPress) -> {
+		cancelButton = addRenderableWidget(new Button(20, height - 40, 80, 20, Component.translatable("string.endermail.cancel"), (onPress) -> {
 			minecraft.setScreen(null);
 		}));
-		confirmButton = addRenderableWidget(new Button(width - 100, height - 40, 80, 20, new TextComponent(I18n.get("string.endermail.confirm")), (onPress) -> {
+		confirmButton = addRenderableWidget(new Button(width - 100, height - 40, 80, 20, Component.translatable("string.endermail.confirm"), (onPress) -> {
 			try {
 				String lockerID = lockerIDTextField.getValue();
 				int x = -1;
@@ -126,11 +126,11 @@ public class StampScreen extends Screen {
 		}));
 		confirmButton.active = false;
 		
-		xTextField = addRenderableWidget(new StampTextField(font, (width / 2) - 65, height / 2 - 30, 40, 20, new TextComponent("")));
-		yTextField = addRenderableWidget(new StampTextField(font, (width / 2) - 20, height / 2 - 30, 40, 20, new TextComponent("")));
-		zTextField = addRenderableWidget(new StampTextField(font, (width / 2) + 25, height / 2 - 30, 40, 20, new TextComponent("")));
+		xTextField = addRenderableWidget(new StampTextField(font, (width / 2) - 65, height / 2 - 30, 40, 20, Component.literal("")));
+		yTextField = addRenderableWidget(new StampTextField(font, (width / 2) - 20, height / 2 - 30, 40, 20, Component.literal("")));
+		zTextField = addRenderableWidget(new StampTextField(font, (width / 2) + 25, height / 2 - 30, 40, 20, Component.literal("")));
 		
-		lockerIDTextField = addRenderableWidget(new StampTextField(font, (width / 2) - 65, (height / 2) + 25, 130, 20, new TextComponent("")));
+		lockerIDTextField = addRenderableWidget(new StampTextField(font, (width / 2) - 65, (height / 2) + 25, 130, 20, Component.literal("")));
 		lockerIDTextField.setMaxLength(LockerBlock.MAX_ID_LENGTH);
 	
 		setInitialFocus(xTextField);

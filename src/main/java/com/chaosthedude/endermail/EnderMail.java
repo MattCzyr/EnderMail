@@ -10,9 +10,11 @@ import com.chaosthedude.endermail.gui.PackageScreen;
 import com.chaosthedude.endermail.item.PackageControllerItem;
 import com.chaosthedude.endermail.network.ConfigureLockerPacket;
 import com.chaosthedude.endermail.network.StampPackagePacket;
+import com.chaosthedude.endermail.registry.EnderMailBlockEntities;
+import com.chaosthedude.endermail.registry.EnderMailBlocks;
 import com.chaosthedude.endermail.registry.EnderMailContainers;
+import com.chaosthedude.endermail.registry.EnderMailEntities;
 import com.chaosthedude.endermail.registry.EnderMailItems;
-import com.chaosthedude.endermail.registry.EnderMailRenderers;
 
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -24,6 +26,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -38,20 +41,22 @@ import net.minecraftforge.network.simple.SimpleChannel;
 public class EnderMail {
 
 	public static final String MODID = "endermail";
-	public static final String NAME = "Ender Mail";
-	public static final String VERSION = "1.2.1";
 
-	public static final Logger logger = LogManager.getLogger(MODID);
+	public static final Logger LOGGER = LogManager.getLogger(MODID);
 
 	public static SimpleChannel network;
 
-	public static EnderMail instance;
-
 	public EnderMail() {
-		instance = this;
+		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+		
+		EnderMailBlocks.BLOCK_DEFERRED.register(bus);
+		EnderMailBlockEntities.BLOCK_ENTITY_DEFERRED.register(bus);
+		EnderMailContainers.CONTAINER_DEFERRED.register(bus);
+		EnderMailEntities.ENTITY_DEFERRED.register(bus);
+		EnderMailItems.ITEM_DEFERRED.register(bus);
 
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::preInit);
-		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+		bus.addListener(this::preInit);
+		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
 			FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientInit);
 		});
 		
@@ -70,13 +75,13 @@ public class EnderMail {
 	@OnlyIn(Dist.CLIENT)
 	public void clientInit(FMLClientSetupEvent event) {
  		MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
- 		MenuScreens.register(EnderMailContainers.PACKAGE_CONTAINER, PackageScreen::new);
- 		MenuScreens.register(EnderMailContainers.LOCKER_CONTAINER, LockerScreen::new);
+ 		MenuScreens.register(EnderMailContainers.PACKAGE_CONTAINER.get(), PackageScreen::new);
+ 		MenuScreens.register(EnderMailContainers.LOCKER_CONTAINER.get(), LockerScreen::new);
  		
- 		ItemProperties.register(EnderMailItems.PACKAGE_CONTROLLER, new ResourceLocation("state"), new ClampedItemPropertyFunction() {
+ 		ItemProperties.register(EnderMailItems.PACKAGE_CONTROLLER.get(), new ResourceLocation("state"), new ClampedItemPropertyFunction() {
 			@Override
-			public float unclampedCall(ItemStack stack, ClientLevel world, LivingEntity entityLiving, int seed) {
-				if (stack.getItem() == EnderMailItems.PACKAGE_CONTROLLER) {
+			public float unclampedCall(ItemStack stack, ClientLevel level, LivingEntity entity, int seed) {
+				if (stack.getItem() == EnderMailItems.PACKAGE_CONTROLLER.get()) {
 					PackageControllerItem packageController = (PackageControllerItem) stack.getItem();
 					return packageController.getState(stack).getID();
 				}

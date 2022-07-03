@@ -11,6 +11,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class PackageMenu extends AbstractContainerMenu {
 
@@ -23,14 +24,14 @@ public class PackageMenu extends AbstractContainerMenu {
 	}
 
 	public PackageMenu(int windowId, Inventory playerInventory, Container packageContainer) {
-		super(EnderMailContainers.PACKAGE_CONTAINER, windowId);
+		super(EnderMailContainers.PACKAGE_CONTAINER.get(), windowId);
 		this.packageContainer = packageContainer;
 		packageContainer.startOpen(playerInventory.player);
 		for (int j = 0; j < packageContainer.getContainerSize(); ++j) {
 			addSlot(new Slot(packageContainer, j, 44 + j * 18, 20) {
 				@Override
 				public boolean mayPlace(ItemStack stack) {
-					return !ConfigHandler.GENERAL.packageContentsBlacklist.get().contains(stack.getItem().getRegistryName().toString());
+					return !ConfigHandler.GENERAL.packageContentsBlacklist.get().contains(ForgeRegistries.ITEMS.getKey(stack.getItem()).toString());
 				}
 			});
 		}

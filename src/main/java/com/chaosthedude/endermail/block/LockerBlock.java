@@ -1,11 +1,13 @@
 package com.chaosthedude.endermail.block;
 
 import com.chaosthedude.endermail.block.entity.LockerBlockEntity;
+import com.chaosthedude.endermail.data.LockerData;
 import com.chaosthedude.endermail.registry.EnderMailBlocks;
 import com.chaosthedude.endermail.registry.EnderMailItems;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
@@ -81,12 +83,14 @@ public class LockerBlock extends BaseEntityBlock {
 	@Override
 	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
 		if (!state.is(newState.getBlock())) {
-			BlockEntity tile = level.getBlockEntity(pos);
-			if (tile instanceof LockerBlockEntity) {
-				Containers.dropContents(level, pos, (LockerBlockEntity) tile);
+			BlockEntity blockEntity = level.getBlockEntity(pos);
+			if (blockEntity instanceof LockerBlockEntity) {
+				LockerBlockEntity lockerBlockEntity = (LockerBlockEntity) blockEntity;
+				lockerBlockEntity.removeData();
+				Containers.dropContents(level, pos, lockerBlockEntity);
 				level.updateNeighbourForOutputSignal(pos, this);
 			}
-			ItemEntity itemEntity = new ItemEntity(level, (double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D, new ItemStack(EnderMailItems.LOCKER));
+			ItemEntity itemEntity = new ItemEntity(level, (double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D, new ItemStack(EnderMailItems.LOCKER.get()));
             itemEntity.setDefaultPickUpDelay();
             level.addFreshEntity(itemEntity);
 			super.onRemove(state, level, pos, newState, isMoving);
@@ -120,7 +124,7 @@ public class LockerBlock extends BaseEntityBlock {
 
 	public static void setFilled(boolean filled, Level level, BlockPos pos) {
 		BlockState state = level.getBlockState(pos);
-		if (state.getBlock() == EnderMailBlocks.LOCKER) {
+		if (state.getBlock() == EnderMailBlocks.LOCKER.get()) {
 			if (state.getValue(FILLED) != filled) {
 				level.setBlock(pos, state.setValue(FILLED, filled), 3);
 			}

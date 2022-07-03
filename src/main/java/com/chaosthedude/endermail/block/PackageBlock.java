@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 
 import com.chaosthedude.endermail.block.entity.PackageBlockEntity;
 import com.chaosthedude.endermail.config.ConfigHandler;
-import com.chaosthedude.endermail.data.LockerWorldData;
+import com.chaosthedude.endermail.data.LockerData;
 import com.chaosthedude.endermail.entity.EnderMailmanEntity;
 import com.chaosthedude.endermail.gui.ScreenWrapper;
 import com.chaosthedude.endermail.item.PackageControllerItem;
@@ -24,7 +24,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.ContainerHelper;
@@ -80,24 +79,24 @@ public class PackageBlock extends BaseEntityBlock {
 		if (player.isSpectator()) {
 			return InteractionResult.SUCCESS;
 		}
-		boolean holdingStamp = ItemUtils.isHolding(player, EnderMailItems.STAMP);
-		boolean holdingPackageController = ItemUtils.isHolding(player, EnderMailItems.PACKAGE_CONTROLLER);
-		if (level.isClientSide() && !isStamped(state) && player.getItemInHand(hand).getItem() == EnderMailItems.STAMP) {
+		boolean holdingStamp = ItemUtils.isHolding(player, EnderMailItems.STAMP.get());
+		boolean holdingPackageController = ItemUtils.isHolding(player, EnderMailItems.PACKAGE_CONTROLLER.get());
+		if (level.isClientSide() && !isStamped(state) && player.getItemInHand(hand).getItem() == EnderMailItems.STAMP.get()) {
 			ScreenWrapper.openStampScreen(level, player, pos);
 			return InteractionResult.SUCCESS;
 		} else if (level.isClientSide() && ((!isStamped(state) && !player.isCrouching()) || (isStamped(state) && (player.isCrouching() || (player.getItemInHand(hand) == ItemStack.EMPTY && !holdingStamp && !holdingPackageController))))) {
 			return InteractionResult.SUCCESS;
 		} else if (!level.isClientSide() && level instanceof ServerLevel) {
 			ServerLevel serverLevel = (ServerLevel) level;
-			if (isStamped(state) && player.getItemInHand(hand).getItem() == EnderMailItems.PACKAGE_CONTROLLER) {
-				ItemStack stack = ItemUtils.getHeldItem(player, EnderMailItems.PACKAGE_CONTROLLER);
+			if (isStamped(state) && player.getItemInHand(hand).getItem() == EnderMailItems.PACKAGE_CONTROLLER.get()) {
+				ItemStack stack = ItemUtils.getHeldItem(player, EnderMailItems.PACKAGE_CONTROLLER.get());
 				PackageControllerItem packageController = (PackageControllerItem) stack.getItem();
 				BlockPos deliveryPos = getDeliveryPos(level, pos);
 				String lockerID = getLockerID(level, pos);
 				if (deliveryPos != null) {
 					packageController.setDeliveryPos(stack, deliveryPos);
 					int distanceToDelivery = (int) Math.sqrt(pos.distSqr(deliveryPos));
-					if (lockerID != null && !LockerWorldData.get(serverLevel).lockerExists(lockerID) && !hasDeliveryLocation(level, pos)) {
+					if (lockerID != null && !LockerData.get(serverLevel).lockerExists(lockerID) && !hasDeliveryLocation(level, pos)) {
 						packageController.setState(stack, ControllerState.INVALID_LOCKER);
 						packageController.setLockerID(stack, lockerID);
 					} else if (ConfigHandler.GENERAL.maxDeliveryDistance.get() > -1 && distanceToDelivery > ConfigHandler.GENERAL.maxDeliveryDistance.get()) {
@@ -106,7 +105,7 @@ public class PackageBlock extends BaseEntityBlock {
 						packageController.setMaxDistance(stack, ConfigHandler.GENERAL.maxDeliveryDistance.get());
 					} else {
 						packageController.setState(stack, ControllerState.DELIVERING);
-						EnderMailmanEntity enderMailman = new EnderMailmanEntity(EnderMailEntities.ENDER_MAILMAN_TYPE, level, pos, deliveryPos, lockerID, stack);
+						EnderMailmanEntity enderMailman = new EnderMailmanEntity(EnderMailEntities.ENDER_MAILMAN.get(), level, pos, deliveryPos, lockerID, stack);
 						level.addFreshEntity(enderMailman);
 					}
 				}
@@ -129,22 +128,22 @@ public class PackageBlock extends BaseEntityBlock {
 	@Override
 	public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
 		if (stack.hasCustomHoverName()) {
-			BlockEntity tileentity = world.getBlockEntity(pos);
-			if (tileentity instanceof PackageBlockEntity) {
-				((PackageBlockEntity) tileentity).setCustomName(stack.getDisplayName());
+			BlockEntity blockEntity = world.getBlockEntity(pos);
+			if (blockEntity instanceof PackageBlockEntity) {
+				((PackageBlockEntity) blockEntity).setCustomName(stack.getDisplayName());
 			}
 		}
 	}
 
 	@Override
 	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
-		BlockEntity te = level.getBlockEntity(pos);
-		if (te != null && te instanceof PackageBlockEntity) {
-			PackageBlockEntity tePackage = (PackageBlockEntity) te;
+		BlockEntity blockEntity = level.getBlockEntity(pos);
+		if (blockEntity != null && blockEntity instanceof PackageBlockEntity) {
+			PackageBlockEntity packageBlockEntity = (PackageBlockEntity) blockEntity;
 			if (!level.isClientSide() && !player.isCreative()) {
-				ItemStack stackPackage = new ItemStack(EnderMailItems.PACKAGE);
+				ItemStack stackPackage = new ItemStack(EnderMailItems.PACKAGE.get());
 				CompoundTag stackTag = new CompoundTag();
-				CompoundTag itemTag = tePackage.writeItems(new CompoundTag());
+				CompoundTag itemTag = packageBlockEntity.writeItems(new CompoundTag());
 				if (!itemTag.isEmpty()) {
 					stackTag.put("BlockEntityTag", itemTag);
 				}
@@ -152,8 +151,8 @@ public class PackageBlock extends BaseEntityBlock {
 					stackPackage.setTag(stackTag);
 				}
 	
-				if (tePackage.hasCustomName()) {
-					stackPackage.setHoverName(tePackage.getDisplayName());
+				if (packageBlockEntity.hasCustomName()) {
+					stackPackage.setHoverName(packageBlockEntity.getDisplayName());
 				}
 	
 				ItemEntity itemEntity = new ItemEntity(level, (double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D, stackPackage);
@@ -165,13 +164,13 @@ public class PackageBlock extends BaseEntityBlock {
 	}
 
 	@Override
-	public ItemStack getCloneItemStack(BlockGetter world, BlockPos pos, BlockState state) {
-		ItemStack stack = super.getCloneItemStack(world, pos, state);
-		BlockEntity te = world.getBlockEntity(pos);
-		if (te != null && te instanceof PackageBlockEntity) {
-			PackageBlockEntity tePackage = (PackageBlockEntity) te;
+	public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos, BlockState state) {
+		ItemStack stack = super.getCloneItemStack(level, pos, state);
+		BlockEntity blockEntity = level.getBlockEntity(pos);
+		if (blockEntity != null && blockEntity instanceof PackageBlockEntity) {
+			PackageBlockEntity packageBlockEntity = (PackageBlockEntity) blockEntity;
 			CompoundTag stackTag = new CompoundTag();
-			CompoundTag itemTag = tePackage.writeItems(new CompoundTag());
+			CompoundTag itemTag = packageBlockEntity.writeItems(new CompoundTag());
 			if (!itemTag.isEmpty()) {
 				stackTag.put("BlockEntityTag", itemTag);
 			}
@@ -179,8 +178,8 @@ public class PackageBlock extends BaseEntityBlock {
 				stack.setTag(stackTag);
 			}
 
-			if (tePackage.hasCustomName()) {
-				stack.setHoverName(tePackage.getDisplayName());
+			if (packageBlockEntity.hasCustomName()) {
+				stack.setHoverName(packageBlockEntity.getDisplayName());
 			}
 		}
 
@@ -189,8 +188,8 @@ public class PackageBlock extends BaseEntityBlock {
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable BlockGetter world, List<Component> tooltip, TooltipFlag flag) {
-		super.appendHoverText(stack, world, tooltip, flag);
+	public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip, TooltipFlag flag) {
+		super.appendHoverText(stack, level, tooltip, flag);
 		if (Screen.hasShiftDown()) {
 			CompoundTag temp = stack.getTag();
 			if (temp != null && temp.contains("BlockEntityTag", 10)) {
@@ -208,7 +207,7 @@ public class PackageBlock extends BaseEntityBlock {
 				}
 			}
 		} else {
-			tooltip.add(new TranslatableComponent("string.endermail.holdShift").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
+			tooltip.add(Component.translatable("string.endermail.holdShift").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
 		}
 	}
 
@@ -223,8 +222,8 @@ public class PackageBlock extends BaseEntityBlock {
 	}
 
 	@Override
-	public BlockState rotate(BlockState state, Rotation rot) {
-		return state.setValue(FACING, rot.rotate((Direction) state.getValue(FACING)));
+	public BlockState rotate(BlockState state, Rotation rotation) {
+		return state.setValue(FACING, rotation.rotate((Direction) state.getValue(FACING)));
 	}
 
 	@Override
@@ -250,9 +249,9 @@ public class PackageBlock extends BaseEntityBlock {
 		return state.getValue(STAMPED).booleanValue();
 	}
 
-	public static void stampPackage(Level world, BlockPos packagePos, BlockPos deliveryPos, String lockerID, boolean hasDeliveryPos) {
-		setState(true, world, packagePos);
-		BlockEntity te = world.getBlockEntity(packagePos);
+	public static void stampPackage(Level level, BlockPos packagePos, BlockPos deliveryPos, String lockerID, boolean hasDeliveryPos) {
+		setState(true, level, packagePos);
+		BlockEntity te = level.getBlockEntity(packagePos);
 		if (te != null && te instanceof PackageBlockEntity) {
 			PackageBlockEntity tePackage = (PackageBlockEntity) te;
 			tePackage.setDeliveryPos(deliveryPos, hasDeliveryPos);
@@ -260,29 +259,29 @@ public class PackageBlock extends BaseEntityBlock {
 		}
 	}
 
-	public static BlockPos getDeliveryPos(Level world, BlockPos pos) {
-		BlockEntity te = world.getBlockEntity(pos);
-		if (te != null && te instanceof PackageBlockEntity) {
-			PackageBlockEntity tePackage = (PackageBlockEntity) te;
-			return tePackage.getDeliveryPos();
+	public static BlockPos getDeliveryPos(Level level, BlockPos pos) {
+		BlockEntity blockEntity = level.getBlockEntity(pos);
+		if (blockEntity != null && blockEntity instanceof PackageBlockEntity) {
+			PackageBlockEntity packageBlockEntity = (PackageBlockEntity) blockEntity;
+			return packageBlockEntity.getDeliveryPos();
 		}
 		return null;
 	}
 
-	public static String getLockerID(Level world, BlockPos pos) {
-		BlockEntity te = world.getBlockEntity(pos);
-		if (te != null && te instanceof PackageBlockEntity) {
-			PackageBlockEntity tePackage = (PackageBlockEntity) te;
-			return tePackage.getLockerID();
+	public static String getLockerID(Level level, BlockPos pos) {
+		BlockEntity blockEntity = level.getBlockEntity(pos);
+		if (blockEntity != null && blockEntity instanceof PackageBlockEntity) {
+			PackageBlockEntity packageBlockEntity = (PackageBlockEntity) blockEntity;
+			return packageBlockEntity.getLockerID();
 		}
 		return null;
 	}
 
-	public static boolean hasDeliveryLocation(Level world, BlockPos pos) {
-		BlockEntity te = world.getBlockEntity(pos);
-		if (te != null && te instanceof PackageBlockEntity) {
-			PackageBlockEntity tePackage = (PackageBlockEntity) te;
-			return tePackage.hasDeliveryLocation();
+	public static boolean hasDeliveryLocation(Level level, BlockPos pos) {
+		BlockEntity blockEntity = level.getBlockEntity(pos);
+		if (blockEntity != null && blockEntity instanceof PackageBlockEntity) {
+			PackageBlockEntity packageBlockEntity = (PackageBlockEntity) blockEntity;
+			return packageBlockEntity.hasDeliveryLocation();
 		}
 		return false;
 	}

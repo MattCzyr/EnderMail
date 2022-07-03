@@ -10,9 +10,10 @@ import com.chaosthedude.endermail.block.PackageBlock;
 import com.chaosthedude.endermail.block.entity.LockerBlockEntity;
 import com.chaosthedude.endermail.block.entity.PackageBlockEntity;
 import com.chaosthedude.endermail.config.ConfigHandler;
-import com.chaosthedude.endermail.data.LockerWorldData;
+import com.chaosthedude.endermail.data.LockerData;
 import com.chaosthedude.endermail.item.PackageControllerItem;
 import com.chaosthedude.endermail.registry.EnderMailBlocks;
+import com.chaosthedude.endermail.registry.EnderMailEntities;
 import com.chaosthedude.endermail.registry.EnderMailItems;
 import com.chaosthedude.endermail.util.ControllerState;
 
@@ -48,6 +49,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraftforge.network.PlayMessages.SpawnEntity;
 
 public class EnderMailmanEntity extends Monster {
 
@@ -143,7 +145,7 @@ public class EnderMailmanEntity extends Monster {
 		}
 
 		if (level.isDay()) {
-			float f = getBrightness();
+			float f = getLightLevelDependentMagicValue();
 			if (f > 0.5F && level.canSeeSky(blockPosition()) && random.nextFloat() * 30.0F < (f - 0.4F) * 2.0F) {
 				teleportRandomly();
 			}
@@ -237,16 +239,14 @@ public class EnderMailmanEntity extends Monster {
 	private boolean canPlacePackage(Level level, BlockPos pos) {
 		BlockPos belowPos = pos.below();
 		BlockState belowState = level.getBlockState(belowPos);
-		return level.getBlockState(pos).isAir() && !belowState.isAir() && !belowState.is(Blocks.BEDROCK) && belowState.isCollisionShapeFullBlock(level, belowPos) && EnderMailBlocks.PACKAGE.defaultBlockState().canSurvive(level, pos);
+		return level.getBlockState(pos).isAir() && !belowState.isAir() && !belowState.is(Blocks.BEDROCK) && belowState.isCollisionShapeFullBlock(level, belowPos) && EnderMailBlocks.PACKAGE.get().defaultBlockState().canSurvive(level, pos);
 	}
 
 	private BlockPos findLocker(String lockerID) {
 		if (level instanceof ServerLevel) {
 			ServerLevel serverLevel = (ServerLevel) level;
-			LockerWorldData data = LockerWorldData.get(serverLevel);
-			if (data != null) {
-				return data.getLockers().get(lockerID);
-			}
+			LockerData data = LockerData.get(serverLevel);
+			return data.getLockers().get(lockerID);
 		}
 		return null;
 	}
@@ -254,21 +254,19 @@ public class EnderMailmanEntity extends Monster {
 	private BlockPos findLockerNearPos(BlockPos pos) {
 		if (level instanceof ServerLevel) {
 			ServerLevel serverLevel = (ServerLevel) level;
-			LockerWorldData data = LockerWorldData.get(serverLevel);
-			if (data != null) {
-				for (String lockerID : data.getLockers().keySet()) {
-					BlockPos lockerPos = data.getLockers().get(lockerID);
-					if (ConfigHandler.GENERAL.lockerDeliveryRadiusIgnoresY.get()) {
-						int deltaX = pos.getX() - lockerPos.getX();
-						int deltaZ = pos.getZ() - lockerPos.getZ();
-						int distanceSq = (deltaX * deltaX) + (deltaZ * deltaZ);
-						if (distanceSq < ConfigHandler.GENERAL.lockerDeliveryRadius.get() * ConfigHandler.GENERAL.lockerDeliveryRadius.get()) {
-							return lockerPos;
-						}
-					} else {
-						if (pos.closerThan(lockerPos, ConfigHandler.GENERAL.lockerDeliveryRadius.get())) {
-							return lockerPos;
-						}
+			LockerData data = LockerData.get(serverLevel);
+			for (String lockerID : data.getLockers().keySet()) {
+				BlockPos lockerPos = data.getLockers().get(lockerID);
+				if (ConfigHandler.GENERAL.lockerDeliveryRadiusIgnoresY.get()) {
+					int deltaX = pos.getX() - lockerPos.getX();
+					int deltaZ = pos.getZ() - lockerPos.getZ();
+					int distanceSq = (deltaX * deltaX) + (deltaZ * deltaZ);
+					if (distanceSq < ConfigHandler.GENERAL.lockerDeliveryRadius.get() * ConfigHandler.GENERAL.lockerDeliveryRadius.get()) {
+						return lockerPos;
+					}
+				} else {
+					if (pos.closerThan(lockerPos, ConfigHandler.GENERAL.lockerDeliveryRadius.get())) {
+						return lockerPos;
 					}
 				}
 			}
@@ -391,7 +389,7 @@ public class EnderMailmanEntity extends Monster {
 	}
 
 	public boolean shouldDeliverToLocker() {
-		return level.getBlockState(deliveryPos).getBlock() == EnderMailBlocks.LOCKER;
+		return level.getBlockState(deliveryPos).getBlock() == EnderMailBlocks.LOCKER.get();
 	}
 
 	public void updateTimePickedUp() {
@@ -446,7 +444,7 @@ public class EnderMailmanEntity extends Monster {
 	}
 
 	public ItemStack getPackageStack() {
-		ItemStack stackPackage = new ItemStack(EnderMailItems.PACKAGE);
+		ItemStack stackPackage = new ItemStack(EnderMailItems.PACKAGE.get());
 		CompoundTag stackTag = new CompoundTag();
 		CompoundTag itemTag = new CompoundTag();
 		if (!contents.isEmpty()) {
@@ -479,7 +477,7 @@ public class EnderMailmanEntity extends Monster {
 				boolean delivered = false;
 				if (enderMailman.shouldDeliverOnGround()) {
 					enderMailman.teleportToDeliveryPos();
-					BlockState newBlockState = EnderMailBlocks.PACKAGE.getRandomlyRotatedStampedState();
+					BlockState newBlockState = EnderMailBlocks.PACKAGE.get().getRandomlyRotatedStampedState();
 					enderMailman.level.setBlock(enderMailman.getDeliveryPos(), newBlockState, 3);
 					enderMailman.level.setBlockEntity(new PackageBlockEntity(enderMailman.getContents(), enderMailman.getDeliveryPos(), newBlockState));
 					if (enderMailman.hasPackageController()) {
@@ -487,7 +485,7 @@ public class EnderMailmanEntity extends Monster {
 						enderMailman.getPackageControllerItem().setDeliveryPos(enderMailman.packageController, enderMailman.getDeliveryPos());
 					}
 					if (ConfigHandler.GENERAL.logDeliveries.get()) {
-						EnderMail.logger.info("Delivered package to " + enderMailman.getDeliveryPos().getX() + ", " + enderMailman.getDeliveryPos().getY() + ", " + enderMailman.getDeliveryPos().getZ());
+						EnderMail.LOGGER.info("Delivered package to " + enderMailman.getDeliveryPos().getX() + ", " + enderMailman.getDeliveryPos().getY() + ", " + enderMailman.getDeliveryPos().getZ());
 					}
 					delivered = true;
 				} else if (enderMailman.shouldDeliverToLocker()) {
@@ -505,7 +503,7 @@ public class EnderMailmanEntity extends Monster {
 								enderMailman.getPackageControllerItem().setShowLockerLocation(enderMailman.packageController, !ConfigHandler.GENERAL.hideLockerLocation.get());
 							}
 							if (ConfigHandler.GENERAL.logDeliveries.get()) {
-								EnderMail.logger.info("Delivered package to locker " + lockerBlockEntity.getLockerID() + " at " + enderMailman.getDeliveryPos().getX() + ", " + enderMailman.getDeliveryPos().getY() + ", " + enderMailman.getDeliveryPos().getZ());
+								EnderMail.LOGGER.info("Delivered package to locker " + lockerBlockEntity.getLockerID() + " at " + enderMailman.getDeliveryPos().getX() + ", " + enderMailman.getDeliveryPos().getY() + ", " + enderMailman.getDeliveryPos().getZ());
 							}
 							delivered = true;
 						} else {
@@ -518,7 +516,7 @@ public class EnderMailmanEntity extends Monster {
 								y = enderMailman.findValidDeliveryHeight(newDeliveryPos, 8);
 								if (y > 0) {
 									newDeliveryPos = new BlockPos(newDeliveryPos.getX(), y, newDeliveryPos.getZ());
-									BlockState newBlockState = EnderMailBlocks.PACKAGE.getRandomlyRotatedStampedState();
+									BlockState newBlockState = EnderMailBlocks.PACKAGE.get().getRandomlyRotatedStampedState();
 									enderMailman.level.setBlock(newDeliveryPos, newBlockState, 3);
 									enderMailman.level.setBlockEntity(new PackageBlockEntity(enderMailman.getContents(), newDeliveryPos, newBlockState));
 									if (enderMailman.hasPackageController()) {
@@ -526,7 +524,7 @@ public class EnderMailmanEntity extends Monster {
 										enderMailman.getPackageControllerItem().setDeliveryPos(enderMailman.packageController, newDeliveryPos);
 									}
 									if (ConfigHandler.GENERAL.logDeliveries.get()) {
-										EnderMail.logger.info("Delivered package to " + newDeliveryPos.getX() + ", " + newDeliveryPos.getY() + ", " + newDeliveryPos.getZ() + " near locker " + lockerBlockEntity.getLockerID());
+										EnderMail.LOGGER.info("Delivered package to " + newDeliveryPos.getX() + ", " + newDeliveryPos.getY() + ", " + newDeliveryPos.getZ() + " near locker " + lockerBlockEntity.getLockerID());
 									}
 									delivered = true;
 								}
@@ -536,7 +534,7 @@ public class EnderMailmanEntity extends Monster {
 				}
 				if (!delivered) {
 					enderMailman.teleportToStartingPos();
-					BlockState newBlockState = EnderMailBlocks.PACKAGE.getRandomlyRotatedStampedState();
+					BlockState newBlockState = EnderMailBlocks.PACKAGE.get().getRandomlyRotatedStampedState();
 					enderMailman.level.setBlock(enderMailman.getStartingPos(), newBlockState, 3);
 					enderMailman.level.setBlockEntity(new PackageBlockEntity(enderMailman.getContents(), enderMailman.getStartingPos(), newBlockState));
 					if (enderMailman.hasPackageController()) {

@@ -27,7 +27,7 @@ public class LockerMenu extends AbstractContainerMenu {
 	}
 
 	public LockerMenu(int windowId, Inventory playerInventory, Container lockerContainer, BlockPos lockerPos, String lockerID) {
-		super(EnderMailContainers.LOCKER_CONTAINER, windowId);
+		super(EnderMailContainers.LOCKER_CONTAINER.get(), windowId);
 		this.lockerContainer = lockerContainer;
 		this.lockerPos = lockerPos;
 		this.lockerID = lockerID;
@@ -36,7 +36,7 @@ public class LockerMenu extends AbstractContainerMenu {
 			addSlot(new Slot(lockerContainer, j, 8 + j * 18, 20) {
 				@Override
 				public boolean mayPlace(ItemStack stack) {
-					return stack.getItem() == EnderMailItems.PACKAGE;
+					return stack.getItem() == EnderMailItems.PACKAGE.get();
 				}
 				@Override
 				public int getMaxStackSize() {

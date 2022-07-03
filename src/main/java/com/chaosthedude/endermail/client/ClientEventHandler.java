@@ -30,7 +30,7 @@ public class ClientEventHandler {
 				&& (mc.screen == null || (ConfigHandler.CLIENT.displayWithChatOpen.get() && mc.screen instanceof ChatScreen))) {
 			final PoseStack poseStack = new PoseStack();
 			final Player player = mc.player;
-			final ItemStack stack = ItemUtils.getHeldItem(player, EnderMailItems.PACKAGE_CONTROLLER);
+			final ItemStack stack = ItemUtils.getHeldItem(player, EnderMailItems.PACKAGE_CONTROLLER.get());
 			if (stack != null && stack.getItem() instanceof PackageControllerItem) {
 				final PackageControllerItem packageController = (PackageControllerItem) stack.getItem();
 				if (packageController.getState(stack) == ControllerState.DELIVERING) {

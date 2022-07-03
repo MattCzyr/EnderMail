@@ -74,7 +74,7 @@ public class StampPackagePacket {
 	public void handle(Supplier<NetworkEvent.Context> ctx) {
 		ctx.get().enqueueWork(() -> {
 			PackageBlock.stampPackage(ctx.get().getSender().getLevel(), new BlockPos(packageX, packageY, packageZ), new BlockPos(deliveryX, deliveryY, deliveryZ), lockerID, hasDeliveryPos);
-			ItemStack stampStack = ItemUtils.getHeldItem(ctx.get().getSender(), EnderMailItems.STAMP);
+			ItemStack stampStack = ItemUtils.getHeldItem(ctx.get().getSender(), EnderMailItems.STAMP.get());
 			if (stampStack != null && !ctx.get().getSender().isCreative()) {
 				stampStack.setCount(stampStack.getCount() - 1);
 			}

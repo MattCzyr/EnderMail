@@ -3,46 +3,22 @@ package com.chaosthedude.endermail.registry;
 import com.chaosthedude.endermail.EnderMail;
 import com.chaosthedude.endermail.block.LockerBlock;
 import com.chaosthedude.endermail.block.PackageBlock;
-import com.chaosthedude.endermail.block.entity.LockerBlockEntity;
-import com.chaosthedude.endermail.block.entity.PackageBlockEntity;
+import com.google.common.base.Supplier;
 
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.registries.ObjectHolder;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
-@ObjectHolder(EnderMail.MODID)
 public class EnderMailBlocks {
-
-	@ObjectHolder(PackageBlock.NAME)
-	public static final PackageBlock PACKAGE = null;
-
-	@ObjectHolder(PackageBlockEntity.NAME)
-	public static final BlockEntityType<?> PACKAGE_TE_TYPE = null;
 	
-	@ObjectHolder(LockerBlock.NAME)
-	public static final LockerBlock LOCKER = null;
+	public static final DeferredRegister<Block> BLOCK_DEFERRED = DeferredRegister.create(ForgeRegistries.BLOCKS, EnderMail.MODID);
 	
-	@ObjectHolder(LockerBlockEntity.NAME)
-	public static final BlockEntityType<?> LOCKER_TE_TYPE = null;
+	public static final RegistryObject<PackageBlock> PACKAGE = register(PackageBlock.NAME, () -> new PackageBlock());
+	public static final RegistryObject<LockerBlock> LOCKER = register(LockerBlock.NAME, () -> new LockerBlock());
 
-	@SubscribeEvent
-	public static void registerBlocks(final RegistryEvent.Register<Block> event) {
-		event.getRegistry().registerAll(
-				new PackageBlock().setRegistryName(PackageBlock.NAME),
-				new LockerBlock().setRegistryName(LockerBlock.NAME)
-		);
-	}
-
-	@SubscribeEvent
-	public static void registerTileEntities(final RegistryEvent.Register<BlockEntityType<?>> event) {
-		event.getRegistry().registerAll(
-				BlockEntityType.Builder.of(PackageBlockEntity::new, EnderMailBlocks.PACKAGE).build(null).setRegistryName(PackageBlockEntity.NAME),
-				BlockEntityType.Builder.of(LockerBlockEntity::new, EnderMailBlocks.LOCKER).build(null).setRegistryName(LockerBlockEntity.NAME)
-		);
-	}
+	public static <T extends Block> RegistryObject<T> register(String name, Supplier<T> init) {
+        return BLOCK_DEFERRED.register(name, init);
+    }
 
 }

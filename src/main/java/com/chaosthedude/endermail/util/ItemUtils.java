@@ -10,7 +10,7 @@ import net.minecraft.world.item.ItemStack;
 public class ItemUtils {
 
 	public static boolean verifyNBT(ItemStack stack) {
-		if (stack.isEmpty() || stack.getItem() != EnderMailItems.PACKAGE_CONTROLLER) {
+		if (stack.isEmpty() || stack.getItem() != EnderMailItems.PACKAGE_CONTROLLER.get()) {
 			return false;
 		} else if (!stack.hasTag()) {
 			stack.setTag(new CompoundTag());

@@ -1,17 +1,15 @@
 package com.chaosthedude.endermail.block.entity;
 
 import com.chaosthedude.endermail.block.LockerBlock;
-import com.chaosthedude.endermail.data.LockerWorldData;
+import com.chaosthedude.endermail.data.LockerData;
 import com.chaosthedude.endermail.gui.container.LockerMenu;
-import com.chaosthedude.endermail.registry.EnderMailBlocks;
+import com.chaosthedude.endermail.registry.EnderMailBlockEntities;
 import com.chaosthedude.endermail.registry.EnderMailItems;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
@@ -29,7 +27,7 @@ public class LockerBlockEntity extends BaseContainerBlockEntity {
 	protected String lockerID;
 
 	public LockerBlockEntity(BlockPos pos, BlockState state) {
-		super(EnderMailBlocks.LOCKER_TE_TYPE, pos, state);
+		super(EnderMailBlockEntities.LOCKER.get(), pos, state);
 		lockerID = "";
 	}
 
@@ -123,7 +121,7 @@ public class LockerBlockEntity extends BaseContainerBlockEntity {
 
 	@Override
 	public boolean canPlaceItem(int index, ItemStack stack) {
-		return stack.getItem() == EnderMailItems.PACKAGE;
+		return stack.getItem() == EnderMailItems.PACKAGE.get();
 	}
 
 	@Override
@@ -139,17 +137,14 @@ public class LockerBlockEntity extends BaseContainerBlockEntity {
 
 	@Override
 	public Component getDisplayName() {
-		return lockerID != null && !lockerID.isEmpty() ? new TextComponent(lockerID) : new TranslatableComponent("block.endermail.locker");
+		return lockerID != null && !lockerID.isEmpty() ? Component.literal(lockerID) : Component.translatable("block.endermail.locker");
 	}
 
-	@Override
-	public void setRemoved() {
+	public void removeData() {
 		if (level instanceof ServerLevel) {
 			ServerLevel serverLevel = (ServerLevel) level;
-			LockerWorldData data = LockerWorldData.get(serverLevel);
-			if (data != null) {
-				data.removeLocker(lockerID);
-			}
+			LockerData data = LockerData.get(serverLevel);
+			data.removeLocker(lockerID);
 		}
 	}
 
@@ -180,11 +175,9 @@ public class LockerBlockEntity extends BaseContainerBlockEntity {
 	public void setLockerID(String lockerID) {
 		if (level instanceof ServerLevel) {
 			ServerLevel serverLevel = (ServerLevel) level;
-			LockerWorldData data = LockerWorldData.get(serverLevel);
-			if (data != null) {
-				data.removeLocker(this.lockerID);
-				this.lockerID = data.createLocker(lockerID, worldPosition);
-			}
+			LockerData data = LockerData.get(serverLevel);
+			data.removeLocker(this.lockerID);
+			this.lockerID = data.createLocker(lockerID, worldPosition);
 		}
 	}
 
@@ -198,7 +191,7 @@ public class LockerBlockEntity extends BaseContainerBlockEntity {
 
 	@Override
 	protected Component getDefaultName() {
-		return new TranslatableComponent("block.endermail.locker");
+		return Component.translatable("block.endermail.locker");
 	}
 
 }

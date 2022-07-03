@@ -4,43 +4,28 @@ import com.chaosthedude.endermail.EnderMail;
 import com.chaosthedude.endermail.block.LockerBlock;
 import com.chaosthedude.endermail.block.PackageBlock;
 import com.chaosthedude.endermail.item.PackageControllerItem;
+import com.google.common.base.Supplier;
 
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Item.Properties;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.registries.ObjectHolder;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
-@ObjectHolder(EnderMail.MODID)
 public class EnderMailItems {
-
-	@ObjectHolder(PackageBlock.NAME)
-	public static final Item PACKAGE = null;
 	
-	@ObjectHolder(LockerBlock.NAME)
-	public static final Item LOCKER = null;
+	public static final DeferredRegister<Item> ITEM_DEFERRED = DeferredRegister.create(ForgeRegistries.ITEMS, EnderMail.MODID);
 
-	@ObjectHolder(PackageControllerItem.NAME)
-	public static final PackageControllerItem PACKAGE_CONTROLLER = null;
+	public static final RegistryObject<Item> PACKAGE = register(PackageBlock.NAME, () -> new BlockItem(EnderMailBlocks.PACKAGE.get(), new Properties().tab(CreativeModeTab.TAB_DECORATIONS)));
+	public static final RegistryObject<Item> LOCKER = register(LockerBlock.NAME, () -> new BlockItem(EnderMailBlocks.LOCKER.get(), new Properties().tab(CreativeModeTab.TAB_DECORATIONS)));
+	public static final RegistryObject<Item> PACKAGE_CONTROLLER = register(PackageControllerItem.NAME, () -> new PackageControllerItem());
+	public static final RegistryObject<Item> PACKING_TAPE = register("packing_tape", () -> new Item(new Properties().tab(CreativeModeTab.TAB_MISC)));
+	public static final RegistryObject<Item> STAMP = register("stamp", () -> new Item(new Properties().tab(CreativeModeTab.TAB_MISC)));
 
-	@ObjectHolder("packing_tape")
-	public static final Item PACKING_TAPE = null;
-
-	@ObjectHolder("stamp")
-	public static final Item STAMP = null;
-
-	@SubscribeEvent
-	public static void registerBlocks(final RegistryEvent.Register<Item> event) {
-		event.getRegistry().registerAll(
-				new BlockItem(EnderMailBlocks.PACKAGE, new Properties().tab(CreativeModeTab.TAB_DECORATIONS)).setRegistryName(PackageBlock.NAME),
-				new BlockItem(EnderMailBlocks.LOCKER, new Properties().tab(CreativeModeTab.TAB_DECORATIONS)).setRegistryName(LockerBlock.NAME),
-				new PackageControllerItem().setRegistryName("package_controller"),
-				new Item(new Properties().tab(CreativeModeTab.TAB_MISC)).setRegistryName("packing_tape"),
-				new Item(new Properties().tab(CreativeModeTab.TAB_MISC)).setRegistryName("stamp"));
-	}
+	public static RegistryObject<Item> register(String name, Supplier<Item> init) {
+        return ITEM_DEFERRED.register(name, init);
+    }
 
 }
