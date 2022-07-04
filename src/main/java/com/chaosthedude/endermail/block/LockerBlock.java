@@ -83,12 +83,11 @@ public class LockerBlock extends BaseEntityBlock {
 		if (!state.is(newState.getBlock())) {
 			BlockEntity tile = level.getBlockEntity(pos);
 			if (tile instanceof LockerBlockEntity) {
-				Containers.dropContents(level, pos, (LockerBlockEntity) tile);
+				LockerBlockEntity lockerBlockEntity = (LockerBlockEntity) tile;
+				lockerBlockEntity.removeWorldData();
+				Containers.dropContents(level, pos, lockerBlockEntity);
 				level.updateNeighbourForOutputSignal(pos, this);
 			}
-			ItemEntity itemEntity = new ItemEntity(level, (double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D, new ItemStack(EnderMailItems.LOCKER));
-            itemEntity.setDefaultPickUpDelay();
-            level.addFreshEntity(itemEntity);
 			super.onRemove(state, level, pos, newState, isMoving);
 		}
 	}

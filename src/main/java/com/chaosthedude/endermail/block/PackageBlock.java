@@ -37,6 +37,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
@@ -141,7 +142,7 @@ public class PackageBlock extends BaseEntityBlock {
 		BlockEntity te = level.getBlockEntity(pos);
 		if (te != null && te instanceof PackageBlockEntity) {
 			PackageBlockEntity tePackage = (PackageBlockEntity) te;
-			if (!level.isClientSide() && !player.isCreative()) {
+			if (!level.isClientSide() && (!player.isCreative() || !tePackage.isEmpty()) && level.getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS)) {
 				ItemStack stackPackage = new ItemStack(EnderMailItems.PACKAGE);
 				CompoundTag stackTag = new CompoundTag();
 				CompoundTag itemTag = tePackage.writeItems(new CompoundTag());

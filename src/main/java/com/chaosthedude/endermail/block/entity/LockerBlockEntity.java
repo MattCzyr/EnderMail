@@ -142,8 +142,7 @@ public class LockerBlockEntity extends BaseContainerBlockEntity {
 		return lockerID != null && !lockerID.isEmpty() ? new TextComponent(lockerID) : new TranslatableComponent("block.endermail.locker");
 	}
 
-	@Override
-	public void setRemoved() {
+	public void removeWorldData() {
 		if (level instanceof ServerLevel) {
 			ServerLevel serverLevel = (ServerLevel) level;
 			LockerWorldData data = LockerWorldData.get(serverLevel);
