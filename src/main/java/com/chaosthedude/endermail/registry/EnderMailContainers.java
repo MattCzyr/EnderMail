@@ -14,7 +14,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class EnderMailContainers {
 	
-	public static final DeferredRegister<MenuType<?>> CONTAINER_DEFERRED = DeferredRegister.create(ForgeRegistries.CONTAINERS, EnderMail.MODID);
+	public static final DeferredRegister<MenuType<?>> CONTAINER_DEFERRED = DeferredRegister.create(ForgeRegistries.MENU_TYPES, EnderMail.MODID);
 	
 	public static final RegistryObject<MenuType<PackageMenu>> PACKAGE_CONTAINER = register(PackageMenu.NAME, () -> new MenuType<>(PackageMenu::new));
 	public static final RegistryObject<MenuType<LockerMenu>> LOCKER_CONTAINER = register(LockerMenu.NAME, () -> IForgeMenuType.create(LockerMenu::new));

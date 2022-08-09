@@ -18,7 +18,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class EnderMailBlockEntities {
 	
-	public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_DEFERRED = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, EnderMail.MODID);
+	public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_DEFERRED = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, EnderMail.MODID);
 	
 	public static final RegistryObject<BlockEntityType<PackageBlockEntity>> PACKAGE = register(PackageBlock.NAME, () -> BlockEntityType.Builder.of(PackageBlockEntity::new, EnderMailBlocks.PACKAGE.get()));
 	public static final RegistryObject<BlockEntityType<LockerBlockEntity>> LOCKER = register(LockerBlock.NAME, () -> BlockEntityType.Builder.of(LockerBlockEntity::new, EnderMailBlocks.LOCKER.get()));

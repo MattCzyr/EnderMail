@@ -13,7 +13,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class EnderMailEntities {
 	
-	public static final DeferredRegister<EntityType<?>> ENTITY_DEFERRED = DeferredRegister.create(ForgeRegistries.ENTITIES, EnderMail.MODID);
+	public static final DeferredRegister<EntityType<?>> ENTITY_DEFERRED = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, EnderMail.MODID);
 
 	public static final RegistryObject<EntityType<EnderMailmanEntity>> ENDER_MAILMAN = register(EnderMailmanEntity.NAME, () -> EntityType.Builder.<EnderMailmanEntity>of(EnderMailmanEntity::new, MobCategory.MONSTER).setTrackingRange(80).setUpdateInterval(3).setShouldReceiveVelocityUpdates(true).sized(0.6F, 2.9F));
 

@@ -117,7 +117,7 @@ public class PackageBlock extends BaseEntityBlock {
 			} else if (!isStamped(state) && !player.isCrouching() && !holdingStamp) {
 				BlockEntity te = level.getBlockEntity(pos);
 				if (te != null && te instanceof PackageBlockEntity) {
-					NetworkHooks.openGui((ServerPlayer) player, (PackageBlockEntity) te, pos);
+					NetworkHooks.openScreen((ServerPlayer) player, (PackageBlockEntity) te, pos);
 				}
 				return InteractionResult.SUCCESS;
 			}

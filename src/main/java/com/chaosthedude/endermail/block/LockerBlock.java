@@ -59,7 +59,7 @@ public class LockerBlock extends BaseEntityBlock {
 			BlockEntity blockEntity = level.getBlockEntity(pos);
 			if (blockEntity != null && blockEntity instanceof LockerBlockEntity) {
 				LockerBlockEntity lockerBlockEntity = (LockerBlockEntity) blockEntity;
-				NetworkHooks.openGui((ServerPlayer) player, lockerBlockEntity, buf -> buf.writeBlockPos(pos).writeUtf(lockerBlockEntity.getLockerID()));
+				NetworkHooks.openScreen((ServerPlayer) player, lockerBlockEntity, buf -> buf.writeBlockPos(pos).writeUtf(lockerBlockEntity.getLockerID()));
 			}
 			return InteractionResult.SUCCESS;
 		}
