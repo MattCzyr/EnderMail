@@ -1,0 +1,35 @@
+{
+    "_comment": "Ender Mail Language File",
+    "_comment": "Portuguese - BRAZIL",
+
+    "_comment": "BLOCKS",
+    "block.endermail.package": "Pacote",
+    "block.endermail.locker": "Armário",
+
+    "_comment": "ITEMS",
+    "item.endermail.package_controller": "Controlador de pacote",
+    "item.endermail.packing_tape": "Fita de embalagem",
+    "item.endermail.stamp": "Carimbo",
+
+    "_comment": "STRINGS",
+    "string.endermail.cancel": "Cancelar",
+    "string.endermail.close": "Perto",
+    "string.endermail.confirm": "Confirmar",
+    "string.endermail.coordinates": "Coordenadas",
+    "string.endermail.deliver": "Entregar",
+    "string.endermail.delivered": "Entregue",
+    "string.endermail.deliveredToLocker": "Entregue para o armário",
+    "string.endermail.delivering": "Entregando",
+    "string.endermail.deliveryDistance": "Distância de entrega",
+    "string.endermail.deliveryLocation": "Local de entrega",
+    "string.endermail.error": "ocorreu um erro",
+    "string.endermail.holdShift": "Segure Shift para o conteúdo",
+    "string.endermail.lockerID": "Código do armário",
+    "string.endermail.id": "ID",
+    "string.endermail.invalidLockerID": "ID do armário inválido",
+    "string.endermail.maxDistance": "Distância máxima",
+    "string.endermail.setID": "Definir ID",
+    "string.endermail.status": "Status",
+    "string.endermail.tooFar": "Muito longe para entregar",
+    "string.endermail.undeliverable": "Não-entregável"
+}
