@@ -1,6 +1,6 @@
 {
 	"parent": "item/handheld",
 	"textures": {
-		"layer0": "endermail:items/package_controller_success"
+		"layer0": "endermail:item/package_controller_success"
 	}
 }

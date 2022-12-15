@@ -1,6 +1,6 @@
 {
 	"parent": "item/handheld",
 	"textures": {
-		"layer0": "endermail:items/packing_tape"
+		"layer0": "endermail:item/packing_tape"
 	}
 }

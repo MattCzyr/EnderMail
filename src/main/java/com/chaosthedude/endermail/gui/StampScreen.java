@@ -49,7 +49,6 @@ public class StampScreen extends Screen {
 	@Override
 	public void init() {
 		setupWidgets();
-		minecraft.keyboardHandler.setSendRepeatsToGui(true);
 	}
 
 	@Override
@@ -91,19 +90,13 @@ public class StampScreen extends Screen {
 		zTextField.tick();
 		confirmButton.active = (!lockerIDTextField.getValue().isEmpty() && xTextField.getValue().isEmpty() && yTextField.getValue().isEmpty() && zTextField.getValue().isEmpty()) || (isNumeric(xTextField.getValue()) && (yTextField.getValue().isEmpty() || isNumeric(yTextField.getValue())) && isNumeric(zTextField.getValue()));
 	}
-	
-	@Override
-	public void onClose() {
-		super.onClose();
-		minecraft.keyboardHandler.setSendRepeatsToGui(false);
-	}
 
 	private void setupWidgets() {
 		clearWidgets();
-		cancelButton = addRenderableWidget(new Button(20, height - 40, 80, 20, Component.translatable("string.endermail.cancel"), (onPress) -> {
+		cancelButton = addRenderableWidget(Button.builder(Component.translatable("string.endermail.cancel"), (onPress) -> {
 			minecraft.setScreen(null);
-		}));
-		confirmButton = addRenderableWidget(new Button(width - 100, height - 40, 80, 20, Component.translatable("string.endermail.confirm"), (onPress) -> {
+		}).bounds(20, height - 40, 80, 20).build());
+		confirmButton = addRenderableWidget(Button.builder(Component.translatable("string.endermail.confirm"), (onPress) -> {
 			try {
 				String lockerID = lockerIDTextField.getValue();
 				int x = -1;
@@ -123,7 +116,7 @@ public class StampScreen extends Screen {
 			} catch (NumberFormatException e) {
 				errored = true;
 			}
-		}));
+		}).bounds(width - 100, height - 40, 80, 20).build());
 		confirmButton.active = false;
 		
 		xTextField = addRenderableWidget(new StampTextField(font, (width / 2) - 65, height / 2 - 30, 40, 20, Component.literal("")));

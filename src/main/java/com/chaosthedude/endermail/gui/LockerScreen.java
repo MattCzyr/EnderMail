@@ -55,8 +55,13 @@ public class LockerScreen extends AbstractContainerScreen<LockerMenu> {
 		renderBackground(poseStack);
 		super.render(poseStack, mouseX, mouseY, partialTicks);
 		idTextField.render(poseStack, mouseX, mouseY, partialTicks);
-		font.draw(poseStack, Component.translatable("string.endermail.id"), 75, titleLabelY, 4210752);
 		renderTooltip(poseStack, mouseX, mouseY);
+	}
+	
+	@Override
+	protected void renderLabels(PoseStack poseStack, int par2, int par3) {
+		super.renderLabels(poseStack, par2, par3);
+		font.draw(poseStack, Component.translatable("string.endermail.id"), 75, titleLabelY, 4210752);
 	}
 
 	@Override

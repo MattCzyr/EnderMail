@@ -22,10 +22,12 @@ import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -56,6 +58,8 @@ public class EnderMail {
 		EnderMailItems.ITEM_DEFERRED.register(bus);
 
 		bus.addListener(this::preInit);
+		bus.addListener(this::buildCreativeTabContents);
+		
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
 			FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientInit);
 		});
@@ -66,14 +70,25 @@ public class EnderMail {
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 
-	public void preInit(FMLCommonSetupEvent event) {
+	private void preInit(FMLCommonSetupEvent event) {
 		network = NetworkRegistry.newSimpleChannel(new ResourceLocation(EnderMail.MODID, EnderMail.MODID), () -> "1.0", s -> true, s -> true);
 		network.registerMessage(0, StampPackagePacket.class, StampPackagePacket::toBytes, StampPackagePacket::new, StampPackagePacket::handle);
 		network.registerMessage(1, ConfigureLockerPacket.class, ConfigureLockerPacket::toBytes, ConfigureLockerPacket::new, ConfigureLockerPacket::handle);
 	}
 	
+	private void buildCreativeTabContents(CreativeModeTabEvent.BuildContents event) {
+		if (event.getTab() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
+			event.accept(new ItemStack(EnderMailItems.PACKAGE_CONTROLLER.get()));
+			event.accept(new ItemStack(EnderMailItems.PACKING_TAPE.get()));
+			event.accept(new ItemStack(EnderMailItems.STAMP.get()));
+		} else if (event.getTab() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
+			event.accept(new ItemStack(EnderMailItems.PACKAGE.get()));
+			event.accept(new ItemStack(EnderMailItems.LOCKER.get()));
+		}
+	}
+	
 	@OnlyIn(Dist.CLIENT)
-	public void clientInit(FMLClientSetupEvent event) {
+	private void clientInit(FMLClientSetupEvent event) {
  		MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
  		MenuScreens.register(EnderMailContainers.PACKAGE_CONTAINER.get(), PackageScreen::new);
  		MenuScreens.register(EnderMailContainers.LOCKER_CONTAINER.get(), LockerScreen::new);
