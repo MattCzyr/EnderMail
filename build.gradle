@@ -4,7 +4,7 @@ plugins {
     id 'net.minecraftforge.gradle' version '5.1.+'
 }
 
-version = '1.19.3-1.2.6'
+version = '1.19.3-1.2.7'
 group = 'com.chaosthedude.endermail' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'EnderMail'
 
