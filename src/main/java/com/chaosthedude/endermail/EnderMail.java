@@ -79,8 +79,9 @@ public class EnderMail {
 	private void buildCreativeTabContents(CreativeModeTabEvent.BuildContents event) {
 		if (event.getTab() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
 			event.accept(new ItemStack(EnderMailItems.PACKAGE_CONTROLLER.get()));
-			event.accept(new ItemStack(EnderMailItems.PACKING_TAPE.get()));
 			event.accept(new ItemStack(EnderMailItems.STAMP.get()));
+		} else if (event.getTab() == CreativeModeTabs.INGREDIENTS) {
+			event.accept(new ItemStack(EnderMailItems.PACKING_TAPE.get()));
 		} else if (event.getTab() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
 			event.accept(new ItemStack(EnderMailItems.PACKAGE.get()));
 			event.accept(new ItemStack(EnderMailItems.LOCKER.get()));
