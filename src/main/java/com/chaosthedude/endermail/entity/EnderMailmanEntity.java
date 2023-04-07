@@ -13,7 +13,6 @@ import com.chaosthedude.endermail.config.ConfigHandler;
 import com.chaosthedude.endermail.data.LockerData;
 import com.chaosthedude.endermail.item.PackageControllerItem;
 import com.chaosthedude.endermail.registry.EnderMailBlocks;
-import com.chaosthedude.endermail.registry.EnderMailEntities;
 import com.chaosthedude.endermail.registry.EnderMailItems;
 import com.chaosthedude.endermail.util.ControllerState;
 
@@ -31,7 +30,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.IndirectEntityDamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -49,7 +47,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
-import net.minecraftforge.network.PlayMessages.SpawnEntity;
 
 public class EnderMailmanEntity extends Monster {
 
@@ -67,7 +64,7 @@ public class EnderMailmanEntity extends Monster {
 
 	public EnderMailmanEntity(EntityType<? extends EnderMailmanEntity> entityType, Level level) {
 		super(entityType, level);
-		maxUpStep = 1.0F;
+		setMaxUpStep(1.0F);
 		setPathfindingMalus(BlockPathTypes.WATER, -1.0F);
 	}
 
@@ -120,7 +117,7 @@ public class EnderMailmanEntity extends Monster {
 	public boolean hurt(DamageSource source, float amount) {
 		if (isInvulnerableTo(source)) {
 			return false;
-		} else if (source instanceof IndirectEntityDamageSource) {
+		} else if (source.isIndirect()) {
 			for (int i = 0; i < 64; ++i) {
 				if (this.teleportRandomly()) {
 					return true;
@@ -141,7 +138,7 @@ public class EnderMailmanEntity extends Monster {
 	@Override
 	protected void customServerAiStep() {
 		if (isInWaterRainOrBubble()) {
-			hurt(DamageSource.DROWN, 1.0F);
+			hurt(damageSources().drown(), 1.0F);
 		}
 
 		if (level.isDay()) {
@@ -316,7 +313,7 @@ public class EnderMailmanEntity extends Monster {
 
 	public void diePeacefully() {
 		teleportTo(getX(), -10, getZ());
-		hurt(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
+		hurt(damageSources().outOfWorld(), Float.MAX_VALUE);
 	}
 
 	public void setContents(NonNullList<ItemStack> contents) {

@@ -15,8 +15,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.TickEvent.Phase;
-import net.minecraftforge.event.TickEvent.RenderTickEvent;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 @OnlyIn(Dist.CLIENT)
@@ -25,8 +24,8 @@ public class ClientEventHandler {
 	private static final Minecraft mc = Minecraft.getInstance();
 
 	@SubscribeEvent
-	public void onRenderTick(RenderTickEvent event) {
-		if (event.phase == Phase.END && mc.player != null && !mc.options.hideGui && !mc.options.renderDebug
+	public void onRenderTick(RenderGuiOverlayEvent.Post event) {
+		if (mc.player != null && !mc.options.hideGui && !mc.options.renderDebug
 				&& (mc.screen == null || (ConfigHandler.CLIENT.displayWithChatOpen.get() && mc.screen instanceof ChatScreen))) {
 			final PoseStack poseStack = new PoseStack();
 			final Player player = mc.player;

@@ -4,7 +4,6 @@ import com.chaosthedude.endermail.EnderMail;
 import com.chaosthedude.endermail.block.LockerBlock;
 import com.chaosthedude.endermail.gui.container.LockerMenu;
 import com.chaosthedude.endermail.network.ConfigureLockerPacket;
-import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -16,7 +15,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.ClickType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -57,7 +55,7 @@ public class LockerScreen extends AbstractContainerScreen<LockerMenu> {
 		idTextField.render(poseStack, mouseX, mouseY, partialTicks);
 		renderTooltip(poseStack, mouseX, mouseY);
 	}
-	
+
 	@Override
 	protected void renderLabels(PoseStack poseStack, int par2, int par3) {
 		super.renderLabels(poseStack, par2, par3);
@@ -74,38 +72,10 @@ public class LockerScreen extends AbstractContainerScreen<LockerMenu> {
 
 	@Override
 	public boolean keyPressed(int par1, int par2, int par3) {
-		if (par1 == 256) {
-			onClose();
-			return true;
-		} else if (par1 == 258) {
-			boolean flag = !hasShiftDown();
-			if (!changeFocus(flag)) {
-				changeFocus(flag);
-			}
-			return true;
-		} else if (getFocused() != null && getFocused().keyPressed(par1, par2, par3)) {
-			return true;
+		if (idTextField.canConsumeInput()) {
+			return idTextField.keyPressed(par1, par2, par3);
 		}
-		InputConstants.Key mouseKey = InputConstants.getKey(par1, par2);
-		if (!idTextField.isFocused() && minecraft.options.keyInventory.isActiveAndMatches(mouseKey)) {
-			onClose();
-			return true;
-		} else {
-			boolean handled = checkHotbarKeyPressed(par1, par2);
-			if (hoveredSlot != null && hoveredSlot.hasItem()) {
-				if (minecraft.options.keyPickItem.isActiveAndMatches(mouseKey)) {
-					slotClicked(hoveredSlot, hoveredSlot.index, 0, ClickType.CLONE);
-					handled = true;
-				} else if (minecraft.options.keyDrop.isActiveAndMatches(mouseKey)) {
-					slotClicked(hoveredSlot, hoveredSlot.index, hasControlDown() ? 1 : 0, ClickType.THROW);
-					handled = true;
-				}
-			} else if (minecraft.options.keyDrop.isActiveAndMatches(mouseKey)) {
-				handled = true;
-			}
-
-			return handled;
-		}
+		return super.keyPressed(par1, par2, par3);
 	}
 
 	@Override

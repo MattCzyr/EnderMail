@@ -1,15 +1,11 @@
 package com.chaosthedude.endermail.gui;
 
-import com.chaosthedude.endermail.util.RenderUtils;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
 
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -40,7 +36,7 @@ public class StampTextField extends EditBox {
 		if (isVisible()) {
 			if (pseudoEnableBackgroundDrawing) {
 				final int color = (int) (255.0F * 0.25f);
-				RenderUtils.drawRect(getX(), getY(), getX() + getWidth(), getY() + getHeight(), color / 2 << 24);
+				GuiComponent.fill(poseStack, getX(), getY(), getX() + getWidth(), getY() + getHeight(), color / 2 << 24);
 			}
 			boolean showLabel = !isFocused() && getValue().isEmpty();
 			int i = showLabel ? labelColor : (pseudoIsEnabled ? pseudoEnabledColor : pseudoDisabledColor);
@@ -79,7 +75,7 @@ public class StampTextField extends EditBox {
 
 			if (flag1) {
 				if (flag2) {
-					RenderUtils.drawRect(k1, i1 - 1, k1 + 1, i1 + 1 + fontRenderer.lineHeight, -3092272);
+					GuiComponent.fill(poseStack, k1, i1 - 1, k1 + 1, i1 + 1 + fontRenderer.lineHeight, -3092272);
 				} else {
 					fontRenderer.draw(poseStack, "_", (float) k1, (float) i1, i);
 				}
@@ -87,7 +83,7 @@ public class StampTextField extends EditBox {
 
 			if (k != j) {
 				int l1 = l + fontRenderer.width(s.substring(0, k));
-				drawSelectionBox(k1, i1 - 1, l1 - 1, i1 + 1 + fontRenderer.lineHeight);
+				drawSelectionBox(poseStack, k1, i1 - 1, l1 - 1, i1 + 1 + fontRenderer.lineHeight);
 			}
 		}
 	}
@@ -171,7 +167,7 @@ public class StampTextField extends EditBox {
 		this.labelColor = labelColor;
 	}
 
-	private void drawSelectionBox(int startX, int startY, int endX, int endY) {
+	private void drawSelectionBox(PoseStack poseStack, int startX, int startY, int endX, int endY) {
 		if (startX < endX) {
 			int i = startX;
 			startX = endX;
@@ -192,20 +188,10 @@ public class StampTextField extends EditBox {
 			startX = getX() + getWidth();
 		}
 
-		Tesselator tesselator = Tesselator.getInstance();
-		BufferBuilder bufferbuilder = tesselator.getBuilder();
-		RenderSystem.setShaderColor(0.0F, 0.0F, 255.0F, 255.0F);
-		RenderSystem.disableTexture();
 		RenderSystem.enableColorLogicOp();
 		RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
-		bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
-		bufferbuilder.vertex((double) startX, (double) endY, 0.0D).endVertex();
-		bufferbuilder.vertex((double) endX, (double) endY, 0.0D).endVertex();
-		bufferbuilder.vertex((double) endX, (double) startY, 0.0D).endVertex();
-		bufferbuilder.vertex((double) startX, (double) startY, 0.0D).endVertex();
-		tesselator.end();
+		GuiComponent.fill(poseStack, startX, startY, endX, endY, -16776961);
 		RenderSystem.disableColorLogicOp();
-		RenderSystem.enableTexture();
 	}
 	
 }
