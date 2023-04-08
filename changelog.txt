@@ -1,4 +1,12 @@
 ---------------------------------------------
+ VERSION 1.2.8 - 1.19.4
+---------------------------------------------
+ 1.19.4:
+  - Initial release for 1.19.4
+  - Fixed issue causing package controller texture to not update based on delivery success/failure
+
+
+---------------------------------------------
  VERSION 1.2.7 - 1.19.3
 ---------------------------------------------
  1.19.3:
