@@ -4,11 +4,11 @@
 		"layer0": "endermail:item/package_controller"
 	},
 	"overrides": [
-		{ "predicate": { "state": 0 }, "model": "endermail:item/package_controller" },
-		{ "predicate": { "state": 1 }, "model": "endermail:item/package_controller" },
-		{ "predicate": { "state": 2 }, "model": "endermail:item/package_controller_success" },
-		{ "predicate": { "state": 3 }, "model": "endermail:item/package_controller_success" },
-		{ "predicate": { "state": 4 }, "model": "endermail:item/package_controller_failure" },
-		{ "predicate": { "state": 5 }, "model": "endermail:item/package_controller_failure" }
+		{ "predicate": { "endermail:state": 0.0 }, "model": "endermail:item/package_controller" },
+		{ "predicate": { "endermail:state": 0.1 }, "model": "endermail:item/package_controller" },
+		{ "predicate": { "endermail:state": 0.2 }, "model": "endermail:item/package_controller_success" },
+		{ "predicate": { "endermail:state": 0.3 }, "model": "endermail:item/package_controller_success" },
+		{ "predicate": { "endermail:state": 0.4 }, "model": "endermail:item/package_controller_failure" },
+		{ "predicate": { "endermail:state": 0.5 }, "model": "endermail:item/package_controller_failure" }
 	]
 }

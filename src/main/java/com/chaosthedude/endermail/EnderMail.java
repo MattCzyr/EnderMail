@@ -94,14 +94,14 @@ public class EnderMail {
  		MenuScreens.register(EnderMailContainers.PACKAGE_CONTAINER.get(), PackageScreen::new);
  		MenuScreens.register(EnderMailContainers.LOCKER_CONTAINER.get(), LockerScreen::new);
  		
- 		ItemProperties.register(EnderMailItems.PACKAGE_CONTROLLER.get(), new ResourceLocation("state"), new ClampedItemPropertyFunction() {
+ 		ItemProperties.register(EnderMailItems.PACKAGE_CONTROLLER.get(), new ResourceLocation(MODID, "state"), new ClampedItemPropertyFunction() {
 			@Override
 			public float unclampedCall(ItemStack stack, ClientLevel level, LivingEntity entity, int seed) {
 				if (stack.getItem() == EnderMailItems.PACKAGE_CONTROLLER.get()) {
 					PackageControllerItem packageController = (PackageControllerItem) stack.getItem();
-					return packageController.getState(stack).getID();
+					return 0.1F * packageController.getState(stack).getID(); // Value must be between 0.0 and 1.0
 				}
-				return 0F;
+				return 0.0F;
 			}
 		});
  	}
