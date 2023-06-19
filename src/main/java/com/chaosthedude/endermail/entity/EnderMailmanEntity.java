@@ -99,9 +99,9 @@ public class EnderMailmanEntity extends Monster {
 
 	@Override
 	public void tick() {
-		if (level.isClientSide()) {
+		if (level().isClientSide()) {
 			for (int i = 0; i < 2; ++i) {
-				level.addParticle(ParticleTypes.PORTAL, getRandomX(0.5D), getRandomY() - 0.25D, getRandomZ(0.5D), (random.nextDouble() - 0.5D) * 2.0D, -random.nextDouble(), (random.nextDouble() - 0.5D) * 2.0D);
+				level().addParticle(ParticleTypes.PORTAL, getRandomX(0.5D), getRandomY() - 0.25D, getRandomZ(0.5D), (random.nextDouble() - 0.5D) * 2.0D, -random.nextDouble(), (random.nextDouble() - 0.5D) * 2.0D);
 			}
 
 			if (tickCount - timeDelivered > 100) {
@@ -127,7 +127,7 @@ public class EnderMailmanEntity extends Monster {
 			return false;
 		} else {
 			boolean flag = super.hurt(source, amount);
-			if (!level.isClientSide() && !(source.getEntity() instanceof LivingEntity) && this.random.nextInt(10) != 0) {
+			if (!level().isClientSide() && !(source.getEntity() instanceof LivingEntity) && this.random.nextInt(10) != 0) {
 				teleportRandomly();
 			}
 
@@ -141,9 +141,9 @@ public class EnderMailmanEntity extends Monster {
 			hurt(damageSources().drown(), 1.0F);
 		}
 
-		if (level.isDay()) {
+		if (level().isDay()) {
 			float f = getLightLevelDependentMagicValue();
-			if (f > 0.5F && level.canSeeSky(blockPosition()) && random.nextFloat() * 30.0F < (f - 0.4F) * 2.0F) {
+			if (f > 0.5F && level().canSeeSky(blockPosition()) && random.nextFloat() * 30.0F < (f - 0.4F) * 2.0F) {
 				teleportRandomly();
 			}
 		}
@@ -207,17 +207,17 @@ public class EnderMailmanEntity extends Monster {
 
 	private boolean teleport(double x, double y, double z) {
 		BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(x, y, z);
-		while (pos.getY() > level.getMinBuildHeight() && !level.getBlockState(pos).getMaterial().blocksMotion()) {
+		while (pos.getY() > level().getMinBuildHeight() && !level().getBlockState(pos).blocksMotion()) {
 			pos.move(Direction.DOWN);
 		}
 
-		BlockState state = level.getBlockState(pos);
-		boolean flag = state.getMaterial().blocksMotion();
+		BlockState state = level().getBlockState(pos);
+		boolean flag = state.blocksMotion();
 		boolean flag1 = state.getFluidState().is(FluidTags.WATER);
 		if (flag && !flag1) {
 			boolean flag2 = randomTeleport(x, y, z, true);
 			if (flag2 && !isSilent()) {
-				level.playSound((Player) null, xo, yo, zo, SoundEvents.ENDERMAN_TELEPORT, getSoundSource(), 1.0F, 1.0F);
+				level().playSound((Player) null, xo, yo, zo, SoundEvents.ENDERMAN_TELEPORT, getSoundSource(), 1.0F, 1.0F);
 				playSound(SoundEvents.ENDERMAN_TELEPORT, 1.0F, 1.0F);
 			}
 			return flag2;
@@ -240,8 +240,8 @@ public class EnderMailmanEntity extends Monster {
 	}
 
 	private BlockPos findLocker(String lockerID) {
-		if (level instanceof ServerLevel) {
-			ServerLevel serverLevel = (ServerLevel) level;
+		if (level() instanceof ServerLevel) {
+			ServerLevel serverLevel = (ServerLevel) level();
 			LockerData data = LockerData.get(serverLevel);
 			return data.getLockers().get(lockerID);
 		}
@@ -249,8 +249,8 @@ public class EnderMailmanEntity extends Monster {
 	}
 
 	private BlockPos findLockerNearPos(BlockPos pos) {
-		if (level instanceof ServerLevel) {
-			ServerLevel serverLevel = (ServerLevel) level;
+		if (level() instanceof ServerLevel) {
+			ServerLevel serverLevel = (ServerLevel) level();
 			LockerData data = LockerData.get(serverLevel);
 			for (String lockerID : data.getLockers().keySet()) {
 				BlockPos lockerPos = data.getLockers().get(lockerID);
@@ -273,19 +273,19 @@ public class EnderMailmanEntity extends Monster {
 
 	private int findValidDeliveryHeight(BlockPos pos, int maxHeightDifference) {
 		if (pos != null) {
-			int startY = pos.getY() <= 0 ? level.getSeaLevel() : pos.getY();
+			int startY = pos.getY() <= 0 ? level().getSeaLevel() : pos.getY();
 			int upY = startY;
 			int downY = startY;
-			while (!(canPlacePackage(level, new BlockPos(pos.getX(), upY, pos.getZ())) || canPlacePackage(level, new BlockPos(pos.getX(), downY, pos.getZ()))) && (upY < 255 || downY > 1) && upY - startY < maxHeightDifference && startY - downY < maxHeightDifference) {
+			while (!(canPlacePackage(level(), new BlockPos(pos.getX(), upY, pos.getZ())) || canPlacePackage(level(), new BlockPos(pos.getX(), downY, pos.getZ()))) && (upY < 255 || downY > 1) && upY - startY < maxHeightDifference && startY - downY < maxHeightDifference) {
 				upY++;
 				downY--;
 			}
 			BlockPos upPos = new BlockPos(pos.getX(), upY, pos.getZ());
 			BlockPos downPos = new BlockPos(pos.getX(), downY, pos.getZ());
-			if (upY < 255 && canPlacePackage(level, upPos)) {
+			if (upY < 255 && canPlacePackage(level(), upPos)) {
 				return upY;
 			}
-			if (downY > 1 && canPlacePackage(level, downPos)) {
+			if (downY > 1 && canPlacePackage(level(), downPos)) {
 				return downY;
 			}
 		}
@@ -313,7 +313,7 @@ public class EnderMailmanEntity extends Monster {
 
 	public void diePeacefully() {
 		teleportTo(getX(), -10, getZ());
-		hurt(damageSources().outOfWorld(), Float.MAX_VALUE);
+		hurt(damageSources().outOfBorder(), Float.MAX_VALUE);
 	}
 
 	public void setContents(NonNullList<ItemStack> contents) {
@@ -382,11 +382,11 @@ public class EnderMailmanEntity extends Monster {
 	}
 
 	public boolean shouldDeliverOnGround() {
-		return canPlacePackage(level, getDeliveryPos());
+		return canPlacePackage(level(), getDeliveryPos());
 	}
 
 	public boolean shouldDeliverToLocker() {
-		return level.getBlockState(deliveryPos).getBlock() == EnderMailBlocks.LOCKER.get();
+		return level().getBlockState(deliveryPos).getBlock() == EnderMailBlocks.LOCKER.get();
 	}
 
 	public void updateTimePickedUp() {
@@ -409,7 +409,7 @@ public class EnderMailmanEntity extends Monster {
 		if (tickCount >= lastCreepySound + 400) {
 			lastCreepySound = tickCount;
 			if (!isSilent()) {
-				level.playLocalSound(this.getX(), this.getEyeY(), this.getZ(), SoundEvents.ENDERMAN_STARE, this.getSoundSource(), 2.5F, 1.0F, false);
+				level().playLocalSound(this.getX(), this.getEyeY(), this.getZ(), SoundEvents.ENDERMAN_STARE, this.getSoundSource(), 2.5F, 1.0F, false);
 			}
 		}
 	}
@@ -475,8 +475,8 @@ public class EnderMailmanEntity extends Monster {
 				if (enderMailman.shouldDeliverOnGround()) {
 					enderMailman.teleportToDeliveryPos();
 					BlockState newBlockState = EnderMailBlocks.PACKAGE.get().getRandomlyRotatedStampedState();
-					enderMailman.level.setBlock(enderMailman.getDeliveryPos(), newBlockState, 3);
-					enderMailman.level.setBlockEntity(new PackageBlockEntity(enderMailman.getContents(), enderMailman.getDeliveryPos(), newBlockState));
+					enderMailman.level().setBlock(enderMailman.getDeliveryPos(), newBlockState, 3);
+					enderMailman.level().setBlockEntity(new PackageBlockEntity(enderMailman.getContents(), enderMailman.getDeliveryPos(), newBlockState));
 					if (enderMailman.hasPackageController()) {
 						enderMailman.getPackageControllerItem().setState(enderMailman.packageController, ControllerState.DELIVERED);
 						enderMailman.getPackageControllerItem().setDeliveryPos(enderMailman.packageController, enderMailman.getDeliveryPos());
@@ -486,7 +486,7 @@ public class EnderMailmanEntity extends Monster {
 					}
 					delivered = true;
 				} else if (enderMailman.shouldDeliverToLocker()) {
-					BlockEntity blockEntity = enderMailman.level.getBlockEntity(enderMailman.getDeliveryPos());
+					BlockEntity blockEntity = enderMailman.level().getBlockEntity(enderMailman.getDeliveryPos());
 					if (blockEntity != null && blockEntity instanceof LockerBlockEntity) {
 						enderMailman.teleportToDeliveryPos();
 						LockerBlockEntity lockerBlockEntity = (LockerBlockEntity) blockEntity;
@@ -514,8 +514,8 @@ public class EnderMailmanEntity extends Monster {
 								if (y > 0) {
 									newDeliveryPos = new BlockPos(newDeliveryPos.getX(), y, newDeliveryPos.getZ());
 									BlockState newBlockState = EnderMailBlocks.PACKAGE.get().getRandomlyRotatedStampedState();
-									enderMailman.level.setBlock(newDeliveryPos, newBlockState, 3);
-									enderMailman.level.setBlockEntity(new PackageBlockEntity(enderMailman.getContents(), newDeliveryPos, newBlockState));
+									enderMailman.level().setBlock(newDeliveryPos, newBlockState, 3);
+									enderMailman.level().setBlockEntity(new PackageBlockEntity(enderMailman.getContents(), newDeliveryPos, newBlockState));
 									if (enderMailman.hasPackageController()) {
 										enderMailman.getPackageControllerItem().setState(enderMailman.packageController, ControllerState.DELIVERED);
 										enderMailman.getPackageControllerItem().setDeliveryPos(enderMailman.packageController, newDeliveryPos);
@@ -532,8 +532,8 @@ public class EnderMailmanEntity extends Monster {
 				if (!delivered) {
 					enderMailman.teleportToStartingPos();
 					BlockState newBlockState = EnderMailBlocks.PACKAGE.get().getRandomlyRotatedStampedState();
-					enderMailman.level.setBlock(enderMailman.getStartingPos(), newBlockState, 3);
-					enderMailman.level.setBlockEntity(new PackageBlockEntity(enderMailman.getContents(), enderMailman.getStartingPos(), newBlockState));
+					enderMailman.level().setBlock(enderMailman.getStartingPos(), newBlockState, 3);
+					enderMailman.level().setBlockEntity(new PackageBlockEntity(enderMailman.getContents(), enderMailman.getStartingPos(), newBlockState));
 					if (enderMailman.hasPackageController()) {
 						enderMailman.getPackageControllerItem().setState(enderMailman.packageController, ControllerState.UNDELIVERABLE);
 					}
@@ -563,12 +563,12 @@ public class EnderMailmanEntity extends Monster {
 
 		@Override
 		public void tick() {
-			BlockEntity blockEntity = enderMailman.level.getBlockEntity(enderMailman.startingPos);
+			BlockEntity blockEntity = enderMailman.level().getBlockEntity(enderMailman.startingPos);
 			if (blockEntity != null && blockEntity instanceof PackageBlockEntity) {
 				PackageBlockEntity packageBlockEntity = (PackageBlockEntity) blockEntity;
 				enderMailman.setContents(packageBlockEntity.getContents());
 				enderMailman.setCarryingPackage(true);
-				enderMailman.level.setBlock(enderMailman.startingPos, Blocks.AIR.defaultBlockState(), 3);
+				enderMailman.level().setBlock(enderMailman.startingPos, Blocks.AIR.defaultBlockState(), 3);
 				if (enderMailman.hasPackageController()) {
 					enderMailman.getPackageControllerItem().setState(enderMailman.packageController, ControllerState.DELIVERING);
 				}

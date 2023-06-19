@@ -5,9 +5,9 @@ import com.chaosthedude.endermail.block.LockerBlock;
 import com.chaosthedude.endermail.gui.container.LockerMenu;
 import com.chaosthedude.endermail.network.ConfigureLockerPacket;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -49,17 +49,17 @@ public class LockerScreen extends AbstractContainerScreen<LockerMenu> {
 	}
 
 	@Override
-	public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
-		renderBackground(poseStack);
-		super.render(poseStack, mouseX, mouseY, partialTicks);
-		idTextField.render(poseStack, mouseX, mouseY, partialTicks);
-		renderTooltip(poseStack, mouseX, mouseY);
+	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		renderBackground(guiGraphics);
+		super.render(guiGraphics, mouseX, mouseY, partialTicks);
+		idTextField.render(guiGraphics, mouseX, mouseY, partialTicks);
+		renderTooltip(guiGraphics, mouseX, mouseY);
 	}
 
 	@Override
-	protected void renderLabels(PoseStack poseStack, int par2, int par3) {
-		super.renderLabels(poseStack, par2, par3);
-		font.draw(poseStack, Component.translatable("string.endermail.id"), 75, titleLabelY, 4210752);
+	protected void renderLabels(GuiGraphics guiGraphics, int par2, int par3) {
+		super.renderLabels(guiGraphics, par2, par3);
+		guiGraphics.drawString(font, Component.translatable("string.endermail.id"), 75, titleLabelY, 4210752);
 	}
 
 	@Override
@@ -79,13 +79,10 @@ public class LockerScreen extends AbstractContainerScreen<LockerMenu> {
 	}
 
 	@Override
-	protected void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY) {
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-		RenderSystem.setShaderTexture(0, TEXTURE);
+	protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
 		int i = (width - imageWidth) / 2;
 		int j = (height - imageHeight) / 2;
-		blit(poseStack, i, j, 0, 0, imageWidth, imageHeight);
+		guiGraphics.blit(TEXTURE, i, j, 0, 0, imageWidth, imageHeight);
 	}
 
 	@Override

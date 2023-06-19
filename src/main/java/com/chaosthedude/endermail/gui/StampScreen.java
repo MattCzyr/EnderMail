@@ -5,8 +5,8 @@ import com.chaosthedude.endermail.block.LockerBlock;
 import com.chaosthedude.endermail.network.StampPackagePacket;
 import com.chaosthedude.endermail.util.RenderUtils;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -52,33 +52,30 @@ public class StampScreen extends Screen {
 	}
 
 	@Override
-	public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
 		int xSize = 178;
 		int ySize = 222;
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-	    RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-	    RenderSystem.setShaderTexture(0, TEXTURE);
 		int i = (width - xSize) / 2;
 		int j = (height - ySize) / 2;
-		blit(poseStack, i, j, 0, 0, xSize, ySize);
+		guiGraphics.blit(TEXTURE, i, j, 0, 0, xSize, ySize);
 		if (errored) {
-			RenderUtils.drawCenteredStringWithoutShadow(poseStack, I18n.get("string.endermail.error"), width / 2, height - 65, 0xAAAAAA);
+			RenderUtils.drawCenteredStringWithoutShadow(guiGraphics, I18n.get("string.endermail.error"), width / 2, height - 65, 0xAAAAAA);
 		}
 		
-		RenderUtils.drawCenteredStringWithoutShadow(poseStack, I18n.get("string.endermail.deliveryLocation"), width / 2, height / 2 - 42, 0xAAAAAA);
-		RenderUtils.drawCenteredStringWithoutShadow(poseStack, "X", (width / 2) - 45, height / 2 - 5, 0xAAAAAA);
-		RenderUtils.drawCenteredStringWithoutShadow(poseStack, "Y", (width / 2) + 0, height / 2 - 5, 0xAAAAAA);
-		RenderUtils.drawCenteredStringWithoutShadow(poseStack, "Z", (width / 2) + 45, height / 2 - 5, 0xAAAAAA);
+		RenderUtils.drawCenteredStringWithoutShadow(guiGraphics, I18n.get("string.endermail.deliveryLocation"), width / 2, height / 2 - 42, 0xAAAAAA);
+		RenderUtils.drawCenteredStringWithoutShadow(guiGraphics, "X", (width / 2) - 45, height / 2 - 5, 0xAAAAAA);
+		RenderUtils.drawCenteredStringWithoutShadow(guiGraphics, "Y", (width / 2) + 0, height / 2 - 5, 0xAAAAAA);
+		RenderUtils.drawCenteredStringWithoutShadow(guiGraphics, "Z", (width / 2) + 45, height / 2 - 5, 0xAAAAAA);
 		
-		RenderUtils.drawCenteredStringWithoutShadow(poseStack, I18n.get("string.endermail.lockerID"), width / 2, height / 2 + 13, 0xAAAAAA);
+		RenderUtils.drawCenteredStringWithoutShadow(guiGraphics, I18n.get("string.endermail.lockerID"), width / 2, height / 2 + 13, 0xAAAAAA);
 		
-		lockerIDTextField.render(poseStack, mouseX, mouseY, partialTicks);
+		lockerIDTextField.render(guiGraphics, mouseX, mouseY, partialTicks);
 		
-		xTextField.render(poseStack, mouseX, mouseY, partialTicks);
-		yTextField.render(poseStack, mouseX, mouseY, partialTicks);
-		zTextField.render(poseStack, mouseX, mouseY, partialTicks);
+		xTextField.render(guiGraphics, mouseX, mouseY, partialTicks);
+		yTextField.render(guiGraphics, mouseX, mouseY, partialTicks);
+		zTextField.render(guiGraphics, mouseX, mouseY, partialTicks);
 
-		super.render(poseStack, mouseX, mouseY, partialTicks);
+		super.render(guiGraphics, mouseX, mouseY, partialTicks);
 	}
 	
 	@Override

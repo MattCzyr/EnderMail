@@ -26,7 +26,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
 
@@ -41,7 +42,7 @@ public class LockerBlock extends BaseEntityBlock {
 	public static final int MAX_ID_LENGTH = 12;
 
 	public LockerBlock() {
-		super(Properties.of(Material.METAL).strength(2.0F).sound(SoundType.METAL));
+		super(Properties.of().mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).strength(4.0F, 6.0F).sound(SoundType.METAL));
 		registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH).setValue(FILLED, false));
 	}
 

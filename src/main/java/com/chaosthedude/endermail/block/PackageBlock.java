@@ -50,7 +50,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -66,7 +67,7 @@ public class PackageBlock extends BaseEntityBlock {
 	public static final BooleanProperty STAMPED = BooleanProperty.create("stamped");
 
 	public PackageBlock() {
-		super(Properties.of(Material.WOOD).strength(1.0F).sound(SoundType.WOOD));
+		super(Properties.of().mapColor(MapColor.WOOD).instrument(NoteBlockInstrument.BASS).strength(1.0F).sound(SoundType.WOOD));
 		registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH).setValue(STAMPED, false));
 	}
 

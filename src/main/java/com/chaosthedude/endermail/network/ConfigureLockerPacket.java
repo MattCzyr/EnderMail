@@ -45,7 +45,7 @@ public class ConfigureLockerPacket {
 
 	public void handle(Supplier<NetworkEvent.Context> ctx) {
 		ctx.get().enqueueWork(() -> {
-			BlockEntity blockEntity = ctx.get().getSender().getLevel().getBlockEntity(new BlockPos(lockerX, lockerY, lockerZ));
+			BlockEntity blockEntity = ctx.get().getSender().level().getBlockEntity(new BlockPos(lockerX, lockerY, lockerZ));
 			if (blockEntity instanceof LockerBlockEntity) {
 				LockerBlockEntity lockerBlockEntity = (LockerBlockEntity) blockEntity;
 				lockerBlockEntity.setLockerID(lockerID);

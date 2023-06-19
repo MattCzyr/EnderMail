@@ -27,7 +27,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.CreativeModeTabEvent;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -76,13 +76,13 @@ public class EnderMail {
 		network.registerMessage(1, ConfigureLockerPacket.class, ConfigureLockerPacket::toBytes, ConfigureLockerPacket::new, ConfigureLockerPacket::handle);
 	}
 	
-	private void buildCreativeTabContents(CreativeModeTabEvent.BuildContents event) {
-		if (event.getTab() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
+	private void buildCreativeTabContents(BuildCreativeModeTabContentsEvent event) {
+		if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
 			event.accept(new ItemStack(EnderMailItems.PACKAGE_CONTROLLER.get()));
 			event.accept(new ItemStack(EnderMailItems.STAMP.get()));
-		} else if (event.getTab() == CreativeModeTabs.INGREDIENTS) {
+		} else if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
 			event.accept(new ItemStack(EnderMailItems.PACKING_TAPE.get()));
-		} else if (event.getTab() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
+		} else if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
 			event.accept(new ItemStack(EnderMailItems.PACKAGE.get()));
 			event.accept(new ItemStack(EnderMailItems.LOCKER.get()));
 		}
