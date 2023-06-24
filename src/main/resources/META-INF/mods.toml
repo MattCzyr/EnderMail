@@ -1,10 +1,10 @@
 modLoader="javafml"
-loaderVersion="[46,)"
+loaderVersion="[47,)"
 issueTrackerURL="https://github.com/MattCzyr/EnderMail/issues"
 license="CC BY-NC-SA 4.0"
 [[mods]]
     modId="endermail"
-    version="${mod_version}"
+    version="1.20.1-1.2.9"
     displayName="Ender Mail"
     displayURL="https://github.com/MattCzyr/EnderMail"
     authors="ChaosTheDude"
@@ -14,12 +14,12 @@ license="CC BY-NC-SA 4.0"
 [[dependencies.endermail]]
     modId="forge"
     mandatory=true
-    versionRange="[46,)"
+    versionRange="[47,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.endermail]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.20]"
+    versionRange="[1.20.1]"
     ordering="NONE"
     side="BOTH"

@@ -4,13 +4,11 @@ import com.chaosthedude.endermail.EnderMail;
 import com.chaosthedude.endermail.block.LockerBlock;
 import com.chaosthedude.endermail.gui.container.LockerMenu;
 import com.chaosthedude.endermail.network.ConfigureLockerPacket;
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -59,7 +57,7 @@ public class LockerScreen extends AbstractContainerScreen<LockerMenu> {
 	@Override
 	protected void renderLabels(GuiGraphics guiGraphics, int par2, int par3) {
 		super.renderLabels(guiGraphics, par2, par3);
-		guiGraphics.drawString(font, Component.translatable("string.endermail.id"), 75, titleLabelY, 4210752);
+		guiGraphics.drawString(font, Component.translatable("string.endermail.id"), 75, titleLabelY, 4210752, false);
 	}
 
 	@Override
@@ -72,7 +70,10 @@ public class LockerScreen extends AbstractContainerScreen<LockerMenu> {
 
 	@Override
 	public boolean keyPressed(int par1, int par2, int par3) {
-		if (idTextField.canConsumeInput()) {
+		if (par1 == 256 && shouldCloseOnEsc()) {
+			onClose();
+			return true;
+		} else if (idTextField.canConsumeInput()) {
 			return idTextField.keyPressed(par1, par2, par3);
 		}
 		return super.keyPressed(par1, par2, par3);
