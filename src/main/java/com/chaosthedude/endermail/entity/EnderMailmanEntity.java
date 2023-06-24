@@ -234,9 +234,10 @@ public class EnderMailmanEntity extends Monster {
 	}
 
 	private boolean canPlacePackage(Level level, BlockPos pos) {
+		BlockState state = level.getBlockState(pos);
 		BlockPos belowPos = pos.below();
 		BlockState belowState = level.getBlockState(belowPos);
-		return level.getBlockState(pos).isAir() && !belowState.isAir() && !belowState.is(Blocks.BEDROCK) && belowState.isCollisionShapeFullBlock(level, belowPos) && EnderMailBlocks.PACKAGE.get().defaultBlockState().canSurvive(level, pos);
+		return !state.liquid() && state.canBeReplaced() && !belowState.canBeReplaced() && !belowState.is(Blocks.BEDROCK) && belowState.isCollisionShapeFullBlock(level, belowPos) && EnderMailBlocks.PACKAGE.get().defaultBlockState().canSurvive(level, pos);
 	}
 
 	private BlockPos findLocker(String lockerID) {
