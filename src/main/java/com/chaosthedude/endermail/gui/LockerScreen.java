@@ -59,7 +59,7 @@ public class LockerScreen extends AbstractContainerScreen<LockerMenu> {
 	@Override
 	protected void renderLabels(GuiGraphics guiGraphics, int par2, int par3) {
 		super.renderLabels(guiGraphics, par2, par3);
-		guiGraphics.drawString(font, Component.translatable("string.endermail.id"), 75, titleLabelY, 4210752);
+		guiGraphics.drawString(font, Component.translatable("string.endermail.id"), 75, titleLabelY, 4210752, false);
 	}
 
 	@Override
@@ -72,7 +72,10 @@ public class LockerScreen extends AbstractContainerScreen<LockerMenu> {
 
 	@Override
 	public boolean keyPressed(int par1, int par2, int par3) {
-		if (idTextField.canConsumeInput()) {
+		if (par1 == 256 && shouldCloseOnEsc()) {
+			onClose();
+			return true;
+		} else if (idTextField.canConsumeInput()) {
 			return idTextField.keyPressed(par1, par2, par3);
 		}
 		return super.keyPressed(par1, par2, par3);

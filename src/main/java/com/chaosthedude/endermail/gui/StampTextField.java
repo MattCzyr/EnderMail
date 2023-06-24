@@ -53,7 +53,7 @@ public class StampTextField extends EditBox {
 
 			if (!s.isEmpty()) {
 				String s1 = flag ? s.substring(0, j) : s;
-				j1 = guiGraphics.drawString(font, s1, l, i1, i);
+				j1 = guiGraphics.drawString(font, s1, l, i1, i, false);
 			}
 
 			boolean flag2 = getCursorPosition() < getValue().length() || getValue().length() >= pseudoMaxStringLength;
@@ -67,14 +67,14 @@ public class StampTextField extends EditBox {
 			}
 
 			if (!s.isEmpty() && flag && j < s.length()) {
-				j1 = guiGraphics.drawString(font, s.substring(j), j1, i1, i);
+				j1 = guiGraphics.drawString(font, s.substring(j), j1, i1, i, false);
 			}
 
 			if (flag1) {
 				if (flag2) {
 					guiGraphics.fill(RenderType.guiOverlay(), k1, i1 - 1, k1 + 1, i1 + 1 + font.lineHeight, -3092272);
 				} else {
-					guiGraphics.drawString(font, "_", k1, i1, i);
+					guiGraphics.drawString(font, "_", k1, i1, i, false);
 				}
 			}
 

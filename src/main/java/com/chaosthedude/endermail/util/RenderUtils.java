@@ -33,7 +33,7 @@ public class RenderUtils {
 	}
 
 	public static void drawCenteredStringWithoutShadow(GuiGraphics guiGraphics, String string, int x, int y, int color) {
-		guiGraphics.drawString(font, string, x - font.width(string) / 2, y, color);
+		guiGraphics.drawString(font, string, x - font.width(string) / 2, y, color, false);
 	}
 
 }
