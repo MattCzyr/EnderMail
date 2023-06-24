@@ -48,11 +48,11 @@ public class LockerData extends SavedData {
 	public String createLocker(String lockerID, BlockPos pos) {
 		int suffixIndex = 2;
 		String fixedLockerID = lockerID;
-		while (lockerExists(fixedLockerID) && fixedLockerID.length() < 12) {
+		while (lockerExists(fixedLockerID) && fixedLockerID.length() <= 12) {
 			fixedLockerID = lockerID + suffixIndex;
 			suffixIndex++;
 		}
-		if (fixedLockerID.length() >= 12) {
+		if (fixedLockerID.length() > 12) {
 			return "";
 		}
 		lockers.put(fixedLockerID, pos);
