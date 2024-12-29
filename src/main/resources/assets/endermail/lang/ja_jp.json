@@ -1,0 +1,35 @@
+{
+    "_comment": "Ender Mail Language File",
+    "_comment": "Japanese - JAPAN",
+
+    "_comment": "BLOCKS",
+    "block.endermail.package": "パッケージ",
+    "block.endermail.locker": "ロッカー",
+
+    "_comment": "ITEMS",
+    "item.endermail.package_controller": "貨物コントローラー",
+    "item.endermail.packing_tape": "パッキングテープ",
+    "item.endermail.stamp": "スタンプ",
+
+    "_comment": "STRINGS",
+    "string.endermail.cancel": "キャンセル",
+    "string.endermail.close": "閉じる",
+    "string.endermail.confirm": "決定",
+    "string.endermail.coordinates": "座標",
+    "string.endermail.deliver": "配達",
+    "string.endermail.delivered": "配達済み",
+    "string.endermail.deliveredToLocker": "ロッカーに配達済み",
+    "string.endermail.delivering": "配達中",
+    "string.endermail.deliveryDistance": "配達距離",
+    "string.endermail.deliveryLocation": "配達位置",
+    "string.endermail.error": "エラーが発生した。",
+    "string.endermail.holdShift": "シフト長押しで内容物を確認",
+    "string.endermail.lockerID": "ロッカーID",
+    "string.endermail.id": "ID",
+    "string.endermail.invalidLockerID": "無効なロッカーIDです",
+    "string.endermail.maxDistance": "最大距離",
+    "string.endermail.setID": "IDを設定",
+    "string.endermail.status": "ステータス",
+    "string.endermail.tooFar": "遠すぎる！",
+    "string.endermail.undeliverable": "配達失敗"
+}
